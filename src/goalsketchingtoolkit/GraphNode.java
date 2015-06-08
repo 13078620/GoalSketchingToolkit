@@ -47,13 +47,14 @@ public class GraphNode extends GoalSketchingNode {
      * Specifies whether this graph node is a child or not.
      */
     private boolean child;
-    /**
-     * The parent graph node for this graph node if it has one.
-     */
+    
     private boolean operationalized;
     
     private boolean terminated;
 
+    /**
+     * The parent graph node for this graph node if it has one.
+     */    
     private GraphNode par;
 
     /**
