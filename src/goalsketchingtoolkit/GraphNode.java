@@ -65,6 +65,9 @@ public class GraphNode extends GoalSketchingNode {
 
     private boolean root;
 
+    /**
+     * Constructs a new graph node with no proposition, description or ID.
+     */
     public GraphNode() {
         super();
     }
