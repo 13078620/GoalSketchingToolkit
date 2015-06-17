@@ -46,7 +46,8 @@ public class GraphParser {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setIgnoringComments(true);
         factory.setIgnoringElementContentWhitespace(true);
-        //factory.setValidating(true);
+        factory.setValidating(false);
+        //factory.setSchema(Schema) ;
         DocumentBuilder builder = factory.newDocumentBuilder();
 
         return builder.parse(new InputSource(fileName));

@@ -39,9 +39,15 @@ public class GraphNodeDrawer implements Drawable {
      *
      * @param graphNode the graph node to be drawn.
      */
-    public GraphNodeDrawer(GraphNode graphNode) {
+    public GraphNodeDrawer(GoalSketchingNode graphNode) {
 
-        this.graphNode = graphNode;
+        
+        if(graphNode.getClass().toString().contains("GraphNode")) {
+            System.out.println("your hypothesis was correct");
+        } else {
+            System.out.println(graphNode.getClass().toString());
+        }
+        this.graphNode = (GraphNode) graphNode;
 
     }
 
