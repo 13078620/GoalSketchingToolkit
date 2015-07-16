@@ -14,7 +14,7 @@ import java.awt.BasicStroke;
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
-public class GoalSketchingNode {
+public class GSnode {
 
     /**
      * The x coordinate of the goal sketching node.
