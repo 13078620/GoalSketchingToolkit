@@ -13,7 +13,7 @@ import java.awt.geom.Point2D;
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
-public class GraphNode extends GoalSketchingNode {
+public class Goal extends GoalSketchingNode {
 
     /**
      * The goal oriented proposition for this graph node.
