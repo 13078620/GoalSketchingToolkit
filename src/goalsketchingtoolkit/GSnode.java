@@ -1,249 +1,144 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Oxford Brookes University, 2015.
  */
 package goalsketchingtoolkit;
 
-import java.awt.Color;
-import java.awt.BasicStroke;
+import java.util.ArrayList;
 
 /**
- * Represents the top level goal sketching node from which more specific nodes
- * inherit from.
  *
- * @author Chris Berryman - Oxford Brookes University - 2015
+ * @author Chris Berryman
  */
-public class GSnode {
+public abstract class GSnode {
 
     /**
-     * The x coordinate of the goal sketching node.
+     * A reference to this Goal Sketching Node's parent Goal Sketching Node.
      */
-    private double x;
-
-    /**
-     * The y coordinate of the goal sketching node.
-     */
-    private double y;
-
-    /**
-     * The width of the goal sketching node.
-     */
-    private int width;
-
-    /**
-     * The height of the goal sketching node.
-     */
-    private int height;
-
-    /**
-     * The colour for the stroke of this goal sketching node.
-     */
-    private Color strokeColor = Color.BLACK;
-        
-    /**
-     * The stroke for this goal sketching node.
-     */
-    private BasicStroke stroke = new BasicStroke(2);
-    
-    
-    private boolean selected;
-
-    public GoalSketchingNode() {
-
-    }
-
-    /**
-     * Constructs a goal sketching node with specified values for the starting x
-     * and y positions and width.
-     *
-     * @param x the starting x position of the goal sketching node.
-     * @param y the starting y position of the goal sketching node.
-     * @param width the width of the goal sketching node.
-     * @param height the height of the goal sketching node.
-     */
-    public GoalSketchingNode(double x, double y, int width, int height) {
-
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-
-    }
-
-    /**
-     * Sets the x coordinate of this goal sketching node.
-     *
-     *
-     * @param x the value of the x coordinate.
-     */
-    public void setX(double x) {
-
-        this.x = x;
-
-    }
-
-    /**
-     * Sets the y coordinate of this goal sketching node.
-     *
-     *
-     * @param y the value of the y coordinate.
-     */
-    public void setY(double y) {
-
-        this.y = y;
-
-    }
-
-    /**
-     * Returns the x coordinate of this goal sketching node.
-     *
-     * @return the x coordinate.
-     */
-    public double getX() {
-
-        return x;
-
-    }
-
-    /**
-     * Returns the y coordinate of this goal sketching node.
-     *
-     * @return the y coordinate.
-     */
-    public double getY() {
-
-        return y;
-
-    }
-
-    /**
-     * Sets the width value of this goal sketching node.
-     *
-     *
-     * @param width the value to set.
-     */
-    public void setWidth(int width) {
-
-        this.width = width;
-
-    }
-
-    /**
-     * Sets the height value of this goal sketching node.
-     *
-     *
-     * @param height the height value to set.
-     */
-    public void setHeight(int height) {
-
-        this.height = height;
-
-    }    
+    protected GSnode parent;
     
     /**
-     * Returns the width of this goal sketching node.
      *
-     * @return the width.
      */
-    public int getWidth() {
+    protected boolean hasChildren;
+    protected boolean hasParent;
 
-        return width;
+    /**
+     * Determines whether a Goal Sketching Node is a composite or a leaf,
+     * composite subclasses override this method and return a reference to
+     * themselves if they are composite.
+     *
+     * @return a null reference for leaf nodes, a reference to a composite
+     * otherwise.
+     */
+    public GSnode getCompositeGSnode() {
+        return null;
+    }
+
+    /**
+     * Adds a child node to a composite.
+     *
+     * @param node the node to add.
+     */
+    public void addChild(GSnode node) {
+
+        //if (getClass() == node.getClass() || getCompositeGSnode() == null) {
+        throw new UnsupportedOperationException();
+        // } else {
+        //       node.setParent(this);
+        //       hasChildren = true;
+        //    }
 
     }
 
     /**
-     * Returns the height of this goal sketching node.
+     * Removes a child from a composite.
      *
-     * @return the height.
+     * @param node the node to remove.
      */
-    public int getHeight() {
-
-        return height;
-
+    public void removeChild(GSnode node) {
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * Sets the stroke colour of this goal sketching node.
+     * Returns this Goal Sketching Node's parent node.
      *
-     * @param color the specified colour for the stroke.
+     * @return the parent node of this Goal Sketching Node.
      */
-    public void setStrokeColor(Color color) {
-
-        this.strokeColor = color;
-
+    public GSnode getParent() {
+        throw new UnsupportedOperationException();
+        //return parent;
     }
 
     /**
-     * Sets the line width of the stroke for this goal sketching node.
+     * Sets this Goal Sketching Node's parent.
      *
-     * @param lineWidth the specified line width of the stroke.
+     * @param node the parent Goal Sketching Node of this Goal Sketching Node.
      */
-    public void setStrokeWidth(int lineWidth) {
-
-        this.stroke = new BasicStroke(lineWidth);
-
+    public void setParent(GSnode node) {
+        throw new UnsupportedOperationException();
+        //parent = node;
+        //hasParent = true;
     }
 
     /**
-     * Returns the stroke colour of this goal sketching node.
+     * Returns this Goal Sketching Node's children if it is a composite,
+     * otherwise an UnsupportedOperationException is thrown.
      *
-     * @return the stroke colour.
+     * @return this Goal Sketching Node's children.
      */
-    public Color getStrokeColor() {
-
-        return this.strokeColor;
-
+    public  ArrayList<GSnode> getChildren(){
+         throw new UnsupportedOperationException();  
     }
 
     /**
-     * Returns the stroke of this goal sketching node.
+     * Sets this Goal Sketching Node's children if it is a composite, otherwise
+     * an UnsupportedOperationException is thrown.
      *
-     * @return the stroke.
+     * @param children
      */
-    public BasicStroke getStroke() {
-
-        return this.stroke;
-
+    public void setChildren(ArrayList<GSnode> children) {        
+            throw new UnsupportedOperationException();        
     }
 
-    public boolean contains(int X, int Y) {
-
-        int w = this.width;
-        int h = this.height;
-
-        if ((w | h) < 0) {
-            // At least one of the dimensions is negative...
-            return false;
-        }
-        // Note: if either dimension is zero, tests below must return false...
-        double x = this.x;
-        double y = this.y;
-
-        if (X < x || Y < y) {
-            return false;
-        }
-        w += x;
-        h += y;
-        //    overflow || intersect
-        return ((w < x || w > X)
-                && (h < y || h > Y));
-
+    /**
+     * Returns a boolean to denote whether this Goal Sketching Node is a parent
+     * or not.
+     *
+     * @return true if this Goal Sketching Node is a parent, false otherwise.
+     */
+    public boolean isParent() {
+        throw new UnsupportedOperationException();
+        //return hasChildren;
     }
 
-    public void setLocation(int x, int y) {
-
-        this.x = x;
-        this.y = y;
-
+    /**
+     * Returns a boolean to denote whether this Goal Sketching Node is a child
+     * or not.
+     *
+     * @return true if this Goal Sketching Node is a child, false otherwise.
+     */
+    public boolean isChild() {
+        throw new UnsupportedOperationException();
+        //return hasParent;
     }
-    
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+
+    /**
+     * Returns this Goal Sketching Node's graphical properties.
+     *
+     * @return the graphical properties of this Goal Sketching Node.
+     */
+    public GSgraphics getGraphicalProperties() {
+         throw new UnsupportedOperationException();  
     }
-    
-    public boolean isSelected() {
-        return selected;
+
+    /**
+     * Sets this Goal Sketching Node's graphical properties.
+     *
+     * @param graphicalProperties this Goal Sketching Node's graphical
+     * properties.
+     */
+    public void setGraphicalProperties(GSgraphics graphicalProperties) {
+         throw new UnsupportedOperationException();  
     }
 
 }
