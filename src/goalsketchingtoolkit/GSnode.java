@@ -6,8 +6,13 @@ package goalsketchingtoolkit;
 import java.util.ArrayList;
 
 /**
+ * This class is an interface in the form of an abstract class
+ * for both composite and leaf goal sketching objects. Subclasses
+ * must override operations that they support. For example, a composite should
+ * override the add child operation and a leaf should inherit the default
+ * operation defined in this abstract class.
  *
- * @author Chris Berryman
+ * @author Chris Berryman.
  */
 public abstract class GSnode {
 
@@ -15,11 +20,13 @@ public abstract class GSnode {
      * A reference to this Goal Sketching Node's parent Goal Sketching Node.
      */
     protected GSnode parent;
-    
     /**
-     *
+     * Flags whether a goal sketching node has children or not.
      */
     protected boolean hasChildren;
+    /**
+     * Flags whether a goal sketching node has a parent or not.
+     */
     protected boolean hasParent;
 
     /**
@@ -29,13 +36,16 @@ public abstract class GSnode {
      *
      * @return a null reference for leaf nodes, a reference to a composite
      * otherwise.
+     * 
      */
     public GSnode getCompositeGSnode() {
         return null;
     }
 
     /**
-     * Adds a child node to a composite.
+     * Adds a child node to a composite, composite classes should provide their
+     * own implementation, leaf classes should inherit this 
+     * default implementation.
      *
      * @param node the node to add.
      */
@@ -51,7 +61,9 @@ public abstract class GSnode {
     }
 
     /**
-     * Removes a child from a composite.
+     * Removes a child from a composite, composite classes should provide their
+     * own implementation, leaf classes should inherit this
+     * default implementation.
      *
      * @param node the node to remove.
      */
@@ -65,8 +77,8 @@ public abstract class GSnode {
      * @return the parent node of this Goal Sketching Node.
      */
     public GSnode getParent() {
-        throw new UnsupportedOperationException();
-        //return parent;
+        //throw new UnsupportedOperationException();
+        return parent;
     }
 
     /**
@@ -75,29 +87,36 @@ public abstract class GSnode {
      * @param node the parent Goal Sketching Node of this Goal Sketching Node.
      */
     public void setParent(GSnode node) {
-        throw new UnsupportedOperationException();
-        //parent = node;
-        //hasParent = true;
+        //throw new UnsupportedOperationException();
+        parent = node;
+        hasParent = true;
     }
 
     /**
-     * Returns this Goal Sketching Node's children if it is a composite,
-     * otherwise an UnsupportedOperationException is thrown.
+     * Returns a composite goal sketching node's children, composite classes 
+     * should provide their own implementation, leaf classes should inherit this 
+     * default implementation.
      *
      * @return this Goal Sketching Node's children.
      */
-    public  ArrayList<GSnode> getChildren(){
-         throw new UnsupportedOperationException();  
+    public ArrayList<GSnode> getChildren() {
+        throw new UnsupportedOperationException();
     }
 
     /**
-     * Sets this Goal Sketching Node's children if it is a composite, otherwise
-     * an UnsupportedOperationException is thrown.
+     * Sets a composite goal sketching node's children, composite classes 
+     * should provide their own implementation, leaf classes should inherit this 
+     * default implementation.
      *
-     * @param children
+     * @param children the children to add.
+     * 
+     * Modification history
+     * Version	Modifier	Date		Change		Reason							Reason
+     * 0.1.0	Chris		03-22-2014	First release	Requirements					Requirements
+     *   
      */
-    public void setChildren(ArrayList<GSnode> children) {        
-            throw new UnsupportedOperationException();        
+    public void setChildren(ArrayList<GSnode> children) {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -107,8 +126,8 @@ public abstract class GSnode {
      * @return true if this Goal Sketching Node is a parent, false otherwise.
      */
     public boolean isParent() {
-        throw new UnsupportedOperationException();
-        //return hasChildren;
+        //throw new UnsupportedOperationException();
+        return hasChildren;
     }
 
     /**
@@ -118,8 +137,8 @@ public abstract class GSnode {
      * @return true if this Goal Sketching Node is a child, false otherwise.
      */
     public boolean isChild() {
-        throw new UnsupportedOperationException();
-        //return hasParent;
+        //throw new UnsupportedOperationException();
+        return hasParent;
     }
 
     /**
@@ -128,7 +147,7 @@ public abstract class GSnode {
      * @return the graphical properties of this Goal Sketching Node.
      */
     public GSgraphics getGraphicalProperties() {
-         throw new UnsupportedOperationException();  
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -138,7 +157,7 @@ public abstract class GSnode {
      * properties.
      */
     public void setGraphicalProperties(GSgraphics graphicalProperties) {
-         throw new UnsupportedOperationException();  
+        throw new UnsupportedOperationException();
     }
 
 }

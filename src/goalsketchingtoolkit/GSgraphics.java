@@ -6,16 +6,18 @@
 package goalsketchingtoolkit;
 
 /**
+ * This class contains information about the graphical location of a goal
+ * sketching node.
  *
- * @author Chris
+ * @author Chris Berryman.
  */
 public class GSgraphics {
-    
+
     /**
      * The x coordinate of the goal sketching node.
      */
     private int x;
-    
+
     /**
      * The y coordinate of the goal sketching node.
      */
@@ -28,12 +30,12 @@ public class GSgraphics {
      * @param y the y position of the GSnode.
      */
     public GSgraphics(int x, int y) {
-        
+
         this.x = x;
         this.y = y;
 
     }
-    
+
     /**
      * Returns the x coordinate of this goal sketching graphics object.
      *
@@ -42,8 +44,8 @@ public class GSgraphics {
     public int getX() {
         return x;
     }
-    
-     /**
+
+    /**
      * Sets the x coordinate of this goal sketching graphics object.
      *
      *
@@ -54,7 +56,7 @@ public class GSgraphics {
         this.x = x;
 
     }
-    
+
     /**
      * Returns the y coordinate of this goal sketching graphics object.
      *
@@ -63,7 +65,7 @@ public class GSgraphics {
     public int getY() {
         return y;
     }
-    
+
     /**
      * Sets the y coordinate of this goal sketching graphics object.
      *
@@ -75,6 +77,5 @@ public class GSgraphics {
         this.y = y;
 
     }
-
 
 }

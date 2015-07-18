@@ -7,14 +7,8 @@ package goalsketchingtoolkit;
 
 /**
  *
- * @author Chris Berryman - Oxford Brookes University - 2015
+ * @author Chris
  */
-public class Annotation extends GSnode {
+public class AssumptionTermination {
     
-    private OrdinalScale ordinalscale;
-    private int significanceFactor;
-    
-    public Annotation() {
-        
-    }
 }

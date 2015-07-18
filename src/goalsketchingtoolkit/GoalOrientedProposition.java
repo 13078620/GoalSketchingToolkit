@@ -8,8 +8,12 @@ package goalsketchingtoolkit;
 import java.util.ArrayList;
 
 /**
+ * This class consists of operations associated with a goal oriented
+ * proposition. A goal oriented proposition can have zero or more annotations as
+ * it's children and contains relevant information about the type of goal it is
+ * associated with, it's statement and context.
  *
- * @author Chris
+ * @author Chris Berryman.
  */
 public class GoalOrientedProposition extends GSnode {
 
@@ -25,7 +29,10 @@ public class GoalOrientedProposition extends GSnode {
      * The context for this goal oriented proposition.
      */
     private String context;
-
+    /**
+     * Denotes whether a goal oriented proposition has a prefix or not.
+     */
+    private boolean hasPrefix;
     /**
      * The children of this goal oriented proposition which will only contain
      * annotations.
@@ -33,8 +40,8 @@ public class GoalOrientedProposition extends GSnode {
     private ArrayList<GSnode> annotations;
 
     /**
-     * Constructs a goal oriented proposition with a statement only for 
-     * the purposes of description nodes. 
+     * Constructs a goal oriented proposition with a statement only for the
+     * purposes of description nodes.
      *
      * @param statement the statement (any alphanumeric string up to 255
      * characters).
@@ -98,23 +105,21 @@ public class GoalOrientedProposition extends GSnode {
      *
      * @return the parent node of this goal oriented proposition.
      */
-    @Override
-    public GSnode getParent() {
-        return parent;
-    }
-
+    /*@Override
+     public GSnode getParent() {
+     return parent;
+     }*/
     /**
      * Sets this goal oriented proposition's parent.
      *
      * @param node the parent Goal Sketching Node of this goal oriented
      * proposition.
      */
-    @Override
-    public void setParent(GSnode node) {
-        parent = node;
-        hasParent = true;
-    }
-
+    /*@Override
+     public void setParent(GSnode node) {
+     parent = node;
+     hasParent = true;
+     }*/
     /**
      * Returns this goal oriented proposition's children.
      *
@@ -149,11 +154,10 @@ public class GoalOrientedProposition extends GSnode {
      * @return true if this goal oriented proposition is a parent, false
      * otherwise.
      */
-    @Override
-    public boolean isParent() {
-        return hasChildren;
-    }
-
+    /*@Override
+     public boolean isParent() {
+     return hasChildren;
+     }*/
     /**
      * Returns a boolean to denote whether this goal oriented proposition is a
      * child or not.
@@ -161,11 +165,10 @@ public class GoalOrientedProposition extends GSnode {
      * @return true if this goal oriented proposition is a child, false
      * otherwise.
      */
-    @Override
-    public boolean isChild() {
-        return hasParent;
-    }
-
+    /*@Override
+     public boolean isChild() {
+     return hasParent;
+     }*/
     /**
      * Returns this goal oriented proposition's prefix (goal type).
      *
@@ -182,6 +185,18 @@ public class GoalOrientedProposition extends GSnode {
      */
     public void setPrefix(GoalType goaltype) {
         this.goaltype = goaltype;
+        hasPrefix = true;
+    }
+
+    /**
+     * Returns a boolean to denote whether this goal oriented proposition has a
+     * prefix or not.
+     *
+     * @return true if this goal oriented proposition has a prefix, false
+     * otherwise.
+     */
+    public boolean hasPrefix() {
+        return hasPrefix;
     }
 
     /**
