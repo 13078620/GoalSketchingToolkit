@@ -6,10 +6,11 @@
 package goalsketchingtoolkit;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * This class consists of operations associated with semantic entailment which
- * uses conjunction. an and entailment can have zero to many goals as it's
+ * uses conjunction. an AND entailment can have zero to many goals as it's
  * children.
  *
  * @author Chris Berryman.
@@ -19,20 +20,23 @@ public class ANDentailment extends GSnode {
     /**
      * A list of goals for this AND entailment.
      */
-    private ArrayList<GSnode> goals;
+    protected ArrayList<GSnode> goals;
     /**
      * The graphical properties object for this AND entailment.
      */
     private GSentailmentGraphics graphicalProperties;
 
+    /**
+     * Constructs an AND entailment and initialises it's list of goals.
+     */
     public ANDentailment() {
-         goals = new ArrayList();
+        goals = new ArrayList();
     }
-    
+
     /**
      * Constructs an AND entailment and initialises it's list of goals.
      *
-     * @param graphicalProperties the graphical properties of this and
+     * @param graphicalProperties the graphical properties of this AND
      * entailment.
      */
     public ANDentailment(GSentailmentGraphics graphicalProperties) {
@@ -52,35 +56,154 @@ public class ANDentailment extends GSnode {
         return this;
     }
 
-    
+    /**
+     * Adds a child node to this AND entailment which can be of the goal type.
+     *
+     * @throws UnsupportedOperationException() if the node added is anything
+     * other than a Goal.
+     * @param node the goal to add.
+     */
     @Override
     public void addChild(GSnode node) {
 
-        if (node.getClass().toString().contains("Goal")) {
-            /*Goal g = (Goal) node;
-             for(GSnode c : getChildren()) {
-             if (g.equals(c)){
-             throw new IllegalArgumentException();
+        if (!node.getClass().toString().contains("Goal")) {
+            throw new UnsupportedOperationException("Can only add goals as children "
+                    + "to an entailment");
+        } else {
+            /*Goal goalToAdd = (Goal) node;
+             for(Object o : goals) {
+             Goal g = (Goal) o;
+             if (g.equals(goalToAdd)) {
+             throw new IllegalArgumentException("Goal with the ID: " + goalToAdd.getId() + " already exists");
              }
              }*/
-            super.addChild(node);
-        } else {
-            throw new IllegalArgumentException();
+            Goal g = (Goal) node;
+            String goalType = "";
+            if (g.hasGop()) {
+                GoalOrientedProposition gop = g.getProposition();
+                if (gop.hasPrefix()) {
+                    goalType = g.getProposition().getPrefix();
+                    if (parentGoalPropositionIsAssumption() && !goalType.equalsIgnoreCase("/a/")) {
+                        throw new UnsupportedOperationException("Can only add assumption goals as children "
+                                + "to a assumption goals");
+
+                    } else {
+                        goals.add(node);
+                        hasChildren = true;
+                    }
+                }
+
+            } else {
+                goals.add(node);
+                hasChildren = true;
+            }
+
         }
 
-    }
-
-    @Override
-    public void setChildren(ArrayList<GSnode> children) {
-
-        for (GSnode c : children) {
-            if (!c.getClass().toString().contains("Goal")) {
-                throw new IllegalArgumentException();
+        /**
+         * Removes a goal from a AND entailment.
+         *
+         * @param node the goal to remove.
+         */
+        @Override
+        public void removeChild
+        (GSnode node
+        
+        
+            ) {
+        goals.remove(node);
+            if (goals.isEmpty()) {
+                hasChildren = false;
             }
         }
 
-        super.setChildren(children);
+        /**
+         * Returns the goals of this AND entailment.
+         *
+         * @return the goals.
+         */
+        @Override
+        public ArrayList<GSnode> getChildren
 
+        
+            () {
+        return goals;
+        }
+
+        /**
+         * Sets this AND entailment's children.
+         *
+         * @throws UnsupportedOperationException() if the size of the list of
+         * goals contains a goal sketching node other than a goal.
+         * @param children the goals of this AND entailment.
+         */
+        @Override
+        public void setChildren
+        (ArrayList<GSnode> children
+        
+        
+            ) {
+
+        for (GSnode c : children) {
+                if (!c.getClass().toString().contains("Goal")) {
+                    throw new UnsupportedOperationException("Can only add goals as children "
+                            + "to AND entailment: "
+                            + c.getClass().toString()
+                            + " cannot be added");
+                }
+            }
+
+            goals = children;
+            hasChildren = true;
+
+        }
+        /**
+         * Returns a boolean to denote whether this AND entailment's parent
+         * goal's goal oriented proposition is an assumption or not.
+         *
+         * @return true if this AND entailment's parent goal's goal oriented
+         * proposition is an assumption, false otherwise.
+         */
+    public boolean parentGoalPropositionIsAssumption() {
+
+        boolean parentIsAssumption = false;
+        if (isChild()) {
+            Goal g = (Goal) getParent();
+            parentIsAssumption = g.getProposition().isAssumption();
+        }
+
+        return parentIsAssumption;
+
+    }
+
+    /**
+     * Returns this AND entailment's graphical properties.
+     *
+     * @return the graphical properties of this AND entailment.
+     */
+    @Override
+    public GSgraphics getGraphicalProperties() {
+        return graphicalProperties;
+    }
+
+    /**
+     * Sets this AND entailment's graphical properties.
+     *
+     * @param graphicalProperties this AND entailment's graphical properties.
+     */
+    @Override
+    public void setGraphicalProperties(GSgraphics graphicalProperties) {
+        this.graphicalProperties = (GSentailmentGraphics) graphicalProperties;
+    }
+
+    /**
+     * Creates an iterator which encapsulates the children of this AND
+     * entailment.
+     *
+     * @return an iterator instance.
+     */
+    public Iterator createIterator() {
+        return goals.iterator();
     }
 
 }

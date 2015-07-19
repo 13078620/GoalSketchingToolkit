@@ -4,6 +4,7 @@
 package goalsketchingtoolkit;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * This class is an interface in the form of an abstract class
@@ -109,11 +110,6 @@ public abstract class GSnode {
      * default implementation.
      *
      * @param children the children to add.
-     * 
-     * Modification history
-     * Version	Modifier	Date		Change		Reason							Reason
-     * 0.1.0	Chris		03-22-2014	First release	Requirements					Requirements
-     *   
      */
     public void setChildren(ArrayList<GSnode> children) {
         throw new UnsupportedOperationException();

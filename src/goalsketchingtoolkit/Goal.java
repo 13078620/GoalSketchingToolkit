@@ -6,6 +6,7 @@
 package goalsketchingtoolkit;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * This class consists of operations associated with the composition of a goal.
@@ -130,8 +131,8 @@ public class Goal extends GSnode {
                 || node.getClass().toString().contains("ORentailment")) {
             entailed = true;
         } else if (entailed
-                && (node.getClass().toString().contains("OperationalizingProducts"))
-                || node.getClass().toString().contains("AssumptionTermination")) {
+                && (node.getClass().toString().contains("OperationalizingProducts")
+                || node.getClass().toString().contains("AssumptionTermination"))) {
             throw new UnsupportedOperationException("This goal is already entailed"
                     + ", cannot add system element");
         } else if ((operationalized || terminated) && (node.getClass()
@@ -142,20 +143,32 @@ public class Goal extends GSnode {
                     + ", cannot add entailment");
         } else if (node.getClass()
                 .toString().contains("OperationalizingProducts")) {
-            operationalized = true;
+            if (hasGop) {
+                GoalOrientedProposition gop = getProposition();
+                if (gop.hasPrefix()) {
+                    if (gop.getPrefix().equalsIgnoreCase("/a/")) {
+                        throw new UnsupportedOperationException("Cannot add "
+                                + "operationalizing products to assumptions.");
+                    }
+                } else {
+                    operationalized = true;
+                }
+            } else {
+                operationalized = true;
+            }
         } else if (node.getClass()
                 .toString().contains("AssumptionTermination")) {
             /*if (getProposition() != null) {
-                GoalOrientedProposition gop = (GoalOrientedProposition) node;
-                if (gop.getPrefix() != null) {
-                    if (!gop.getPrefix().equalsIgnoreCase("/a/")) {
-                        throw new UnsupportedOperationException("Assumption "
-                                + "terminations can only be added to goals with"
-                                + " assumption"
-                                + " goal oriented propositions");
-                    }
-                }
-            }*/
+             GoalOrientedProposition gop = (GoalOrientedProposition) node;
+             if (gop.getPrefix() != null) {
+             if (!gop.getPrefix().equalsIgnoreCase("/a/")) {
+             throw new UnsupportedOperationException("Assumption "
+             + "terminations can only be added to goals with"
+             + " assumption"
+             + " goal oriented propositions");
+             }
+             }
+             }*/
             terminated = true;
         } else if (node.getClass()
                 .toString().contains("GoalOrientedProposition")) {
@@ -166,12 +179,14 @@ public class Goal extends GSnode {
                             + "assumption goal oriented proposition"
                             + " to this goal because it is already "
                             + "operationalised");
-                } else if (isRoot && !gop.getPrefix().equalsIgnoreCase("/m/")) {
+                } else if (isRoot && !gop.getPrefix().equalsIgnoreCase("/m/")) { //else if (isAwayGoal()
                     throw new UnsupportedOperationException("Only motivation type"
                             + " propositions can be added to the root goal");
                 } else {
                     hasGop = true;
                 }
+            } else {
+                hasGop = true;
             }
         } else if (node.getClass()
                 .toString().contains("Annotation")) {
@@ -252,12 +267,15 @@ public class Goal extends GSnode {
     /**
      * Sets this goal's children.
      *
+     * @throws UnsupportedOperationException() see the add child method in this
+     * class for more details.
      * @param children the children of this goal.
      */
     @Override
-    public void setChildren(ArrayList<GSnode> children
-    ) {
-        this.children = children;
+    public void setChildren(ArrayList<GSnode> children) {
+        for (Object o : children) {
+            addChild((GSnode) o);
+        }
     }
 
     /**
@@ -306,13 +324,13 @@ public class Goal extends GSnode {
     public boolean isEntailed() {
         return entailed;
     }
-    
-     /**
-     * Returns a boolean to denote whether this goal has a goal oriented 
+
+    /**
+     * Returns a boolean to denote whether this goal has a goal oriented
      * proposition or not.
      *
-     * @return true if this goal has a goal oriented proposition, 
-     * false otherwise.
+     * @return true if this goal has a goal oriented proposition, false
+     * otherwise.
      */
     public boolean hasGop() {
         return hasGop;
@@ -328,9 +346,18 @@ public class Goal extends GSnode {
     public GoalOrientedProposition getProposition() {
 
         GoalOrientedProposition gop = null;
-        for (Object o : children) {
-            if (o.getClass().toString().contains("GoalOrientedProposition")) {
-                gop = (GoalOrientedProposition) o;
+        /*for (Object o : children) {
+         if (o.getClass().toString().contains("GoalOrientedProposition")) {
+         gop = (GoalOrientedProposition) o;
+         }
+         }
+         return gop;*/
+
+        Iterator iterator = createIterator();
+        while (iterator.hasNext()) {
+            GSnode n = (GSnode) iterator.next();
+            if (n instanceof GoalOrientedProposition) {
+                gop = (GoalOrientedProposition) n;
             }
         }
         return gop;
@@ -385,7 +412,7 @@ public class Goal extends GSnode {
      * @param otherObject the Object to compare with this goal.
      * @return true if the objects are equal; false otherwise.
      */
-    @Override
+   /* @Override
     public boolean equals(Object otherObject) {
 
         if (otherObject == null) {
@@ -396,7 +423,7 @@ public class Goal extends GSnode {
         }
         Goal other = (Goal) otherObject;
         return getId().equals(other.getId());
-    }
+    }*/
 
     /**
      * Returns this Goal's graphical properties.
@@ -416,5 +443,14 @@ public class Goal extends GSnode {
     @Override
     public void setGraphicalProperties(GSgraphics graphicalProperties) {
         this.graphicalProperties = (GSnodeGraphics) graphicalProperties;
+    }
+
+    /**
+     * Creates an iterator which encapsulates this goal's children.
+     *
+     * @return an iterator instance.
+     */
+    public Iterator createIterator() {
+        return children.iterator();
     }
 }

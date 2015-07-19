@@ -9,6 +9,8 @@ package goalsketchingtoolkit;
  *
  * @author Chris
  */
-public class AssumptionTermination {
+public class AssumptionTermination extends GSnode {
+    
+    
     
 }

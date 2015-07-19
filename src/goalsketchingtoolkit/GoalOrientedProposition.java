@@ -48,6 +48,7 @@ public class GoalOrientedProposition extends GSnode {
      */
     public GoalOrientedProposition(String statement) {
         this.statement = statement;
+        this.annotations = new ArrayList();
     }
 
     /**
@@ -63,6 +64,7 @@ public class GoalOrientedProposition extends GSnode {
         this.goaltype = prefix;
         this.statement = statement;
         this.context = context;
+        this.annotations = new ArrayList();
     }
 
     /**
@@ -76,13 +78,14 @@ public class GoalOrientedProposition extends GSnode {
     public void addChild(GSnode node) {
 
         if (getClass() == node.getClass()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Cannot add a GOP to a GOP");
         }
 
         if (!node.getClass().toString().contains("Annotation")) {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException("Only annotations can be added to GOP");
         } else {
             annotations.add(node);
+            hasChildren = true;
         }
 
     }
@@ -141,34 +144,13 @@ public class GoalOrientedProposition extends GSnode {
     public void setChildren(ArrayList<GSnode> children) {
         for (Object o : children) {
             if (!o.getClass().toString().contains("Annotation")) {
-                throw new IllegalArgumentException();
+                throw new UnsupportedOperationException();
             }
         }
         this.annotations = children;
+        hasChildren = true;
     }
 
-    /**
-     * Returns a boolean to denote whether this goal oriented proposition is a
-     * parent or not.
-     *
-     * @return true if this goal oriented proposition is a parent, false
-     * otherwise.
-     */
-    /*@Override
-     public boolean isParent() {
-     return hasChildren;
-     }*/
-    /**
-     * Returns a boolean to denote whether this goal oriented proposition is a
-     * child or not.
-     *
-     * @return true if this goal oriented proposition is a child, false
-     * otherwise.
-     */
-    /*@Override
-     public boolean isChild() {
-     return hasParent;
-     }*/
     /**
      * Returns this goal oriented proposition's prefix (goal type).
      *
@@ -181,11 +163,21 @@ public class GoalOrientedProposition extends GSnode {
     /**
      * Sets the prefix (goal type) for this goal oriented proposition.
      *
+     * @throws UnsupportedOperationException() if the parent goal of this
+     * proposition is operationalised and the goal type is an assumption.
      * @param goaltype the prefix .
      */
     public void setPrefix(GoalType goaltype) {
-        this.goaltype = goaltype;
-        hasPrefix = true;
+
+        Goal g = (Goal) getParent();
+        if (isChild() && g.isOperationalized() && goaltype.prefix.equalsIgnoreCase("/a/")) {
+            throw new UnsupportedOperationException("The goal this proposition belongs to is "
+                    + "operationalized, cannot set goal type as assumption");
+        } else {
+            this.goaltype = goaltype;
+            hasPrefix = true;
+        }
+
     }
 
     /**
@@ -197,6 +189,17 @@ public class GoalOrientedProposition extends GSnode {
      */
     public boolean hasPrefix() {
         return hasPrefix;
+    }
+    
+    /**
+     * Returns a boolean to denote whether this goal oriented proposition is an
+     * assumption or not.
+     *
+     * @return true if this goal oriented proposition is an assumption, 
+     * false otherwise.
+     */
+    public boolean isAssumption() {
+        return goaltype.prefix.equalsIgnoreCase("/a/");
     }
 
     /**
