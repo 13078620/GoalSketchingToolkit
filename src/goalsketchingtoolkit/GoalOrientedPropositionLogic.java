@@ -38,9 +38,17 @@ public class GoalOrientedPropositionLogic implements GoalSketchingLogic {
     public boolean isCorrect(GSnode nodeToAdd) {
 
         boolean correct = true;
-
+        
         if (!nodeToAdd.getClass().toString().contains("Annotation")) {
             throw new UnsupportedOperationException("Only annotations can be added to GOPs");
+        } else if (gop.isChild()) {
+            Goal g = (Goal) gop.getParent();
+            Annotation a = (Annotation) nodeToAdd;
+            Judgement j = a.getJudgement();
+            if(g.isEntailed() && !j.getClass().toString().contains("GoalJudgement")) {
+               throw new UnsupportedOperationException("Only annotations with"
+                       + "goal judgements can be added to GOPs with parent goals"); 
+            }
         }
 
         return correct;

@@ -331,6 +331,26 @@ public class Goal extends GSnode {
     }
 
     /**
+     * Returns this goal's entailment as a goal sketching node if it has one.
+     *
+     * @throws NullPointerException() if the goal does not have an entailment.
+     * @return this goal's entailment.
+     */
+    public GSnode getEntailment() {
+
+        GSnode entailment = null;
+
+        Iterator iterator = createIterator();
+        while (iterator.hasNext()) {
+            GSnode n = (GSnode) iterator.next();
+            if (n instanceof ANDentailment || n instanceof ORentailment) {
+                entailment = (GoalOrientedProposition) n;
+            }
+        }
+        return entailment;
+    }
+
+    /**
      * Sets the id of this goal.
      *
      * @param id the id.

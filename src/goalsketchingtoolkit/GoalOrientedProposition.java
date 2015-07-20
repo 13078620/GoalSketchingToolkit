@@ -44,7 +44,7 @@ public class GoalOrientedProposition extends GSnode {
     private GoalSketchingLogic logic;
 
     /**
-     *Constructs a goal oriented proposition with a statement only for the
+     * Constructs a goal oriented proposition with a statement only for the
      * purposes of description nodes.
      *
      * @param statement the statement (any alphanumeric string up to 255
@@ -89,8 +89,6 @@ public class GoalOrientedProposition extends GSnode {
             node.hasParent = true;
             node.setParent(this);
         }
-
-        
 
     }
 
@@ -178,6 +176,27 @@ public class GoalOrientedProposition extends GSnode {
             if (g.isOperationalized() && goaltype.prefix.equalsIgnoreCase("/a/")) {
                 throw new UnsupportedOperationException("The goal this proposition belongs to is "
                         + "operationalized, cannot set goal type as assumption");
+            } else if (g.hasParent) {
+                Goal parentGoal = (Goal) g.getParent().getParent();
+                if (parentGoal.hasGop()) {
+                    GoalOrientedProposition parentGoalGOP = parentGoal.getProposition();
+                    if (parentGoalGOP.hasPrefix) {
+                        if (parentGoalGOP.isAssumption() && !goaltype.prefix.equalsIgnoreCase("/a/")) {
+                            throw new UnsupportedOperationException("The goal this proposition belongs "
+                                    + "to's parent goal's proposition is an assumption, this"
+                                    + "proposition cannot have a goal type other than assumption");
+                        } else {
+                            this.goaltype = goaltype;
+                            hasPrefix = true;
+                        }
+                    } else {
+                        this.goaltype = goaltype;
+                        hasPrefix = true;
+                    }
+                } else {
+                    this.goaltype = goaltype;
+                    hasPrefix = true;
+                }
             } else {
                 this.goaltype = goaltype;
                 hasPrefix = true;
