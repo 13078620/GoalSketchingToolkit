@@ -284,7 +284,7 @@ public class GoalTest extends TestCase {
     /**
      * Test of equals method, of class Goal.
      */
-    public void testEquals() {
+    /*public void testEquals() {
         System.out.println("GoalTest: test method 6 - equals()");
         Goal g2 = new Goal();
 
@@ -297,6 +297,6 @@ public class GoalTest extends TestCase {
 
         assertTrue(g2.equals(g3));
 
-    }
+    }*/
 
 }

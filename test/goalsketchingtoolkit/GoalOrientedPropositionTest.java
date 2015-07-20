@@ -124,6 +124,7 @@ public class GoalOrientedPropositionTest extends TestCase {
      */
     public void testSetPrefix() {
         System.out.println("setPrefix");
+        tearDown();
         setUp();
         g.addChild(ops);
         g.addChild(gop);
@@ -134,7 +135,7 @@ public class GoalOrientedPropositionTest extends TestCase {
             assertTrue(e.getClass().toString().contains("UnsupportedOperationException"));
         }
         
-        gop.setPrefix(GoalType.BEHAVIOUR);
+        gop.setPrefix(GoalType.BEHAVIOUR);;
         assertEquals("/b/", gop.getPrefix());
         
     }

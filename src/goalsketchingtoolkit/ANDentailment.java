@@ -22,19 +22,25 @@ public class ANDentailment extends GSnode {
      */
     protected ArrayList<GSnode> goals;
     /**
+     * The logic for this AND entailment.
+     */
+    private GoalSketchingLogic logic;
+    /**
      * The graphical properties object for this AND entailment.
      */
     private GSentailmentGraphics graphicalProperties;
 
     /**
-     * Constructs an AND entailment and initialises it's list of goals.
+     * Constructs an AND entailment and initialises it's list of goals and logic.
      */
     public ANDentailment() {
         goals = new ArrayList();
+        logic = new ANDentailmentLogic(this);
     }
 
     /**
-     * Constructs an AND entailment and initialises it's list of goals.
+     * Constructs an AND entailment and initialises it's list of goals, logic
+     * and graphical properties.
      *
      * @param graphicalProperties the graphical properties of this AND
      * entailment.
@@ -42,6 +48,7 @@ public class ANDentailment extends GSnode {
     public ANDentailment(GSentailmentGraphics graphicalProperties) {
 
         goals = new ArrayList();
+        logic = new ANDentailmentLogic(this);
         this.graphicalProperties = graphicalProperties;
     }
 
@@ -66,104 +73,69 @@ public class ANDentailment extends GSnode {
     @Override
     public void addChild(GSnode node) {
 
-        if (!node.getClass().toString().contains("Goal")) {
-            throw new UnsupportedOperationException("Can only add goals as children "
-                    + "to an entailment");
-        } else {
-            /*Goal goalToAdd = (Goal) node;
-             for(Object o : goals) {
-             Goal g = (Goal) o;
-             if (g.equals(goalToAdd)) {
-             throw new IllegalArgumentException("Goal with the ID: " + goalToAdd.getId() + " already exists");
-             }
-             }*/
-            Goal g = (Goal) node;
-            String goalType = "";
-            if (g.hasGop()) {
-                GoalOrientedProposition gop = g.getProposition();
-                if (gop.hasPrefix()) {
-                    goalType = g.getProposition().getPrefix();
-                    if (parentGoalPropositionIsAssumption() && !goalType.equalsIgnoreCase("/a/")) {
-                        throw new UnsupportedOperationException("Can only add assumption goals as children "
-                                + "to a assumption goals");
-
-                    } else {
-                        goals.add(node);
-                        hasChildren = true;
-                    }
-                }
-
-            } else {
-                goals.add(node);
-                hasChildren = true;
-            }
-
-        }
-
-        /**
-         * Removes a goal from a AND entailment.
-         *
-         * @param node the goal to remove.
-         */
-        @Override
-        public void removeChild
-        (GSnode node
-        
-        
-            ) {
-        goals.remove(node);
-            if (goals.isEmpty()) {
-                hasChildren = false;
-            }
-        }
-
-        /**
-         * Returns the goals of this AND entailment.
-         *
-         * @return the goals.
-         */
-        @Override
-        public ArrayList<GSnode> getChildren
-
-        
-            () {
-        return goals;
-        }
-
-        /**
-         * Sets this AND entailment's children.
-         *
-         * @throws UnsupportedOperationException() if the size of the list of
-         * goals contains a goal sketching node other than a goal.
-         * @param children the goals of this AND entailment.
-         */
-        @Override
-        public void setChildren
-        (ArrayList<GSnode> children
-        
-        
-            ) {
-
-        for (GSnode c : children) {
-                if (!c.getClass().toString().contains("Goal")) {
-                    throw new UnsupportedOperationException("Can only add goals as children "
-                            + "to AND entailment: "
-                            + c.getClass().toString()
-                            + " cannot be added");
-                }
-            }
-
-            goals = children;
+        if (logic.isCorrect(node)) {
+            goals.add(node);
             hasChildren = true;
-
+            node.hasParent = true;
+            node.setParent(this);
         }
-        /**
-         * Returns a boolean to denote whether this AND entailment's parent
-         * goal's goal oriented proposition is an assumption or not.
-         *
-         * @return true if this AND entailment's parent goal's goal oriented
-         * proposition is an assumption, false otherwise.
-         */
+    }
+
+    /**
+     * Removes a goal from a AND entailment.
+     *
+     * @param node the goal to remove.
+     */
+    @Override
+    public void removeChild(GSnode node) {
+        goals.remove(node);
+        if (goals.isEmpty()) {
+            hasChildren = false;
+        }
+    }
+
+    /**
+     * Returns the goals of this AND entailment.
+     *
+     * @return the goals.
+     */
+    @Override
+    public ArrayList<GSnode> getChildren() {
+        return goals;
+    }
+
+    /**
+     * Sets this AND entailment's children.
+     *
+     * @throws UnsupportedOperationException() if the size of the list of goals
+     * contains a goal sketching node other than a goal.
+     * @param children the goals of this AND entailment.
+     */
+    @Override
+    public void setChildren(ArrayList<GSnode> children) {
+
+        for (GSnode c : children) {            
+            addChild(c);
+            /*if (!c.getClass().toString().contains("Goal")) {
+                throw new UnsupportedOperationException("Can only add goals as children "
+                        + "to AND entailment: "
+                        + c.getClass().toString()
+                        + " cannot be added");
+            }*/
+        }
+
+        //goals = children;
+        //hasChildren = true;
+
+    }
+
+    /**
+     * Returns a boolean to denote whether this AND entailment's parent goal's
+     * goal oriented proposition is an assumption or not.
+     *
+     * @return true if this AND entailment's parent goal's goal oriented
+     * proposition is an assumption, false otherwise.
+     */
     public boolean parentGoalPropositionIsAssumption() {
 
         boolean parentIsAssumption = false;

@@ -52,6 +52,10 @@ public class Goal extends GSnode {
      */
     private ArrayList<GSnode> children;
     /**
+     * The logic for this goal.
+     */
+    private GoalSketchingLogic logic;
+    /**
      * The graphical properties of this goal.
      */
     private GSnodeGraphics graphicalProperties;
@@ -61,6 +65,7 @@ public class Goal extends GSnode {
      */
     public Goal() {
         children = new ArrayList();
+        this.logic = new GoalLogic(this);
     }
 
     /**
@@ -73,6 +78,7 @@ public class Goal extends GSnode {
     public Goal(String id, GSnodeGraphics graphicalProperties) {
         this.id = id;
         children = new ArrayList();
+        this.logic = new GoalLogic(this);
     }
 
     /**
@@ -87,6 +93,7 @@ public class Goal extends GSnode {
         this.id = id;
         children = new ArrayList();
         children.add(gop);
+        this.logic = new GoalLogic(this);
     }
 
     /**
@@ -111,94 +118,12 @@ public class Goal extends GSnode {
     @Override
     public void addChild(GSnode node) {
 
-        //if (getClass() == node.getClass()) {
-        //    throw new UnsupportedOperationException();
-        //}
-        for (Object o : children) {
-            if (o.getClass() == node.getClass()) {
-                throw new UnsupportedOperationException("This goal already has"
-                        + ": "
-                        + node.getClass().toString());
-            }
+        if (logic.isCorrect(node)) {
+            children.add(node);
+            hasChildren = true;
+            node.hasParent = true;
+            node.setParent(this);
         }
-
-        if (entailed && (node.getClass()
-                .toString().contains("ANDentailment")
-                || node.getClass().toString().contains("ORentailment"))) {
-            throw new UnsupportedOperationException("This goal is already entailed");
-        } else if (node.getClass()
-                .toString().contains("ANDentailment")
-                || node.getClass().toString().contains("ORentailment")) {
-            entailed = true;
-        } else if (entailed
-                && (node.getClass().toString().contains("OperationalizingProducts")
-                || node.getClass().toString().contains("AssumptionTermination"))) {
-            throw new UnsupportedOperationException("This goal is already entailed"
-                    + ", cannot add system element");
-        } else if ((operationalized || terminated) && (node.getClass()
-                .toString().contains("ANDentailment")
-                || node.getClass().toString().contains("ORentailment"))) {
-            throw new UnsupportedOperationException("This goal is already "
-                    + "operationalised"
-                    + ", cannot add entailment");
-        } else if (node.getClass()
-                .toString().contains("OperationalizingProducts")) {
-            if (hasGop) {
-                GoalOrientedProposition gop = getProposition();
-                if (gop.hasPrefix()) {
-                    if (gop.getPrefix().equalsIgnoreCase("/a/")) {
-                        throw new UnsupportedOperationException("Cannot add "
-                                + "operationalizing products to assumptions.");
-                    }
-                } else {
-                    operationalized = true;
-                }
-            } else {
-                operationalized = true;
-            }
-        } else if (node.getClass()
-                .toString().contains("AssumptionTermination")) {
-            /*if (getProposition() != null) {
-             GoalOrientedProposition gop = (GoalOrientedProposition) node;
-             if (gop.getPrefix() != null) {
-             if (!gop.getPrefix().equalsIgnoreCase("/a/")) {
-             throw new UnsupportedOperationException("Assumption "
-             + "terminations can only be added to goals with"
-             + " assumption"
-             + " goal oriented propositions");
-             }
-             }
-             }*/
-            terminated = true;
-        } else if (node.getClass()
-                .toString().contains("GoalOrientedProposition")) {
-            GoalOrientedProposition gop = (GoalOrientedProposition) node;
-            if (gop.hasPrefix()) {
-                if (operationalized && gop.getPrefix().equalsIgnoreCase("/a/")) {
-                    throw new UnsupportedOperationException("Cannot add an "
-                            + "assumption goal oriented proposition"
-                            + " to this goal because it is already "
-                            + "operationalised");
-                } else if (isRoot && !gop.getPrefix().equalsIgnoreCase("/m/")) { //else if (isAwayGoal()
-                    throw new UnsupportedOperationException("Only motivation type"
-                            + " propositions can be added to the root goal");
-                } else {
-                    hasGop = true;
-                }
-            } else {
-                hasGop = true;
-            }
-        } else if (node.getClass()
-                .toString().contains("Annotation")) {
-            throw new UnsupportedOperationException("Annotations can only be added"
-                    + " to a goal's goal oriented proposition");
-        } else {
-            throw new UnsupportedOperationException("Cannot add goal to a goal, "
-                    + "goals are added to a semantic entailment only");
-        }
-
-        children.add(node);
-        hasChildren = true;
 
     }
 
@@ -273,8 +198,8 @@ public class Goal extends GSnode {
      */
     @Override
     public void setChildren(ArrayList<GSnode> children) {
-        for (Object o : children) {
-            addChild((GSnode) o);
+        for (GSnode c : children) {
+            addChild(c);
         }
     }
 
@@ -308,12 +233,34 @@ public class Goal extends GSnode {
     }
 
     /**
+     * Sets this Goal as operationalized with a true boolean value if that is
+     * the case.
+     *
+     * @param operationalized the boolean value to denote if this Goal
+     * operationalized or not.
+     */
+    public void setIsOperationalized(boolean operationalized) {
+        this.operationalized = operationalized;
+    }
+
+    /**
      * Returns a boolean to denote whether this Goal is terminated or not.
      *
      * @return true if this Goal is terminated, false otherwise.
      */
     public boolean isTerminated() {
         return terminated;
+    }
+
+    /**
+     * Sets this Goal as terminated with a true boolean value if that is the
+     * case.
+     *
+     * @param terminated the boolean value to denote if this Goal terminated or
+     * not.
+     */
+    public void setIsTerminated(boolean terminated) {
+        this.terminated = terminated;
     }
 
     /**
@@ -326,6 +273,15 @@ public class Goal extends GSnode {
     }
 
     /**
+     * Sets this Goal as entailed with a true boolean value if that is the case.
+     *
+     * @param entailed the boolean value to denote if this Goal entailed or not.
+     */
+    public void setIsEntailed(boolean entailed) {
+        this.entailed = entailed;
+    }
+
+    /**
      * Returns a boolean to denote whether this goal has a goal oriented
      * proposition or not.
      *
@@ -334,6 +290,17 @@ public class Goal extends GSnode {
      */
     public boolean hasGop() {
         return hasGop;
+    }
+
+    /**
+     * Sets this Goal as having a goal oriented proposition with a true boolean
+     * value if that is the case.
+     *
+     * @param hasGop the boolean value to denote if this goal has a goal
+     * oriented proposition or not.
+     */
+    public void setHasGop(boolean hasGop) {
+        this.hasGop = hasGop;
     }
 
     /**
@@ -412,18 +379,35 @@ public class Goal extends GSnode {
      * @param otherObject the Object to compare with this goal.
      * @return true if the objects are equal; false otherwise.
      */
-   /* @Override
-    public boolean equals(Object otherObject) {
+    /* @Override
+     public boolean equals(Object otherObject) {
 
-        if (otherObject == null) {
-            return false;
-        }
-        if (getClass() != otherObject.getClass()) {
-            return false;
-        }
-        Goal other = (Goal) otherObject;
-        return getId().equals(other.getId());
-    }*/
+     if (otherObject == null) {
+     return false;
+     }
+     if (getClass() != otherObject.getClass()) {
+     return false;
+     }
+     Goal other = (Goal) otherObject;
+     return getId().equals(other.getId());
+     }*/
+    /**
+     * Sets the logic for this goal.
+     *
+     * @param logic the logic to add.
+     */
+    public void setGoalLogic(GoalSketchingLogic logic) {
+        this.logic = logic;
+    }
+
+    /**
+     * Returns the logic for this goal.
+     *
+     * @return the logic.
+     */
+    public GoalSketchingLogic getLogic() {
+        return logic;
+    }
 
     /**
      * Returns this Goal's graphical properties.

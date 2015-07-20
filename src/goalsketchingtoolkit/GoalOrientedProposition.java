@@ -38,9 +38,13 @@ public class GoalOrientedProposition extends GSnode {
      * annotations.
      */
     private ArrayList<GSnode> annotations;
+    /**
+     * The logic for this GOP.
+     */
+    private GoalSketchingLogic logic;
 
     /**
-     * Constructs a goal oriented proposition with a statement only for the
+     *Constructs a goal oriented proposition with a statement only for the
      * purposes of description nodes.
      *
      * @param statement the statement (any alphanumeric string up to 255
@@ -49,6 +53,7 @@ public class GoalOrientedProposition extends GSnode {
     public GoalOrientedProposition(String statement) {
         this.statement = statement;
         this.annotations = new ArrayList();
+        logic = new GoalOrientedPropositionLogic(this);
     }
 
     /**
@@ -65,6 +70,7 @@ public class GoalOrientedProposition extends GSnode {
         this.statement = statement;
         this.context = context;
         this.annotations = new ArrayList();
+        logic = new GoalOrientedPropositionLogic(this);
     }
 
     /**
@@ -77,16 +83,14 @@ public class GoalOrientedProposition extends GSnode {
     @Override
     public void addChild(GSnode node) {
 
-        if (getClass() == node.getClass()) {
-            throw new IllegalArgumentException("Cannot add a GOP to a GOP");
-        }
-
-        if (!node.getClass().toString().contains("Annotation")) {
-            throw new UnsupportedOperationException("Only annotations can be added to GOP");
-        } else {
+        if (logic.isCorrect(node)) {
             annotations.add(node);
             hasChildren = true;
+            node.hasParent = true;
+            node.setParent(this);
         }
+
+        
 
     }
 
@@ -169,10 +173,15 @@ public class GoalOrientedProposition extends GSnode {
      */
     public void setPrefix(GoalType goaltype) {
 
-        Goal g = (Goal) getParent();
-        if (isChild() && g.isOperationalized() && goaltype.prefix.equalsIgnoreCase("/a/")) {
-            throw new UnsupportedOperationException("The goal this proposition belongs to is "
-                    + "operationalized, cannot set goal type as assumption");
+        if (isChild()) {
+            Goal g = (Goal) getParent();
+            if (g.isOperationalized() && goaltype.prefix.equalsIgnoreCase("/a/")) {
+                throw new UnsupportedOperationException("The goal this proposition belongs to is "
+                        + "operationalized, cannot set goal type as assumption");
+            } else {
+                this.goaltype = goaltype;
+                hasPrefix = true;
+            }
         } else {
             this.goaltype = goaltype;
             hasPrefix = true;
@@ -190,13 +199,13 @@ public class GoalOrientedProposition extends GSnode {
     public boolean hasPrefix() {
         return hasPrefix;
     }
-    
+
     /**
      * Returns a boolean to denote whether this goal oriented proposition is an
      * assumption or not.
      *
-     * @return true if this goal oriented proposition is an assumption, 
-     * false otherwise.
+     * @return true if this goal oriented proposition is an assumption, false
+     * otherwise.
      */
     public boolean isAssumption() {
         return goaltype.prefix.equalsIgnoreCase("/a/");

@@ -16,15 +16,25 @@ import java.util.ArrayList;
  */
 public class ORentailment extends ANDentailment {
     
-    
-    private final int MAXIMUM_GOALS = 2;
+    /**
+     * The maximum goals an OR entailment can have.
+     */
+    public final static int MAXIMUM_GOALS = 2;
+    /**
+     * The logic for this AND entailment.
+     */
+    private GoalSketchingLogic logic;
+    /**
+     * The graphical properties object for this OR entailment.
+     */
     private GSorEntailmentGraphics graphicalProperties;
     
     /**
-     * Constructs an AND entailment and initialises it's list of goals.
+     * Constructs an OR entailment and initialises it's list of goals.
      */
     public ORentailment() {
         super();
+        logic = new ORentailmentLogic(this);
     }
     
     /**
@@ -35,6 +45,7 @@ public class ORentailment extends ANDentailment {
      */
     public ORentailment(GSorEntailmentGraphics graphicalProperties) {
         super();
+        logic = new ORentailmentLogic(this);
         this.graphicalProperties = graphicalProperties;
     }
     
@@ -50,12 +61,18 @@ public class ORentailment extends ANDentailment {
     @Override
     public void addChild(GSnode node) {
         
-        if(goals.size() >= MAXIMUM_GOALS) {
+        if (logic.isCorrect(node)) {
+            //goals.add(node);
+            //hasChildren = true;
+            super.addChild(node);            
+        }
+        
+        /*if(goals.size() >= MAXIMUM_GOALS) {
             throw new UnsupportedOperationException("Can only add a maximum of"
                     + " two goals to an OR entailment");
         } else {
             super.addChild(node);
-        }
+        }*/
     }
 
     /**
