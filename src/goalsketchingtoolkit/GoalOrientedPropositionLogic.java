@@ -38,16 +38,16 @@ public class GoalOrientedPropositionLogic implements GoalSketchingLogic {
     public boolean isCorrect(GSnode nodeToAdd) {
 
         boolean correct = true;
-        
+
         if (!nodeToAdd.getClass().toString().contains("Annotation")) {
             throw new UnsupportedOperationException("Only annotations can be added to GOPs");
         } else if (gop.isChild()) {
             Goal g = (Goal) gop.getParent();
             Annotation a = (Annotation) nodeToAdd;
             Judgement j = a.getJudgement();
-            if(g.isEntailed() && !j.getClass().toString().contains("GoalJudgement")) {
-               throw new UnsupportedOperationException("Only annotations with"
-                       + "goal judgements can be added to GOPs with parent goals"); 
+            if (g.isEntailed() && !j.getClass().toString().contains("GoalJudgement")) {
+                throw new UnsupportedOperationException("Only annotations with "
+                        + "goal judgements can be added to GOPs with parent goals");
             }
         }
 
@@ -55,4 +55,47 @@ public class GoalOrientedPropositionLogic implements GoalSketchingLogic {
 
     }
 
+    /**
+     *
+     * @param goaltype
+     * @return
+     */
+    /*public boolean prefixIsCorrect(GoalType goaltype) {
+        
+     boolean correctPrefix = false;
+        
+     if (gop.isChild()) {
+     Goal g = (Goal) gop.getParent();
+     if (g.isOperationalized() && goaltype.prefix.equalsIgnoreCase("/a/")) {
+     throw new UnsupportedOperationException("The goal this proposition belongs to is "
+     + "operationalized, cannot set goal type as assumption");
+     } else if (g.isRootGoal()&& !goaltype.prefix.equalsIgnoreCase("/m/")) {
+     throw new UnsupportedOperationException("The goal this proposition belongs to is "
+     + "the root goal, cannot set goal type as anything other than motivation");
+     } else if (g.hasParent) {
+     Goal parentGoal = (Goal) g.getParent().getParent();
+     if (parentGoal.hasGop()) {
+     GoalOrientedProposition parentGoalGOP = parentGoal.getProposition();
+     if (parentGoalGOP.hasPrefix()) {
+     if (parentGoalGOP.isAssumption() && !goaltype.prefix.equalsIgnoreCase("/a/")) {
+     throw new UnsupportedOperationException("The goal this proposition belongs "
+     + "to's parent goal's proposition is an assumption, this"
+     + "proposition cannot have a goal type other than assumption");
+     } else {
+     correctPrefix = true;
+     }
+     } else {
+     correctPrefix = true;
+     }
+     } else {
+     correctPrefix = true;
+     }
+     } else {
+     correctPrefix = true;
+     }
+     } else {
+     correctPrefix = true;
+     }
+     return correctPrefix;
+     } */
 }

@@ -457,4 +457,16 @@ public class Goal extends GSnode {
     public Iterator createIterator() {
         return children.iterator();
     }
+    
+    /**
+     * Returns a boolean to denote whether a goal has graphical
+     * properties or not.
+     *
+     * @return true if this goal has graphical properties, false
+     * otherwise.
+     */
+    @Override
+    public boolean hasGraphics() {
+        return this.graphicalProperties != null;
+    }
 }

@@ -154,7 +154,7 @@ public class ANDentailment extends GSnode {
      * @return the graphical properties of this AND entailment.
      */
     @Override
-    public GSgraphics getGraphicalProperties() {
+    public GSentailmentGraphics getGraphicalProperties() {
         return graphicalProperties;
     }
 
@@ -176,6 +176,18 @@ public class ANDentailment extends GSnode {
      */
     public Iterator createIterator() {
         return goals.iterator();
+    }
+    
+    /**
+     * Returns a boolean to denote whether an AND entailment has graphical
+     * properties or not.
+     *
+     * @return true if this AND entailment has graphical properties, false
+     * otherwise.
+     */
+    @Override
+    public boolean hasGraphics() {
+        return this.graphicalProperties != null;
     }
 
 }

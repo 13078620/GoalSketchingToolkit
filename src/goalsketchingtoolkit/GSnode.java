@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * This class is an interface in the form of an abstract class
- * for both composite and leaf goal sketching objects. Subclasses
- * must override operations that they support. For example, a composite should
- * override the add child operation and a leaf should inherit the default
- * operation defined in this abstract class.
+ * This class is an interface in the form of an abstract class for both
+ * composite and leaf goal sketching objects. Subclasses must override
+ * operations that they support. For example, a composite should override the
+ * add child operation and a leaf should inherit the default operation defined
+ * in this abstract class.
  *
  * @author Chris Berryman.
  */
@@ -37,7 +37,7 @@ public abstract class GSnode {
      *
      * @return a null reference for leaf nodes, a reference to a composite
      * otherwise.
-     * 
+     *
      */
     public GSnode getCompositeGSnode() {
         return null;
@@ -45,8 +45,8 @@ public abstract class GSnode {
 
     /**
      * Adds a child node to a composite, composite classes should provide their
-     * own implementation, leaf classes should inherit this 
-     * default implementation.
+     * own implementation, leaf classes should inherit this default
+     * implementation.
      *
      * @param node the node to add.
      */
@@ -63,8 +63,8 @@ public abstract class GSnode {
 
     /**
      * Removes a child from a composite, composite classes should provide their
-     * own implementation, leaf classes should inherit this
-     * default implementation.
+     * own implementation, leaf classes should inherit this default
+     * implementation.
      *
      * @param node the node to remove.
      */
@@ -94,8 +94,8 @@ public abstract class GSnode {
     }
 
     /**
-     * Returns a composite goal sketching node's children, composite classes 
-     * should provide their own implementation, leaf classes should inherit this 
+     * Returns a composite goal sketching node's children, composite classes
+     * should provide their own implementation, leaf classes should inherit this
      * default implementation.
      *
      * @return this Goal Sketching Node's children.
@@ -105,8 +105,8 @@ public abstract class GSnode {
     }
 
     /**
-     * Sets a composite goal sketching node's children, composite classes 
-     * should provide their own implementation, leaf classes should inherit this 
+     * Sets a composite goal sketching node's children, composite classes should
+     * provide their own implementation, leaf classes should inherit this
      * default implementation.
      *
      * @param children the children to add.
@@ -153,6 +153,17 @@ public abstract class GSnode {
      * properties.
      */
     public void setGraphicalProperties(GSgraphics graphicalProperties) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns a boolean to denote whether a goal sketching node has graphical
+     * properties or not.
+     *
+     * @return true if this goal sketching node has graphical properties, false
+     * otherwise.
+     */
+    public boolean hasGraphics() {
         throw new UnsupportedOperationException();
     }
 

@@ -100,7 +100,7 @@ public class ORentailment extends ANDentailment {
      * @return the graphical properties of this OR entailment.
      */
     @Override
-    public GSgraphics getGraphicalProperties() {
+    public GSorEntailmentGraphics getGraphicalProperties() {
         return graphicalProperties;
     }
 
@@ -114,7 +114,17 @@ public class ORentailment extends ANDentailment {
         this.graphicalProperties = (GSorEntailmentGraphics) graphicalProperties;
     }
     
-    
+    /**
+     * Returns a boolean to denote whether an OR entailment has graphical
+     * properties or not.
+     *
+     * @return true if this OR entailment has graphical properties, false
+     * otherwise.
+     */
+    @Override
+    public boolean hasGraphics() {
+        return this.graphicalProperties != null;
+    }
     
     
     

@@ -7,6 +7,7 @@ package goalsketchingtoolkit;
 
 import junit.framework.TestCase;
 import java.util.ArrayList;
+
 /**
  *
  * @author Chris
@@ -140,17 +141,27 @@ public class GoalTest extends TestCase {
         g.addChild(at);
         g.addChild(ops);
         assertEquals(3, g.getChildren().size());
-        
+
         tearDown();
         setUp();
-        
+
         g.addChild(prop2);
         g.addChild(ops);
-        prop2.setPrefix(GoalType.ASSUMPTION);
-        
-        assertEquals(2, g.getChildren().size());
-        
+        prop2.setPrefix(GoalType.BEHAVIOUR);
 
+        assertEquals(2, g.getChildren().size());
+
+        tearDown();
+        setUp();
+
+        g.setIsRootGoal(true);
+        gop.setPrefix(GoalType.OBSTACLE);
+
+        try {
+            g.addChild(gop);
+        } catch (Exception e) {
+            assertTrue((e).getClass().toString().contains("UnsupportedOperationException"));
+        }
     }
 
     /**
@@ -250,7 +261,7 @@ public class GoalTest extends TestCase {
         assertTrue(g.isParent());
 
     }
-    
+
     public void testSetChildren() {
         setUp();
         ArrayList<GSnode> c = new ArrayList();
@@ -270,6 +281,18 @@ public class GoalTest extends TestCase {
         System.out.println("GoalTest: test method 4 - setIsRootGoal()");
         g.setIsRootGoal(true);
         assertTrue(g.isRootGoal());
+
+        tearDown();
+        setUp();
+
+        gop.setPrefix(GoalType.OBSTACLE);
+
+        try {
+            g.addChild(gop);
+        } catch (Exception e) {
+            assertTrue(e.getClass().toString().contains("UnsupportedOperationException"));
+        }
+
     }
 
     /**
@@ -282,21 +305,32 @@ public class GoalTest extends TestCase {
     }
 
     /**
+     * Test of isRootNode method, of class Goal.
+     */
+    public void testHasGraphics() {
+        System.out.println("GoalTest: test method 6 - hasGraphics()");
+        
+        assertFalse(g.hasGraphics());        
+        g.setGraphicalProperties(new GSnodeGraphics(2,1,10,20));
+        assertTrue(g.hasGraphics()); 
+        
+    }
+    
+    /**
      * Test of equals method, of class Goal.
      */
     /*public void testEquals() {
-        System.out.println("GoalTest: test method 6 - equals()");
-        Goal g2 = new Goal();
+     System.out.println("GoalTest: test method 6 - equals()");
+     Goal g2 = new Goal();
 
-        g.setID("GA");
-        g2.setID("GA1");
-        assertFalse(g.equals(g2));
+     g.setID("GA");
+     g2.setID("GA1");
+     assertFalse(g.equals(g2));
 
-        Goal g3 = new Goal();
-        g3.setID("GA1");
+     Goal g3 = new Goal();
+     g3.setID("GA1");
 
-        assertTrue(g2.equals(g3));
+     assertTrue(g2.equals(g3));
 
-    }*/
-
+     }*/
 }

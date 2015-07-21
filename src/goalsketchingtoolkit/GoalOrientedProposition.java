@@ -176,6 +176,9 @@ public class GoalOrientedProposition extends GSnode {
             if (g.isOperationalized() && goaltype.prefix.equalsIgnoreCase("/a/")) {
                 throw new UnsupportedOperationException("The goal this proposition belongs to is "
                         + "operationalized, cannot set goal type as assumption");
+            } else if (g.isRootGoal()&& !goaltype.prefix.equalsIgnoreCase("/m/")) {
+                throw new UnsupportedOperationException("The goal this proposition belongs to is "
+                        + "the root goal, cannot set goal type as anything other than motivation");
             } else if (g.hasParent) {
                 Goal parentGoal = (Goal) g.getParent().getParent();
                 if (parentGoal.hasGop()) {

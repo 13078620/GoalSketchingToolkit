@@ -52,4 +52,16 @@ public class OperationalizingProducts extends GSnode{
         this.graphicalProperties = (GSnodeGraphics) graphicalProperties;
     }
     
+    /**
+     * Returns a boolean to denote whether an operationalizing products has
+     * graphical properties or not.
+     *
+     * @return true if this operationalizing products has graphical properties,
+     * false otherwise.
+     */
+    @Override
+    public boolean hasGraphics() {
+        return this.graphicalProperties != null;
+    }
+    
 }

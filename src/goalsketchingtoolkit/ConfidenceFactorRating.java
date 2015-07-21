@@ -20,7 +20,7 @@ public class ConfidenceFactorRating {
     /**
      * The rating from the ordinal scale used in this rating.
      */
-    private final OrdinalScale value;
+    private final GSordinalScale value;
 
     /**
      * Constructs a confidence factor rating.
@@ -28,7 +28,7 @@ public class ConfidenceFactorRating {
      * @param cf the confidence factor.
      * @param os the rating from the ordinal scale.
      */
-    public ConfidenceFactorRating(ConfidenceFactor cf, OrdinalScale os) {
+    public ConfidenceFactorRating(ConfidenceFactor cf, GSordinalScale os) {
 
         this.key = cf;
         this.value = os;
@@ -49,7 +49,7 @@ public class ConfidenceFactorRating {
      *
      * @return the rating from the ordinal scale.
      */
-    public OrdinalScale getValue() {
+    public GSordinalScale getValue() {
         return value;
     }
 

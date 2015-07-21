@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 /**
  * This class contains information about the graphical location and proportions
  * of a goal sketching node.
+ *
  * @author Chris Berryman
  */
 public class GSnodeGraphics extends GSgraphics {

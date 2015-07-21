@@ -73,6 +73,35 @@ public class ANDentailmentTest extends TestCase {
 
         assertEquals(3, ae.getChildren().size());
 
+        tearDown();
+        setUp();
+        
+        GoalOrientedProposition gop1 = new GoalOrientedProposition(GoalType.ASSUMPTION, "Test", "testAgain");
+        GoalOrientedProposition gop2 = new GoalOrientedProposition(GoalType.ASSUMPTION, "foo", "bar");
+        gop.setPrefix(GoalType.CONSTRAINT);
+        
+        Goal g2 = new Goal();
+        Goal g3 = new Goal();
+        
+        g.addChild(gop);
+        g2.addChild(gop1);
+        g3.addChild(gop2);
+        
+        g.addChild(ae);
+        
+        ae.addChild(g2);
+        
+        assertEquals(1, ae.getChildren().size());
+        
+        try {
+            ae.addChild(g3);
+        } catch (Exception e) {
+            assertTrue(e.getClass().toString().contains("UnsupportedOperationException"));
+            assertTrue(e.getMessage().equalsIgnoreCase("Can only add assumption goals as children "
+                                + "to a assumption goals"));
+        }
+        
+
     }
 
     /**
@@ -107,7 +136,7 @@ public class ANDentailmentTest extends TestCase {
 
         c.add(g);
         c.add(new Goal());
-        
+
         ae.setChildren(c);
 
         assertTrue(ae.isParent());

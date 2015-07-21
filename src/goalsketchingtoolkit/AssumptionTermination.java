@@ -11,12 +11,12 @@ package goalsketchingtoolkit;
  * @author Chris Berryman.
  */
 public class AssumptionTermination extends GSnode {
-    
+
     /**
      * The graphical properties of this assumption termination.
      */
     private GSnodeGraphics graphicalProperties;
-      
+
     /**
      * Returns this assumption termination's graphical properties.
      *
@@ -30,11 +30,24 @@ public class AssumptionTermination extends GSnode {
     /**
      * Sets this assumption termination's graphical properties.
      *
-     * @param graphicalProperties this assumption termination's graphical properties.
+     * @param graphicalProperties this assumption termination's graphical
+     * properties.
      */
     @Override
     public void setGraphicalProperties(GSgraphics graphicalProperties) {
         this.graphicalProperties = (GSnodeGraphics) graphicalProperties;
+    }
+
+    /**
+     * Returns a boolean to denote whether an assumption termination has
+     * graphical properties or not.
+     *
+     * @return true if this assumption termination has graphical properties,
+     * false otherwise.
+     */
+    @Override
+    public boolean hasGraphics() {
+        return this.graphicalProperties != null;
     }
 
 }
