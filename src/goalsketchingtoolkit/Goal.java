@@ -344,10 +344,52 @@ public class Goal extends GSnode {
         while (iterator.hasNext()) {
             GSnode n = (GSnode) iterator.next();
             if (n instanceof ANDentailment || n instanceof ORentailment) {
-                entailment = (GoalOrientedProposition) n;
+                entailment = n;
             }
         }
         return entailment;
+    }
+
+    /**
+     * Returns this goal's operationalizing products if it has one.
+     *
+     * @throws NullPointerException() if the goal does not have an
+     * operationalizing products.
+     * @return this goal's operationalizing products.
+     */
+    public OperationalizingProducts getOperationalizingProducts() {
+
+        OperationalizingProducts ops = null;
+
+        Iterator iterator = createIterator();
+        while (iterator.hasNext()) {
+            GSnode n = (GSnode) iterator.next();
+            if (n instanceof OperationalizingProducts) {
+                ops = (OperationalizingProducts) n;
+            }
+        }
+        return ops;
+    }
+    
+    /**
+     * Returns this goal's assumption termination if it has one.
+     *
+     * @throws NullPointerException() if the goal does not have an
+     * assumption termination.
+     * @return this goal's assumption termination.
+     */
+    public AssumptionTermination getAssumptionTermination() {
+
+        AssumptionTermination at = null;
+
+        Iterator iterator = createIterator();
+        while (iterator.hasNext()) {
+            GSnode n = (GSnode) iterator.next();
+            if (n instanceof AssumptionTermination) {
+                at = (AssumptionTermination) n;
+            }
+        }
+        return at;
     }
 
     /**
@@ -457,13 +499,12 @@ public class Goal extends GSnode {
     public Iterator createIterator() {
         return children.iterator();
     }
-    
+
     /**
-     * Returns a boolean to denote whether a goal has graphical
-     * properties or not.
+     * Returns a boolean to denote whether a goal has graphical properties or
+     * not.
      *
-     * @return true if this goal has graphical properties, false
-     * otherwise.
+     * @return true if this goal has graphical properties, false otherwise.
      */
     @Override
     public boolean hasGraphics() {
