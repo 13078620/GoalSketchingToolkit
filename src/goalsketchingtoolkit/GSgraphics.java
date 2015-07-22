@@ -24,6 +24,14 @@ public class GSgraphics {
     private int y;
 
     /**
+     * Constructs a goal sketching graphics object without initialising
+     * attributes.
+     */
+    public GSgraphics() {
+
+    }
+
+    /**
      * Constructs a goal sketching graphics object for a goal sketching node.
      *
      * @param x the x position of the GSnode.

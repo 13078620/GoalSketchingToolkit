@@ -44,6 +44,13 @@ public class GoalOrientedProposition extends GSnode {
     private GoalSketchingLogic logic;
 
     /**
+     * Constructs a goal oriented proposition with no initialised attributes.
+     */
+    public GoalOrientedProposition() {
+
+    }
+
+    /**
      * Constructs a goal oriented proposition with a statement only for the
      * purposes of description nodes.
      *
@@ -176,7 +183,7 @@ public class GoalOrientedProposition extends GSnode {
             if (g.isOperationalized() && goaltype.prefix.equalsIgnoreCase("/a/")) {
                 throw new UnsupportedOperationException("The goal this proposition belongs to is "
                         + "operationalized, cannot set goal type as assumption");
-            } else if (g.isRootGoal()&& !goaltype.prefix.equalsIgnoreCase("/m/")) {
+            } else if (g.isRootGoal() && !goaltype.prefix.equalsIgnoreCase("/m/")) {
                 throw new UnsupportedOperationException("The goal this proposition belongs to is "
                         + "the root goal, cannot set goal type as anything other than motivation");
             } else if (g.hasParent) {

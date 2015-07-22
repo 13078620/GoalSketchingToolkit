@@ -176,6 +176,10 @@ public class GraphBuilder {
 
             e.appendChild(pe);
         }
+        
+        if (goal.getFit() != null) {
+            e.appendChild(createTextElement("Fit", goal.getFit()));
+        }
 
         if (goal.isEntailed()) {
 
@@ -236,6 +240,8 @@ public class GraphBuilder {
         }
 
         if (goal.isOperationalized()) {
+            
+            
 
             Element ope = doc.createElement("OperationalizingProducts");
 

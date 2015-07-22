@@ -26,6 +26,14 @@ public class GSnodeGraphics extends GSgraphics {
     private int height;
 
     /**
+     * Constructs a goal sketching node graphics object without initialising
+     * attributes.
+     */
+    public GSnodeGraphics() {
+        super();
+    }
+
+    /**
      * Constructs a goal sketching node graphics object object for a goal
      * sketching node.
      *

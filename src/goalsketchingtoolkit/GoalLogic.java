@@ -26,8 +26,8 @@ public class GoalLogic implements GoalSketchingLogic {
     private final ArrayList<GSnode> children;
 
     /**
-     * Constructs a goal logic object initialised with the goal in question 
-     * and it's list of children.
+     * Constructs a goal logic object initialised with the goal in question and
+     * it's list of children.
      *
      * @param goal the goal to add the goal sketching node to.
      */
@@ -48,19 +48,19 @@ public class GoalLogic implements GoalSketchingLogic {
         boolean correct = false;
 
         for (Object o : children) {
-            
+
             correct = o.getClass() != nodeToAdd.getClass();
-            
-            if(!correct) {
+
+            if (!correct) {
                 throw new UnsupportedOperationException("This goal already has"
                         + ": "
                         + nodeToAdd.getClass().toString());
             }
             /*if (o.getClass() == nodeToAdd.getClass()) {
-                throw new UnsupportedOperationException("This goal already has"
-                        + ": "
-                        + nodeToAdd.getClass().toString());
-            }*/
+             throw new UnsupportedOperationException("This goal already has"
+             + ": "
+             + nodeToAdd.getClass().toString());
+             }*/
         }
 
         if (goal.isEntailed() && (nodeToAdd.getClass()
@@ -92,14 +92,17 @@ public class GoalLogic implements GoalSketchingLogic {
                     if (gop.getPrefix().equalsIgnoreCase("/a/")) {
                         throw new UnsupportedOperationException("Cannot add "
                                 + "operationalizing products to assumptions.");
+                    } else {
+                        goal.setIsOperationalized(true);
+                        correct = true;
                     }
                 } else {
                     goal.setIsOperationalized(true);
-                     correct = true;
+                    correct = true;
                 }
             } else {
                 goal.setIsOperationalized(true);
-                 correct = true;
+                correct = true;
             }
         } else if (nodeToAdd.getClass()
                 .toString().contains("AssumptionTermination")) {
@@ -115,7 +118,7 @@ public class GoalLogic implements GoalSketchingLogic {
              }
              }*/
             goal.setIsTerminated(true);
-             correct = true;
+            correct = true;
         } else if (nodeToAdd.getClass()
                 .toString().contains("GoalOrientedProposition")) {
             GoalOrientedProposition gop = (GoalOrientedProposition) nodeToAdd;
@@ -130,11 +133,11 @@ public class GoalLogic implements GoalSketchingLogic {
                             + " propositions can be added to the root goal");
                 } else {
                     goal.setHasGop(true);
-                     correct = true;
+                    correct = true;
                 }
             } else {
                 goal.setHasGop(true);
-                 correct = true;
+                correct = true;
             }
         } else if (nodeToAdd.getClass()
                 .toString().contains("Annotation")) {

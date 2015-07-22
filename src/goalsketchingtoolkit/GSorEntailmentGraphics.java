@@ -27,6 +27,14 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics {
     private int length2;
 
     /**
+     * Constructs a goal sketching or entailment graphics object without
+     * initialising attributes.
+     */
+    public GSorEntailmentGraphics() {
+        super();
+    }
+
+    /**
      * Constructs goal sketching or entailment graphics object for an or goal
      * sketching entailment.
      *

@@ -52,7 +52,8 @@ public class GraphBuilderTest extends TestCase {
         gop2.setPrefix(GoalType.ASSUMPTION);
         AssumptionTermination t = new AssumptionTermination();
         t.setGraphicalProperties(gsng);
-        child1.addChild(gop2);   
+        child1.addChild(gop2);  
+        child1.addChild(t);
         ae.addChild(child1);
         
         Goal child2 = new Goal();
@@ -65,6 +66,7 @@ public class GraphBuilderTest extends TestCase {
         ops.addProduct("Scales");
         child2.addChild(gop3);    
         child2.addChild(ops);
+        System.out.println(child2.isOperationalized());
         ae.addChild(child2);
         
         ConfidenceFactorRating cfr = new ConfidenceFactorRating(ConfidenceFactor.Refine, GSordinalScale.HIGH);
@@ -84,8 +86,8 @@ public class GraphBuilderTest extends TestCase {
         Annotation a3 = new Annotation(aj);
         
         gop.addChild(a);
-        gop2.addChild(a2);
-        gop3.addChild(a3);
+        gop2.addChild(a3);
+        gop3.addChild(a2);
         
         GraphBuilder gb = new GraphBuilder(root);
         Document doc = gb.build();
