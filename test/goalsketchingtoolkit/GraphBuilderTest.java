@@ -31,6 +31,7 @@ public class GraphBuilderTest extends TestCase {
         System.out.println("build()");
         
         Goal root = new Goal();
+        root.setIsRootGoal(true);
         GSnodeGraphics gsng = new GSnodeGraphics(25,40,20,80);
         root.setGraphicalProperties(gsng);
         root.setID("GA");
@@ -66,7 +67,6 @@ public class GraphBuilderTest extends TestCase {
         ops.addProduct("Scales");
         child2.addChild(gop3);    
         child2.addChild(ops);
-        System.out.println(child2.isOperationalized());
         ae.addChild(child2);
         
         ConfidenceFactorRating cfr = new ConfidenceFactorRating(ConfidenceFactor.Refine, GSordinalScale.HIGH);
