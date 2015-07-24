@@ -35,7 +35,7 @@ public class GraphBuilderTest extends TestCase {
         GSnodeGraphics gsng = new GSnodeGraphics(25,40,20,80);
         root.setGraphicalProperties(gsng);
         root.setID("GA");
-        GoalOrientedProposition gop = new GoalOrientedProposition("Reputation concerns are satisfied.");
+        GoalOrientedProposition gop = new GoalOrientedProposition("Reputation concerns are satisfied");
         gop.setPrefix(GoalType.MOTIVATION);
         gop.setContext("Scales and User");
         root.addChild(gop);
@@ -88,6 +88,16 @@ public class GraphBuilderTest extends TestCase {
         gop.addChild(a);
         gop2.addChild(a3);
         gop3.addChild(a2);
+        
+        ANDentailment ae2 = new ANDentailment();
+        child2.addChild(ae2);
+        
+        Goal child4 = new Goal();
+        child4.setID("TEST");
+        Twin twin1 = new Twin(root);
+        ae2.addChild(child4);
+        ae2.addChild(twin1);
+        
         
         GraphBuilder gb = new GraphBuilder(root);
         Document doc = gb.build();

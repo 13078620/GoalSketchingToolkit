@@ -4,7 +4,6 @@
 package goalsketchingtoolkit;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * This class is an interface in the form of an abstract class for both

@@ -23,6 +23,13 @@ public class Annotation extends GSnode {
     private GSnodeGraphics graphicalProperties;
 
     /**
+     * Constructs an annotation with no judgement.
+     */
+    public Annotation() {
+        super();
+    }
+
+    /**
      * Constructs an annotation and initialises it's judgement.
      *
      * @param judgement the judgement for this annotation.
@@ -48,7 +55,7 @@ public class Annotation extends GSnode {
     public void setJudgement(Judgement judgement) {
         this.judgement = judgement;
     }
-    
+
     /**
      * Returns this annotation's graphical properties.
      *
@@ -68,17 +75,17 @@ public class Annotation extends GSnode {
     public void setGraphicalProperties(GSgraphics graphicalProperties) {
         this.graphicalProperties = (GSnodeGraphics) graphicalProperties;
     }
-    
+
     /**
-     * Returns a boolean to denote whether an annotation has
-     * graphical properties or not.
+     * Returns a boolean to denote whether an annotation has graphical
+     * properties or not.
      *
-     * @return true if this annotation has graphical properties,
-     * false otherwise.
+     * @return true if this annotation has graphical properties, false
+     * otherwise.
      */
     @Override
     public boolean hasGraphics() {
         return this.graphicalProperties != null;
     }
-    
+
 }

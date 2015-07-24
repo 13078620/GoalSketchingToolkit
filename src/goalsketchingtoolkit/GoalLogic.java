@@ -46,6 +46,7 @@ public class GoalLogic implements GoalSketchingLogic {
     public boolean isCorrect(GSnode nodeToAdd) {
 
         boolean correct = false;
+        String nodeToAddClassString = nodeToAdd.getClass().toString();
 
         for (Object o : children) {
 
@@ -56,36 +57,26 @@ public class GoalLogic implements GoalSketchingLogic {
                         + ": "
                         + nodeToAdd.getClass().toString());
             }
-            /*if (o.getClass() == nodeToAdd.getClass()) {
-             throw new UnsupportedOperationException("This goal already has"
-             + ": "
-             + nodeToAdd.getClass().toString());
-             }*/
         }
 
-        if (goal.isEntailed() && (nodeToAdd.getClass()
-                .toString().contains("ANDentailment")
-                || nodeToAdd.getClass().toString().contains("ORentailment"))) {
+        if (goal.isEntailed() && (nodeToAddClassString.contains("ANDentailment")
+                || nodeToAddClassString.contains("ORentailment"))) {
             throw new UnsupportedOperationException("This goal is already entailed");
-
-        } else if (nodeToAdd.getClass()
-                .toString().contains("ANDentailment")
-                || nodeToAdd.getClass().toString().contains("ORentailment")) {
+        } else if (nodeToAddClassString.contains("ANDentailment")
+                || nodeToAddClassString.contains("ORentailment")) {
             goal.setIsEntailed(true);
             correct = true;
         } else if (goal.isEntailed()
-                && (nodeToAdd.getClass().toString().contains("OperationalizingProducts")
-                || nodeToAdd.getClass().toString().contains("AssumptionTermination"))) {
+                && (nodeToAddClassString.contains("OperationalizingProducts")
+                || nodeToAddClassString.contains("AssumptionTermination"))) {
             throw new UnsupportedOperationException("This goal is already entailed"
                     + ", cannot add system element");
-        } else if ((goal.isOperationalized() || goal.isTerminated()) && (nodeToAdd.getClass()
-                .toString().contains("ANDentailment")
-                || nodeToAdd.getClass().toString().contains("ORentailment"))) {
+        } else if ((goal.isOperationalized() || goal.isTerminated()) && (nodeToAddClassString.contains("ANDentailment")
+                || nodeToAddClassString.contains("ORentailment"))) {
             throw new UnsupportedOperationException("This goal is already "
                     + "operationalised"
                     + ", cannot add entailment");
-        } else if (nodeToAdd.getClass()
-                .toString().contains("OperationalizingProducts")) {
+        } else if (nodeToAddClassString.contains("OperationalizingProducts")) {
             if (goal.hasGop()) {
                 GoalOrientedProposition gop = goal.getProposition();
                 if (gop.hasPrefix()) {
@@ -104,8 +95,7 @@ public class GoalLogic implements GoalSketchingLogic {
                 goal.setIsOperationalized(true);
                 correct = true;
             }
-        } else if (nodeToAdd.getClass()
-                .toString().contains("AssumptionTermination")) {
+        } else if (nodeToAddClassString.contains("AssumptionTermination")) {
             /*if (getProposition() != null) {
              GoalOrientedProposition gop = (GoalOrientedProposition) node;
              if (gop.getPrefix() != null) {
@@ -119,8 +109,7 @@ public class GoalLogic implements GoalSketchingLogic {
              }*/
             goal.setIsTerminated(true);
             correct = true;
-        } else if (nodeToAdd.getClass()
-                .toString().contains("GoalOrientedProposition")) {
+        } else if (nodeToAddClassString.contains("GoalOrientedProposition")) {
             GoalOrientedProposition gop = (GoalOrientedProposition) nodeToAdd;
             if (gop.hasPrefix()) {
                 if (goal.isOperationalized() && gop.getPrefix().equalsIgnoreCase("/a/")) {
@@ -139,12 +128,14 @@ public class GoalLogic implements GoalSketchingLogic {
                 goal.setHasGop(true);
                 correct = true;
             }
-        } else if (nodeToAdd.getClass()
-                .toString().contains("Annotation")) {
+        } else if (nodeToAddClassString.contains("Annotation")) {
             throw new UnsupportedOperationException("Annotations can only be added"
                     + " to a goal's goal oriented proposition");
+        } else if (nodeToAddClassString.contains("Twin")) {           
+            goal.setHasTwin(true);
         } else {
             throw new UnsupportedOperationException("Cannot add goal to a goal, "
+                    + "unless it's a twin "
                     + "goals are added to a semantic entailment only");
         }
 

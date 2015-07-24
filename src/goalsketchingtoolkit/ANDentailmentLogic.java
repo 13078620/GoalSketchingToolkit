@@ -27,7 +27,6 @@ public class ANDentailmentLogic implements GoalSketchingLogic {
      * The current list of children of the AND entailment of interest.
      */
     //private final ArrayList<GSnode> goals;
-
     /**
      * Constructs an AND entailment logic object initialised with the entailment
      * in question.
@@ -49,31 +48,42 @@ public class ANDentailmentLogic implements GoalSketchingLogic {
     public boolean isCorrect(GSnode nodeToAdd) {
 
         boolean correct = true;
-
-        if (!nodeToAdd.getClass().toString().contains("Goal")) {
-            throw new UnsupportedOperationException("Can only add goals as children "
-                    + "to an entailment");
-        } else {
-            /*Goal goalToAdd = (Goal) node;
-             for(Object o : goals) {
-             Goal g = (Goal) o;
-             if (g.equals(goalToAdd)) {
-             throw new IllegalArgumentException("Goal with the ID: " + goalToAdd.getId() + " already exists");
-             }
-             }*/
+        String nodeToAddClassString = nodeToAdd.getClass().toString();
+        if (nodeToAddClassString.contains("Goal")) {
             Goal g = (Goal) nodeToAdd;
-            String goalType = "";
             if (g.hasGop()) {
                 GoalOrientedProposition gop = g.getProposition();
                 if (gop.hasPrefix()) {
-                    goalType = g.getProposition().getPrefix();
-                    if (entailment.parentGoalPropositionIsAssumption() && !goalType.equalsIgnoreCase("/a/")) {
+                    if (entailment.parentGoalPropositionIsAssumption() && !gop.isAssumption()) {
                         throw new UnsupportedOperationException("Can only add assumption goals as children "
                                 + "to a assumption goals");
-
                     }
                 }
             }
+        } else if (nodeToAddClassString.contains("Twin")) {
+
+            Twin t = (Twin) nodeToAdd;
+            Goal original = t.getOriginal();
+            Goal parent = (Goal) entailment.getParent();
+            String goalType;
+
+            if (original == parent) {
+                throw new UnsupportedOperationException("Cannot refine an original goal with it's twin");
+            }
+
+            if (original.hasGop()) {
+                GoalOrientedProposition gop = original.getProposition();
+                if (gop.hasPrefix()) {
+                    goalType = gop.getPrefix();
+                    if (entailment.parentGoalPropositionIsAssumption() && !goalType.equalsIgnoreCase("/a/")) {
+                        throw new UnsupportedOperationException("Can only add assumption goals as children "
+                                + "to a assumption goals");
+                    }
+                }
+            }
+        } else {
+            throw new UnsupportedOperationException("Can only add goals as children "
+                    + "to an entailment");
         }
         return correct;
     }

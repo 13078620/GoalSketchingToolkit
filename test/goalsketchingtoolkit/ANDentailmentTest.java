@@ -6,7 +6,6 @@
 package goalsketchingtoolkit;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import junit.framework.TestCase;
 
 /**
@@ -77,8 +76,8 @@ public class ANDentailmentTest extends TestCase {
         setUp();
         
         GoalOrientedProposition gop1 = new GoalOrientedProposition(GoalType.ASSUMPTION, "Test", "testAgain");
-        GoalOrientedProposition gop2 = new GoalOrientedProposition(GoalType.ASSUMPTION, "foo", "bar");
-        gop.setPrefix(GoalType.CONSTRAINT);
+        GoalOrientedProposition gop2 = new GoalOrientedProposition(GoalType.BEHAVIOUR, "foo", "bar");
+        gop.setPrefix(GoalType.ASSUMPTION);
         
         Goal g2 = new Goal();
         Goal g3 = new Goal();
@@ -95,7 +94,7 @@ public class ANDentailmentTest extends TestCase {
         
         try {
             ae.addChild(g3);
-        } catch (Exception e) {
+        } catch (Exception e) {            
             assertTrue(e.getClass().toString().contains("UnsupportedOperationException"));
             assertTrue(e.getMessage().equalsIgnoreCase("Can only add assumption goals as children "
                                 + "to a assumption goals"));

@@ -31,7 +31,8 @@ public class ANDentailment extends GSnode {
     private GSentailmentGraphics graphicalProperties;
 
     /**
-     * Constructs an AND entailment and initialises it's list of goals and logic.
+     * Constructs an AND entailment and initialises it's list of goals and
+     * logic.
      */
     public ANDentailment() {
         goals = new ArrayList();
@@ -114,19 +115,9 @@ public class ANDentailment extends GSnode {
     @Override
     public void setChildren(ArrayList<GSnode> children) {
 
-        for (GSnode c : children) {            
+        for (GSnode c : children) {
             addChild(c);
-            /*if (!c.getClass().toString().contains("Goal")) {
-                throw new UnsupportedOperationException("Can only add goals as children "
-                        + "to AND entailment: "
-                        + c.getClass().toString()
-                        + " cannot be added");
-            }*/
         }
-
-        //goals = children;
-        //hasChildren = true;
-
     }
 
     /**
@@ -177,7 +168,7 @@ public class ANDentailment extends GSnode {
     public Iterator createIterator() {
         return goals.iterator();
     }
-    
+
     /**
      * Returns a boolean to denote whether an AND entailment has graphical
      * properties or not.

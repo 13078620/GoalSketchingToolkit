@@ -88,95 +88,23 @@ public class GraphBuilder {
 
             GoalOrientedProposition gop = goal.getProposition();
 
-            Element pe = doc.createElement("Proposition");
-
-            if (gop.hasPrefix()) {
-                String prefix = goal.getProposition().getPrefix();
-                pe.appendChild(createTextElement("Prefix", prefix));
-            }
-
-            if (gop.getPrefix() != null) {
-                String statement = gop.getStatement();
-                pe.appendChild(createTextElement("Statement", statement));
-            }
-
-            if (gop.getContext() != null) {
-                String context = gop.getContext();
-                pe.appendChild(createTextElement("Context", context));
-            }
-
-            if (gop.isParent()) {
-
-                Element ase = doc.createElement("Annotations");
-
-                for (GSnode n : gop.getChildren()) {
-
-                    Annotation a = (Annotation) n;
-                    Element ae = doc.createElement("Annotation");
-
-                    if (a.hasGraphics()) {
-                        GSnodeGraphics graphics = a.getGraphicalProperties();
-                        ae.setAttributeNode(createAttribute("height", "" + graphics.getHeight()));
-                        ae.setAttributeNode(createAttribute("width", "" + graphics.getWidth()));
-                        ae.setAttributeNode(createAttribute("y", "" + graphics.getY()));
-                        ae.setAttributeNode(createAttribute("x", "" + graphics.getX()));
-                    }
-
-                    Judgement j = a.getJudgement();
-
-                    if (j.getClass().toString().contains("GoalJudgement")) {
-
-                        GoalJudgement gj = (GoalJudgement) j;
-
-                        Element gje = doc.createElement("GoalJudgement");
-
-                        ConfidenceFactorRating rcfr = gj.getRefineConfidenceFactorRating();
-                        ConfidenceFactorRating ecfr = gj.getEngageConfidenceFactorRating();
-                        SignificanceFactorRating sfr = gj.getSignificanceFactorRating();
-
-                        gje.appendChild(createTextElement("" + rcfr.getKey(), "" + rcfr.getValue()));
-                        gje.appendChild(createTextElement("" + ecfr.getKey(), "" + ecfr.getValue()));
-                        gje.appendChild(createTextElement("" + sfr.getKey(), "" + sfr.getValue()));
-
-                        ae.appendChild(gje);
-                        ase.appendChild(ae);
-
-                    } else if (j.getClass().toString().contains("LeafJudgement")) {
-
-                        LeafJudgement lj = (LeafJudgement) j;
-
-                        Element lje = doc.createElement("LeafJudgement");
-
-                        ConfidenceFactorRating acfr = lj.getConfidenceFactorRating();
-                        SignificanceFactorRating sfr = lj.getSignificanceFactorRating();
-
-                        lje.appendChild(createTextElement("" + acfr.getKey(), "" + acfr.getValue()));
-                        lje.appendChild(createTextElement("" + sfr.getKey(), "" + sfr.getValue()));
-
-                        ae.appendChild(lje);
-                        ase.appendChild(ae);
-
-                    } else if (j.getClass().toString().contains("AssumptionJudgement")) {
-
-                        AssumptionJudgement aj = (AssumptionJudgement) j;
-
-                        Element aje = doc.createElement("AssumptionJudgement");
-
-                        ConfidenceFactorRating ascfr = aj.getConfidenceFactorRating();
-
-                        aje.appendChild(createTextElement("" + ascfr.getKey(), "" + ascfr.getValue()));
-
-                        ae.appendChild(aje);
-                        ase.appendChild(ae);
-                    }
-
-                }
-                pe.appendChild(ase);
-            }
-
-            e.appendChild(pe);
+            e.appendChild(createPropositionElement(gop));
         }
-        
+
+        if (goal.hasTwin()) {
+
+            Element tse = doc.createElement("Twins");
+            ArrayList<GSnode> twins = goal.getTwins();
+
+            if (!twins.isEmpty()) {
+                for (GSnode n : twins) {
+                    Twin tg = (Twin) n;
+                    tse.appendChild(createTwinGoalElement(tg));
+                }
+            }
+            e.appendChild(tse);
+        }
+
         if (goal.getFit() != null) {
             e.appendChild(createTextElement("Fit", goal.getFit()));
         }
@@ -205,8 +133,14 @@ public class GraphBuilder {
                     ArrayList<GSnode> goals = aent.getChildren();
 
                     for (GSnode n : goals) {
-                        Goal g = (Goal) n;
-                        ee.appendChild(createNode(g));
+                        if (n instanceof Goal) {
+                            Goal g = (Goal) n;
+                            ee.appendChild(createNode(g));
+                        } else {
+                            Twin t = (Twin) n;
+                            ee.appendChild(createTwinGoalElement(t));
+                        }
+
                     }
                 }
 
@@ -216,14 +150,14 @@ public class GraphBuilder {
 
                 if (oent.hasGraphics()) {
                     GSorEntailmentGraphics graphics = oent.getGraphicalProperties();
-                    ee.setAttributeNode(createAttribute("length2", "" + graphics.getLength2())); 
+                    ee.setAttributeNode(createAttribute("length2", "" + graphics.getLength2()));
                     ee.setAttributeNode(createAttribute("toY2", "" + graphics.getToY2()));
                     ee.setAttributeNode(createAttribute("toX2", "" + graphics.getToX2()));
                     ee.setAttributeNode(createAttribute("length", "" + graphics.getLength()));
                     ee.setAttributeNode(createAttribute("toY", "" + graphics.getToY()));
                     ee.setAttributeNode(createAttribute("toX", "" + graphics.getToX()));
                     ee.setAttributeNode(createAttribute("y", "" + graphics.getY()));
-                    ee.setAttributeNode(createAttribute("x", "" + graphics.getX()));                     
+                    ee.setAttributeNode(createAttribute("x", "" + graphics.getX()));
                 }
 
                 if (oent.isParent()) {
@@ -240,8 +174,6 @@ public class GraphBuilder {
         }
 
         if (goal.isOperationalized()) {
-            
-            
 
             Element ope = doc.createElement("OperationalizingProducts");
 
@@ -361,6 +293,105 @@ public class GraphBuilder {
         a.appendChild(t);
 
         return a;
+    }
+
+    public Element createTwinGoalElement(Twin tg) {
+
+        Element twinGoalElement = doc.createElement("Twin");
+        twinGoalElement.appendChild(createTextElement("ID", tg.getID()));
+        twinGoalElement.appendChild(createPropositionElement(tg.getProposition()));
+
+        return twinGoalElement;
+    }
+
+    public Element createPropositionElement(GoalOrientedProposition gop) {
+
+        Element pe = doc.createElement("Proposition");
+
+        if (gop.hasPrefix()) {
+            String prefix = gop.getPrefix();
+            pe.appendChild(createTextElement("Prefix", prefix));
+        }
+
+        if (gop.getPrefix() != null) {
+            String statement = gop.getStatement();
+            pe.appendChild(createTextElement("Statement", statement));
+        }
+
+        if (gop.getContext() != null) {
+            String context = gop.getContext();
+            pe.appendChild(createTextElement("Context", context));
+        }
+
+        if (gop.isParent()) {
+
+            Element ase = doc.createElement("Annotations");
+
+            for (GSnode n : gop.getChildren()) {
+
+                Annotation a = (Annotation) n;
+                Element ae = doc.createElement("Annotation");
+
+                if (a.hasGraphics()) {
+                    GSnodeGraphics graphics = a.getGraphicalProperties();
+                    ae.setAttributeNode(createAttribute("height", "" + graphics.getHeight()));
+                    ae.setAttributeNode(createAttribute("width", "" + graphics.getWidth()));
+                    ae.setAttributeNode(createAttribute("y", "" + graphics.getY()));
+                    ae.setAttributeNode(createAttribute("x", "" + graphics.getX()));
+                }
+
+                Judgement j = a.getJudgement();
+
+                if (j.getClass().toString().contains("GoalJudgement")) {
+
+                    GoalJudgement gj = (GoalJudgement) j;
+
+                    Element gje = doc.createElement("GoalJudgement");
+
+                    ConfidenceFactorRating rcfr = gj.getRefineConfidenceFactorRating();
+                    ConfidenceFactorRating ecfr = gj.getEngageConfidenceFactorRating();
+                    SignificanceFactorRating sfr = gj.getSignificanceFactorRating();
+
+                    gje.appendChild(createTextElement("" + rcfr.getKey(), "" + rcfr.getValue()));
+                    gje.appendChild(createTextElement("" + ecfr.getKey(), "" + ecfr.getValue()));
+                    gje.appendChild(createTextElement("" + sfr.getKey(), "" + sfr.getValue()));
+
+                    ae.appendChild(gje);
+                    ase.appendChild(ae);
+
+                } else if (j.getClass().toString().contains("LeafJudgement")) {
+
+                    LeafJudgement lj = (LeafJudgement) j;
+
+                    Element lje = doc.createElement("LeafJudgement");
+
+                    ConfidenceFactorRating acfr = lj.getConfidenceFactorRating();
+                    SignificanceFactorRating sfr = lj.getSignificanceFactorRating();
+
+                    lje.appendChild(createTextElement("" + acfr.getKey(), "" + acfr.getValue()));
+                    lje.appendChild(createTextElement("" + sfr.getKey(), "" + sfr.getValue()));
+
+                    ae.appendChild(lje);
+                    ase.appendChild(ae);
+
+                } else if (j.getClass().toString().contains("AssumptionJudgement")) {
+
+                    AssumptionJudgement aj = (AssumptionJudgement) j;
+
+                    Element aje = doc.createElement("AssumptionJudgement");
+
+                    ConfidenceFactorRating ascfr = aj.getConfidenceFactorRating();
+
+                    aje.appendChild(createTextElement("" + ascfr.getKey(), "" + ascfr.getValue()));
+
+                    ae.appendChild(aje);
+                    ase.appendChild(ae);
+                }
+
+            }
+            pe.appendChild(ase);
+        }
+        return pe;
     }
 
     public boolean isComplete() {

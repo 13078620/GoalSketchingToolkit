@@ -38,6 +38,10 @@ public class Goal extends GSnode {
      */
     private boolean hasGop;
     /**
+     * Denotes whether this goal has a twin or not.
+     */
+    private boolean hasTwin;
+    /**
      * The ID of this Goal.
      */
     private String id;
@@ -133,8 +137,7 @@ public class Goal extends GSnode {
      * @param node the node to remove.
      */
     @Override
-    public void removeChild(GSnode node
-    ) {
+    public void removeChild(GSnode node) {
 
         if (node.getClass()
                 .toString().contains("ANDentailment")
@@ -158,6 +161,11 @@ public class Goal extends GSnode {
         }
 
         children.remove(node);
+        
+        if(getTwins().isEmpty()) {
+            hasTwin = false;
+        }
+        
         if (children.isEmpty()) {
             hasChildren = false;
         }
@@ -304,6 +312,25 @@ public class Goal extends GSnode {
     }
 
     /**
+     * Returns a boolean to denote whether this goal has a twin or not.
+     *
+     * @return true if this goal has a twin, false otherwise.
+     */
+    public boolean hasTwin() {
+        return hasTwin;
+    }
+
+    /**
+     * Sets this Goal as having a twin if that is the case.
+     *
+     * @param hasTwin the boolean value to denote if this goal has a twin or
+     * not.
+     */
+    public void setHasTwin(boolean hasTwin) {
+        this.hasTwin = hasTwin;
+    }
+
+    /**
      * Returns this goal's goal oriented proposition.
      *
      * @throws NullPointerException() if the goal does not have a goal oriented
@@ -313,12 +340,6 @@ public class Goal extends GSnode {
     public GoalOrientedProposition getProposition() {
 
         GoalOrientedProposition gop = null;
-        /*for (Object o : children) {
-         if (o.getClass().toString().contains("GoalOrientedProposition")) {
-         gop = (GoalOrientedProposition) o;
-         }
-         }
-         return gop;*/
 
         Iterator iterator = createIterator();
         while (iterator.hasNext()) {
@@ -370,12 +391,12 @@ public class Goal extends GSnode {
         }
         return ops;
     }
-    
+
     /**
      * Returns this goal's assumption termination if it has one.
      *
-     * @throws NullPointerException() if the goal does not have an
-     * assumption termination.
+     * @throws NullPointerException() if the goal does not have an assumption
+     * termination.
      * @return this goal's assumption termination.
      */
     public AssumptionTermination getAssumptionTermination() {
@@ -416,9 +437,7 @@ public class Goal extends GSnode {
      * @param fit the fit acceptance test.
      */
     public void setFit(String fit) {
-
         this.fit = fit;
-
     }
 
     /**
@@ -427,9 +446,7 @@ public class Goal extends GSnode {
      * @return the fit acceptance test.
      */
     public String getFit() {
-
         return fit;
-
     }
 
     /**
@@ -509,5 +526,25 @@ public class Goal extends GSnode {
     @Override
     public boolean hasGraphics() {
         return this.graphicalProperties != null;
+    }
+
+    /**
+     * Returns this goal's list of twins.
+     *
+     *
+     * @return the list of twins.
+     */
+    public ArrayList<GSnode> getTwins() {
+
+        ArrayList<GSnode> twins = new ArrayList();
+
+        Iterator iterator = createIterator();
+        while (iterator.hasNext()) {
+            GSnode n = (GSnode) iterator.next();
+            if (n instanceof Twin) {
+                twins.add(n);
+            }
+        }
+        return twins;
     }
 }

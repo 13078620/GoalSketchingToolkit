@@ -162,6 +162,51 @@ public class GoalTest extends TestCase {
         } catch (Exception e) {
             assertTrue((e).getClass().toString().contains("UnsupportedOperationException"));
         }
+        
+        tearDown();
+        setUp();
+        
+        g.setID("GAtest");
+        Goal g2 = new Goal();
+        g.setID("GA1test");
+        Goal g3 = new Goal();
+        g.setID("GA2test");
+        g.addChild(ae);
+        ae.addChild(g2);
+        ae.addChild(g3);
+        
+        Twin tg = new Twin(g);
+        g.addChild(tg);
+        
+        try {
+            ae.addChild(tg);
+        } catch (Exception e) {
+            assertTrue((e).getMessage().equalsIgnoreCase("Cannot refine an original goal with it's twin"));
+        }
+                
+        g.setID("GX");
+        assertEquals("Twin GX", tg.getID());
+        
+        gop.setPrefix(GoalType.MOTIVATION);
+        gop.setStatement("foo bar");       
+        g.addChild(gop);
+        
+        for(GSnode n : g.getTwins()) {
+            Twin t = (Twin) n;
+            t.updateGOP();
+        }
+        
+        assertEquals("/m/", tg.getProposition().getPrefix());
+        
+        gop = g.getProposition();
+        gop.setPrefix(GoalType.OBSTACLE);
+        
+        for(GSnode n : g.getTwins()) {
+            Twin t = (Twin) n;
+            t.updateGOP();
+        }
+        
+        assertEquals("/o/", tg.getProposition().getPrefix());
     }
 
     /**
@@ -175,6 +220,7 @@ public class GoalTest extends TestCase {
         } catch (Exception e) {
             assertTrue((e).getClass().toString().contains("UnsupportedOperationException"));
             assertTrue((e).getMessage().equalsIgnoreCase("Cannot add goal to a goal, "
+                    + "unless it's a twin "
                     + "goals are added to a semantic entailment only"));
         }
         //tearDown();

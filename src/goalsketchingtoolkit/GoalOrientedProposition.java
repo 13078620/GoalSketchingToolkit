@@ -62,18 +62,34 @@ public class GoalOrientedProposition extends GSnode {
         this.annotations = new ArrayList();
         logic = new GoalOrientedPropositionLogic(this);
     }
+    
+    /**
+     * Constructs a goal oriented proposition.
+     *
+     * @param prefix the goal type of this goal oriented proposition.
+     * @param statement the statement (any alphanumeric string up to 255
+     * characters) of this goal oriented proposition.
+     */
+    public GoalOrientedProposition(GoalType prefix, String statement) {
+        this.goaltype = prefix;
+        hasPrefix = true;
+        this.statement = statement;
+        this.annotations = new ArrayList();
+        logic = new GoalOrientedPropositionLogic(this);
+    }
 
     /**
      * Constructs a goal oriented proposition.
      *
      * @param prefix the goal type of this goal oriented proposition.
      * @param statement the statement (any alphanumeric string up to 255
-     * characters) of this goal oriented proposition..
+     * characters) of this goal oriented proposition.
      * @param context the context for this goal oriented proposition.
      */
     public GoalOrientedProposition(GoalType prefix, String statement, String context) {
 
         this.goaltype = prefix;
+        hasPrefix = true;
         this.statement = statement;
         this.context = context;
         this.annotations = new ArrayList();
@@ -167,6 +183,15 @@ public class GoalOrientedProposition extends GSnode {
      */
     public String getPrefix() {
         return goaltype.prefix;
+    }
+    
+    /**
+     * Returns this goal oriented proposition's goal type (prefix).
+     *
+     * @return the goal type.
+     */
+    public GoalType getGoalType() {
+        return goaltype;
     }
 
     /**

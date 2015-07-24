@@ -48,7 +48,7 @@ public class GoalJudgement implements Judgement {
         }
         
         if (engageCfr.getKey().factor.equalsIgnoreCase("engage")) {
-            this.engageCfr = refineCfr;
+            this.engageCfr = engageCfr;
         } else {
             throw new UnsupportedOperationException("Goal judgements can only "
                     + "contain refine judgements and engage judgements in that order");
