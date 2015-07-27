@@ -111,11 +111,13 @@ public class GraphBuilder {
 
         if (goal.isEntailed()) {
 
-            Element ee = doc.createElement("Entailment");
+            Element ee = null;
 
             GSnode ent = goal.getEntailment();
 
             if (ent.getClass().toString().contains("ANDentailment")) {
+
+                ee = doc.createElement("ANDentailment");
 
                 ANDentailment aent = (ANDentailment) ent;
 
@@ -147,6 +149,8 @@ public class GraphBuilder {
             } else if (ent.getClass().toString().contains("ORentailment")) {
 
                 ORentailment oent = (ORentailment) ent;
+
+                ee = doc.createElement("ORentailment");
 
                 if (oent.hasGraphics()) {
                     GSorEntailmentGraphics graphics = oent.getGraphicalProperties();
@@ -298,6 +302,14 @@ public class GraphBuilder {
     public Element createTwinGoalElement(Twin tg) {
 
         Element twinGoalElement = doc.createElement("Twin");
+        
+        if (tg.hasGraphics()) {
+            GSnodeGraphics g = (GSnodeGraphics) tg.getGraphicalProperties();
+            twinGoalElement.appendChild(createAttribute("x",""+g.getX()));
+            twinGoalElement.appendChild(createAttribute("y",""+g.getY()));
+            twinGoalElement.appendChild(createAttribute("width",""+g.getWidth()));
+            twinGoalElement.appendChild(createAttribute("height",""+g.getHeight()));
+        }
         twinGoalElement.appendChild(createTextElement("ID", tg.getID()));
         twinGoalElement.appendChild(createPropositionElement(tg.getProposition()));
 

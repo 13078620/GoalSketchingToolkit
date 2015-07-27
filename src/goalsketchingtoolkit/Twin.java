@@ -58,7 +58,8 @@ public class Twin extends GSnode {
      * @return the ID of the original goal of this twin.
      */
     public String getID() {
-        return "Twin " + original.getId();
+        //return "Twin " + original.getId();
+        return original.getId();
     }
 
     /**
