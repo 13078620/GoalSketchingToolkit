@@ -47,7 +47,8 @@ public class GoalOrientedProposition extends GSnode {
      * Constructs a goal oriented proposition with no initialised attributes.
      */
     public GoalOrientedProposition() {
-
+        this.annotations = new ArrayList();
+        logic = new GoalOrientedPropositionLogic(this);
     }
 
     /**
@@ -62,7 +63,7 @@ public class GoalOrientedProposition extends GSnode {
         this.annotations = new ArrayList();
         logic = new GoalOrientedPropositionLogic(this);
     }
-    
+
     /**
      * Constructs a goal oriented proposition.
      *
@@ -184,7 +185,7 @@ public class GoalOrientedProposition extends GSnode {
     public String getPrefix() {
         return goaltype.prefix;
     }
-    
+
     /**
      * Returns this goal oriented proposition's goal type (prefix).
      *

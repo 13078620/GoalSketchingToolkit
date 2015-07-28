@@ -71,10 +71,11 @@ public class GraphParser {
         Goal goal = new Goal();
         Element theRoot = gsnode;
         NodeList nodes = theRoot.getChildNodes();
-
-        for (int i = 0; i < nodes.getLength(); i++) {
+ 
+        /*for (int i = 0; i < nodes.getLength(); i++) {
+            
             if (nodes.item(i).getNodeType() == Node.ATTRIBUTE_NODE) {
-
+               
                 Attr attribute = (Attr) nodes.item(i);
                 NodeList textNodes = attribute.getChildNodes();
                 String value = attribute.getNodeName();
@@ -88,7 +89,7 @@ public class GraphParser {
                 }
                 if (value.equalsIgnoreCase("height")) {
                     int height = Integer.parseInt(textValue);
-                    graphics.setHeight(height);
+                    graphics.setHeight(height);                    
                 }
                 if (value.equalsIgnoreCase("width")) {
                     int width = Integer.parseInt(textValue);
@@ -104,12 +105,38 @@ public class GraphParser {
                 }
                 goal.setGraphicalProperties(graphics);
             }
-        }
+        } */
 
         for (int i = 0; i < nodes.getLength(); i++) {
             if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
 
+                GSnodeGraphics gs = new GSnodeGraphics();               
+                
                 Element element = (Element) nodes.item(i);
+                
+                //System.out.println("got here " +element.getAttribute("height"));
+                //System.out.println("got here " +element.getAttribute("width"));
+                //System.out.println("got here " +element.getAttribute("x"));
+                //System.out.println("got here " +element.getAttribute("y"));
+                
+                if(!element.getAttribute("height").isEmpty()) {
+                    System.out.println("height " +element.getAttribute("height"));
+                }
+                if(!element.getAttribute("width").isEmpty()) {
+                    System.out.println("width " +element.getAttribute("width"));
+                }
+                if(!element.getAttribute("x").isEmpty()) {
+                    System.out.println("x " +element.getAttribute("x"));
+                }
+                if(!element.getAttribute("y").isEmpty()) {
+                    System.out.println("y " +element.getAttribute("y"));
+                }
+                
+                //gs.setHeight(Integer.parseInt(element.getAttribute("x")));
+                //goal.setGraphicalProperties(gs);
+                
+                
+                
                 NodeList textNodes = element.getChildNodes();
                 String value = element.getNodeName();
                 String textValue = "";
@@ -169,174 +196,191 @@ public class GraphParser {
                             } else if (propValue.equalsIgnoreCase("annotations")) {
 
                                 NodeList annotationsNodes = propsitionElement.getChildNodes();
-                                Annotation annotation = new Annotation();
 
                                 for (int l = 0; l < annotationsNodes.getLength(); l++) {
                                     if (annotationsNodes.item(l).getNodeType() == Node.ELEMENT_NODE) {
 
+                                        Annotation annotation = new Annotation();
+
                                         Element annotationElement = (Element) annotationsNodes.item(l);
-                                        NodeList annoNodes = annotationsNodes.item(l).getChildNodes();
+                                        NodeList annotationNodes = annotationElement.getChildNodes();
                                         String annoValue = annotationElement.getNodeName();
-                                        /*String annoTextValue = "";
+                                        String annoElementValue = "";
 
-                                         for (int m = 0; m < annoNodes.getLength(); m++) {
-                                         if (annoNodes.item(m).getNodeType() == Node.ELEMENT_NODE) {
-                                         annoTextValue = annotationElement.getChildNodes().item(0).getTextContent().trim();
-                                         }
-                                         */
-
-                                        if (annoValue.equalsIgnoreCase("goaljudgement")) {
-
-                                            NodeList goalJudgementNodes = annotationElement.getChildNodes();
-
-                                            for (int n = 0; n < goalJudgementNodes.getLength(); n++) {
-                                                if (goalJudgementNodes.item(n).getNodeType() == Node.ELEMENT_NODE) {
-
-                                                    Element goalJudgementElement = (Element) goalJudgementNodes.item(n);
-                                                    NodeList ratingsNodes = goalJudgementNodes.item(n).getChildNodes();
-                                                    String ratingsValue = goalJudgementElement.getNodeName();
-                                                    String ratingsTextValue = "";
-
-                                                    for (int o = 0; o < ratingsNodes.getLength(); o++) {
-                                                        if (ratingsNodes.item(o).getNodeType() == Node.TEXT_NODE) {
-                                                            ratingsTextValue = goalJudgementElement.getChildNodes().item(0).getTextContent().trim();
-                                                        }
-                                                    }
-
-                                                    GSordinalScale s = null;
-                                                    ConfidenceFactorRating cfr = null;
-                                                    ConfidenceFactorRating cfr2 = null;
-                                                    SignificanceFactorRating sfr = null;
-
-                                                    if (ratingsValue.equalsIgnoreCase("refine")) {
-
-                                                        if (ratingsTextValue.equalsIgnoreCase("none")) {
-                                                            s = GSordinalScale.NONE;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("low")) {
-                                                            s = GSordinalScale.LOW;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("medium")) {
-                                                            s = GSordinalScale.MEDIUM;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("high")) {
-                                                            s = GSordinalScale.HIGH;
-                                                        }
-
-                                                        cfr = new ConfidenceFactorRating(ConfidenceFactor.Refine, s);
-
-                                                    } else if (ratingsValue.equalsIgnoreCase("engage")) {
-
-                                                        if (ratingsTextValue.equalsIgnoreCase("none")) {
-                                                            s = GSordinalScale.NONE;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("low")) {
-                                                            s = GSordinalScale.LOW;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("medium")) {
-                                                            s = GSordinalScale.MEDIUM;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("high")) {
-                                                            s = GSordinalScale.HIGH;
-                                                        }
-
-                                                        cfr2 = new ConfidenceFactorRating(ConfidenceFactor.Engage, s);
-
-                                                    } else if (ratingsValue.equalsIgnoreCase("value")) {
-
-                                                        sfr = new SignificanceFactorRating(SignificanceFactor.Value, Integer.parseInt(ratingsTextValue));
-
-                                                    }
-                                                    GoalJudgement gj = new GoalJudgement(cfr, cfr2, sfr);
-                                                    annotation.setJudgement(gj);
-                                                }
+                                        for (int m = 0; m < annotationNodes.getLength(); m++) {
+                                            if (annotationNodes.item(m).getNodeType() == Node.ELEMENT_NODE) {
+                                                annoElementValue = annotationNodes.item(m).getNodeName();
                                             }
 
-                                        } else if (annoValue.equalsIgnoreCase("leafjudgement")) {
+                                            if (annoElementValue.equalsIgnoreCase("goaljudgement")) {
 
-                                            NodeList leafJudgementNodes = annotationElement.getChildNodes();
-                                            for (int p = 0; p < leafJudgementNodes.getLength(); p++) {
-                                                if (leafJudgementNodes.item(p).getNodeType() == Node.ELEMENT_NODE) {
-                                                    Element leafJudgementElement = (Element) leafJudgementNodes.item(p);
-                                                    NodeList ratingsNodes = leafJudgementNodes.item(p).getChildNodes();
-                                                    String ratingsValue = leafJudgementElement.getNodeName();
-                                                    String ratingsTextValue = "";
+                                                GoalJudgement gj = new GoalJudgement();
 
-                                                    for (int r = 0; r < ratingsNodes.getLength(); r++) {
-                                                        if (ratingsNodes.item(r).getNodeType() == Node.TEXT_NODE) {
-                                                            ratingsTextValue = leafJudgementElement.getChildNodes().item(0).getTextContent().trim();
-                                                        }
-                                                    }
+                                                Node goalJudgementElement = (Node) annotationNodes.item(m);
+                                                NodeList goalJudgementNodes = goalJudgementElement.getChildNodes();
+                                                String goalJudgementValue = goalJudgementElement.getNodeName();
+                                                String goalJudgementTextValue = "";
 
-                                                    GSordinalScale s = GSordinalScale.LOW;
-                                                    ConfidenceFactorRating cfr = null;
-                                                    SignificanceFactorRating sfr = null;
+                                                for (int n = 0; n < goalJudgementNodes.getLength(); n++) {
+                                                    if (goalJudgementNodes.item(n).getNodeType() == Node.ELEMENT_NODE) {
 
-                                                    if (ratingsValue.equalsIgnoreCase("achieve")) {
+                                                        Element ratingElement = (Element) goalJudgementNodes.item(n);
+                                                        NodeList ratingsNodes = ratingElement.getChildNodes();
+                                                        String ratingsValue = ratingElement.getNodeName();
+                                                        String ratingsTextValue = "";
 
-                                                        if (ratingsTextValue.equalsIgnoreCase("none")) {
-                                                            s = GSordinalScale.NONE;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("low")) {
-                                                            s = GSordinalScale.LOW;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("medium")) {
-                                                            s = GSordinalScale.MEDIUM;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("high")) {
-                                                            s = GSordinalScale.HIGH;
+                                                        for (int o = 0; o < ratingsNodes.getLength(); o++) {
+                                                            if (ratingsNodes.item(o).getNodeType() == Node.TEXT_NODE) {
+                                                                ratingsTextValue = ratingElement.getChildNodes().item(0).getTextContent().trim();
+                                                            }
                                                         }
 
-                                                        cfr = new ConfidenceFactorRating(ConfidenceFactor.Achieve, s);
+                                                        GSordinalScale s = null;
 
-                                                    } else if (ratingsValue.equalsIgnoreCase("cost")) {
-                                                        sfr = new SignificanceFactorRating(SignificanceFactor.Cost, Integer.parseInt(ratingsTextValue));
+                                                        if (ratingsValue.equalsIgnoreCase("refine")) {
+
+                                                            if (ratingsTextValue.equalsIgnoreCase("none")) {
+                                                                s = GSordinalScale.NONE;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("low")) {
+                                                                s = GSordinalScale.LOW;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("medium")) {
+                                                                s = GSordinalScale.MEDIUM;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("high")) {
+                                                                s = GSordinalScale.HIGH;
+
+                                                            }
+
+                                                            ConfidenceFactorRating cfr = new ConfidenceFactorRating(ConfidenceFactor.Refine, s);
+                                                            gj.addConfidenceFactorRating(cfr);
+
+                                                        } else if (ratingsValue.equalsIgnoreCase("engage")) {
+
+                                                            if (ratingsTextValue.equalsIgnoreCase("none")) {
+                                                                s = GSordinalScale.NONE;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("low")) {
+                                                                s = GSordinalScale.LOW;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("medium")) {
+                                                                s = GSordinalScale.MEDIUM;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("high")) {
+                                                                s = GSordinalScale.HIGH;
+                                                            }
+
+                                                            ConfidenceFactorRating cfr2 = new ConfidenceFactorRating(ConfidenceFactor.Engage, s);
+                                                            gj.addConfidenceFactorRating(cfr2);
+
+                                                        } else if (ratingsValue.equalsIgnoreCase("value")) {
+
+                                                            SignificanceFactorRating sfr = new SignificanceFactorRating(SignificanceFactor.Value, Integer.parseInt(ratingsTextValue));
+                                                            gj.addSignificanceFactorRating(sfr);
+
+                                                        }
+
+                                                        annotation.setJudgement(gj);
                                                     }
-                                                    LeafJudgement lj = new LeafJudgement(cfr, sfr);
-                                                    annotation.setJudgement(lj);
+                                                }
+
+                                            } else if (annoElementValue.equalsIgnoreCase("leafjudgement")) {
+
+                                                LeafJudgement lj = new LeafJudgement();
+
+                                                Node leafJudgementElement = (Node) annotationNodes.item(m);
+                                                NodeList leafJudgementNodes = leafJudgementElement.getChildNodes();
+                                                String leafJudgementValue = leafJudgementElement.getNodeName();
+                                                String leafJudgementTextValue = "";
+
+                                                for (int p = 0; p < leafJudgementNodes.getLength(); p++) {
+                                                    if (leafJudgementNodes.item(p).getNodeType() == Node.ELEMENT_NODE) {
+
+                                                        Element ratingElement = (Element) leafJudgementNodes.item(p);
+                                                        NodeList ratingsNodes = ratingElement.getChildNodes();
+                                                        String ratingsValue = ratingElement.getNodeName();
+                                                        String ratingsTextValue = "";
+
+                                                        for (int r = 0; r < ratingsNodes.getLength(); r++) {
+                                                            if (ratingsNodes.item(r).getNodeType() == Node.TEXT_NODE) {
+                                                                ratingsTextValue = ratingElement.getChildNodes().item(0).getTextContent().trim();
+                                                            }
+                                                        }
+
+                                                        GSordinalScale s = null;
+
+                                                        if (ratingsValue.equalsIgnoreCase("achieve")) {
+
+                                                            if (ratingsTextValue.equalsIgnoreCase("none")) {
+                                                                s = GSordinalScale.NONE;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("low")) {
+                                                                s = GSordinalScale.LOW;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("medium")) {
+                                                                s = GSordinalScale.MEDIUM;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("high")) {
+                                                                s = GSordinalScale.HIGH;
+                                                            }
+
+                                                            ConfidenceFactorRating cfr = new ConfidenceFactorRating(ConfidenceFactor.Achieve, s);
+                                                            lj.addConfidenceFactorRating(cfr);
+
+                                                        } else if (ratingsValue.equalsIgnoreCase("cost")) {
+
+                                                            SignificanceFactorRating sfr = new SignificanceFactorRating(SignificanceFactor.Cost, Integer.parseInt(ratingsTextValue));
+                                                            lj.addSignificanceFactorRating(sfr);
+                                                        }
+
+                                                        annotation.setJudgement(lj);
+                                                    }
+
+                                                }
+
+                                            } else if (annoElementValue.equalsIgnoreCase("assumptionjudgement")) {
+
+                                                AssumptionJudgement aj = new AssumptionJudgement();
+
+                                                Node assumptionJudgementElement = (Node) annotationNodes.item(m);
+                                                NodeList assumptionJudgementNodes = assumptionJudgementElement.getChildNodes();
+
+                                                for (int s = 0; s < assumptionJudgementNodes.getLength(); s++) {
+
+                                                    if (assumptionJudgementNodes.item(s).getNodeType() == Node.ELEMENT_NODE) {
+
+                                                        Element ratingElement = (Element) assumptionJudgementNodes.item(s);
+                                                        NodeList ratingsNodes = ratingElement.getChildNodes();
+                                                        String ratingsValue = ratingElement.getNodeName();
+                                                        String ratingsTextValue = "";
+
+                                                        for (int t = 0; t < ratingsNodes.getLength(); t++) {
+                                                            if (ratingsNodes.item(t).getNodeType() == Node.TEXT_NODE) {
+                                                                ratingsTextValue = ratingElement.getChildNodes().item(0).getTextContent().trim();
+                                                            }
+                                                        }
+
+                                                        GSordinalScale sc = null;
+
+                                                        if (ratingsValue.equalsIgnoreCase("assume")) {
+
+                                                            if (ratingsTextValue.equalsIgnoreCase("none")) {
+                                                                sc = GSordinalScale.NONE;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("low")) {
+                                                                sc = GSordinalScale.LOW;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("medium")) {
+                                                                sc = GSordinalScale.MEDIUM;
+                                                            } else if (ratingsTextValue.equalsIgnoreCase("high")) {
+                                                                sc = GSordinalScale.HIGH;
+                                                            }
+
+                                                            ConfidenceFactorRating cfr = new ConfidenceFactorRating(ConfidenceFactor.Assume, sc);
+                                                            aj.addConfidenceFactorRating(cfr);
+                                                        }
+
+                                                        annotation.setJudgement(aj);
+
+                                                    }
                                                 }
 
                                             }
-
-                                        } else if (annoValue.equalsIgnoreCase("assumptionjudgement")) {
-
-                                            NodeList assumptionJudgementNodes = annotationElement.getChildNodes();
-
-                                            for (int s = 0; s < assumptionJudgementNodes.getLength(); s++) {
-
-                                                if (assumptionJudgementNodes.item(s).getNodeType() == Node.ELEMENT_NODE) {
-
-                                                    Element assumptionJudgementElement = (Element) assumptionJudgementNodes.item(s);
-                                                    NodeList ratingsNodes = assumptionJudgementNodes.item(s).getChildNodes();
-                                                    String ratingsValue = assumptionJudgementElement.getNodeName();
-                                                    String ratingsTextValue = "";
-
-                                                    for (int t = 0; t < ratingsNodes.getLength(); t++) {
-                                                        if (ratingsNodes.item(t).getNodeType() == Node.TEXT_NODE) {
-                                                            ratingsTextValue = assumptionJudgementElement.getChildNodes().item(0).getTextContent().trim();
-                                                        }
-                                                    }
-
-                                                    GSordinalScale sc = GSordinalScale.LOW;
-                                                    ConfidenceFactorRating cfr = null;
-
-                                                    if (ratingsValue.equalsIgnoreCase("assume")) {
-
-                                                        if (ratingsTextValue.equalsIgnoreCase("none")) {
-                                                            sc = GSordinalScale.NONE;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("low")) {
-                                                            sc = GSordinalScale.LOW;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("medium")) {
-                                                            sc = GSordinalScale.MEDIUM;
-                                                        } else if (ratingsTextValue.equalsIgnoreCase("high")) {
-                                                            sc = GSordinalScale.HIGH;
-                                                        }
-
-                                                        cfr = new ConfidenceFactorRating(ConfidenceFactor.Assume, sc);
-
-                                                    }
-                                                    AssumptionJudgement aj = new AssumptionJudgement(cfr);
-                                                    annotation.setJudgement(aj);
-
-                                                }
-                                            }
-
                                         }
-
+                                        gop.addChild(annotation);
                                     }
                                 }
-                                gop.addChild(annotation);
+
                             }
 
                         }
@@ -346,8 +390,10 @@ public class GraphParser {
                     goal.setFit(value);
                 } else if (value.equalsIgnoreCase("andentailment")) {
 
-                    NodeList nodesOfAndEntailment = element.getChildNodes();
                     ANDentailment andEntailment = new ANDentailment();
+                    goal.addChild(andEntailment);
+                    NodeList nodesOfAndEntailment = element.getChildNodes();
+                    ArrayList<GSnode> c = new ArrayList<>();
 
                     for (int z = 0; z < nodesOfAndEntailment.getLength(); z++) {
                         if (nodesOfAndEntailment.item(z).getNodeType() == Node.ATTRIBUTE_NODE) {
@@ -386,6 +432,7 @@ public class GraphParser {
                             }
                             andEntailment.setGraphicalProperties(graphics);
                         }
+                    }
 
                         for (int a = 0; a < nodesOfAndEntailment.getLength(); a++) {
 
@@ -437,9 +484,9 @@ public class GraphParser {
                                             String twinValue = twinElement.getNodeName();
                                             String twinTextValue = "";
 
-                                            for (int m = 0; m < entailmentNodes.getLength(); m++) {
+                                            for (int m = 0; m < twinNodes.getLength(); m++) {
                                                 if (twinNodes.item(m).getNodeType() == Node.TEXT_NODE) {
-                                                    twinTextValue = entailmentNodes.item(0).getTextContent().trim();
+                                                    twinTextValue = twinNodes.item(0).getTextContent().trim();
                                                 }
                                             }
 
@@ -457,14 +504,20 @@ public class GraphParser {
 
                                     }
 
-                                } else {
-                                    andEntailment.addChild(getNode(elementOfEntailment));
+                                } else if (entailmentValue.equalsIgnoreCase("goal")) {
+
+                                    //Goal g = getNode(elementOfEntailment);
+                                    //andEntailment.addChild(g);
+                                    c.add(getNode(elementOfEntailment));
                                 }
 
                             }
+                            
+                            
                         }
-                    }
-                    goal.addChild(andEntailment);
+                        andEntailment.setChildren(c);
+                        //goal.addChild(andEntailment);
+                    
 
                 } else if (value.equalsIgnoreCase("orentailment")) {
 
@@ -591,7 +644,7 @@ public class GraphParser {
 
                                     }
 
-                                } else {
+                                } else if (entailmentValue.equalsIgnoreCase("goal")) {
                                     orEntailment.addChild(getNode(elementOfEntailment));
                                 }
                                 goal.addChild(orEntailment);

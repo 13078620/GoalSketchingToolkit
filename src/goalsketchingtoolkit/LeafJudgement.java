@@ -23,6 +23,10 @@ public class LeafJudgement implements Judgement {
      */
     private SignificanceFactorRating sfr;
     
+    public LeafJudgement() {
+        
+    }
+    
     /**
      * Constructs an leaf judgement and initialises it's ACHIEVE confidence 
      * factor rating and COST significance factor rating.

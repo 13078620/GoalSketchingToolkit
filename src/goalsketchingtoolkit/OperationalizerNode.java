@@ -12,14 +12,14 @@ import java.util.ArrayList;
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
-public class OperationalizerNode extends GoalSketchingNode {
+public class OperationalizerNode  {
 
     /**
      * The list of operationalizers for this operationalizer node.
      */
     private ArrayList<Operationalizer> operationalizers = new ArrayList<>();
 
-    private GraphNode par;
+   /* private GraphNode par;
 
     public OperationalizerNode() {
         super();
@@ -33,7 +33,7 @@ public class OperationalizerNode extends GoalSketchingNode {
      * @param height the height of the operationalizer node.
      * @param operationalizers the operationalizers for the operationalizer
      * node.
-     */
+     
     public OperationalizerNode(double x, double y, int width, int height, ArrayList operationalizers) {
 
         super(x, y, width, height);
@@ -46,7 +46,7 @@ public class OperationalizerNode extends GoalSketchingNode {
      * operationalizers.
      *
      * @param operationalizer the operationalizer to add.
-     */
+     
     public void addOperationalizer(Operationalizer operationalizer) {
 
         this.operationalizers.add(operationalizer);
@@ -58,7 +58,7 @@ public class OperationalizerNode extends GoalSketchingNode {
      * operationalizers.
      *
      * @param agentName the agent name of the operationalizer to remove.
-     */
+     
     public void removeOperationalizer(String agentName) {
 
         for (int i = 0; i < operationalizers.size(); i++) {
@@ -73,7 +73,7 @@ public class OperationalizerNode extends GoalSketchingNode {
      * Sets this operationalizer node's list of operationalizers.
      *
      * @param operationalizers the list of operationalizers to set.
-     */
+     
     public void setOperationalizers(ArrayList operationalizers) {
 
         this.operationalizers = operationalizers;
@@ -84,7 +84,7 @@ public class OperationalizerNode extends GoalSketchingNode {
      * Returns this operationalizer node's list of operationalizers.
      *
      * @return the list of operationalizers.
-     */
+     
     public ArrayList getOperationalizers() {
 
         return this.operationalizers;
@@ -96,7 +96,7 @@ public class OperationalizerNode extends GoalSketchingNode {
      *
      * @param parent the specified parent graph node for this operationalizer
      * node.
-     */
+     
     public void setParent(GraphNode parent) {
 
         this.par = parent;
@@ -107,7 +107,7 @@ public class OperationalizerNode extends GoalSketchingNode {
      * Gets the reference to this operationalizer node's parent.
      *
      * @return the parent graph node of this operationalizer node.
-     */
+     
     public GraphNode getParent() {
 
         return this.par;
@@ -119,9 +119,9 @@ public class OperationalizerNode extends GoalSketchingNode {
      *
      * @param op the operationalizer to set the sub domains.
      * @param subDomains the sub domains to set.
-     */
+     
     public void setOperationalizerSubDomains(Operationalizer op, ArrayList subDomains) {
 
-    }
+    }*/
 
 }

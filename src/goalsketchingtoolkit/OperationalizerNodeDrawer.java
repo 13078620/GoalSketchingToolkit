@@ -15,7 +15,7 @@ import java.util.ArrayList;
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
-public class OperationalizerNodeDrawer implements Drawable {
+public class OperationalizerNodeDrawer  {
 
     private OperationalizerNode operationalizerNode;
 
@@ -24,9 +24,13 @@ public class OperationalizerNodeDrawer implements Drawable {
      *
      * @param operationalizerNode the operationalizer node to be drawn.
      */
-    public OperationalizerNodeDrawer(OperationalizerNode operationalizerNode) {
+    /*public OperationalizerNodeDrawer(GoalSketchingNode operationalizerNode) {
 
-        this.operationalizerNode = operationalizerNode;
+        if (operationalizerNode.getClass().toString().contains("OperationalizerNode")) {
+            System.out.println("Your hypothesis was correct");
+        }
+        
+        this.operationalizerNode = (OperationalizerNode) operationalizerNode;
 
     }
 
@@ -34,12 +38,12 @@ public class OperationalizerNodeDrawer implements Drawable {
      * Draws an operationalizer node.
      *
      * @param g2 the graphics context.
-     */
+     
     @Override
     public void draw(Graphics2D g2) {
 
-        GraphNode parent = operationalizerNode.getParent();
-        FontMetrics fm = g2.getFontMetrics();        
+      /*  GraphNode parent = operationalizerNode.getParent();
+        FontMetrics fm = g2.getFontMetrics();
 
         int x = (int) operationalizerNode.getX();
         int y = (int) operationalizerNode.getY();
@@ -69,7 +73,7 @@ public class OperationalizerNodeDrawer implements Drawable {
                         s += sdText.get(j) + ", ";
                     }
                     s += "]";
-                } */
+                } 
                 if (ops.indexOf(ops.get(i)) != ops.size() - 1) {
                     text += ops.get(i).getAgentName() + s + ", ";
                 } else {
@@ -114,8 +118,8 @@ public class OperationalizerNodeDrawer implements Drawable {
         int lineToX = (int) parent.getX() + parent.getWidth() / 2;
         int lineToY = (int) parent.getY() + parent.getHeight();
 
-        g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+        g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);*/
 
     }
 
-}
+

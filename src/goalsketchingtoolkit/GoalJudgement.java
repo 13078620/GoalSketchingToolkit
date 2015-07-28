@@ -29,6 +29,10 @@ public class GoalJudgement implements Judgement {
      */
     private SignificanceFactorRating sfr;
     
+    public GoalJudgement() {
+        
+    }
+    
     /**
      * Constructs an goal judgement and initialises it's REFINE and ENGAGE
      * confidence factor ratings, and VALUE significance factor rating.

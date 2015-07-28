@@ -67,7 +67,7 @@ public class GraphBuilder {
     private Element createNode(Goal goal) throws ParserConfigurationException {
 
         Element e = doc.createElement("Goal");
-
+        
         if (goal.hasGraphics()) {
             GSnodeGraphics graphics = goal.getGraphicalProperties();
             e.setAttributeNode(createAttribute("height", "" + graphics.getHeight()));
@@ -354,7 +354,7 @@ public class GraphBuilder {
 
                 Judgement j = a.getJudgement();
 
-                if (j.getClass().toString().contains("GoalJudgement")) {
+                if (a.getJudgement().getClass().toString().contains("GoalJudgement")) {
 
                     GoalJudgement gj = (GoalJudgement) j;
 

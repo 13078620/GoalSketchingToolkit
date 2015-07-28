@@ -11,17 +11,17 @@ import java.awt.geom.Point2D;
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
-public class AssumptionTerminationNode extends GoalSketchingNode {
+public class AssumptionTerminationNode  {
 
     private double xTop, yLeft, radius, xCenter, yCenter;
-    private GraphNode par;
+    //private GraphNode par;
     //private Point2D.Double point;
 
      public AssumptionTerminationNode() {
          
      }
     
-    public AssumptionTerminationNode(double x, double y, int width, int height) {
+   /* public AssumptionTerminationNode(double x, double y, int width, int height) {
 
         super(x, y, width, height);
         this.radius = width / 2;
@@ -53,21 +53,21 @@ public class AssumptionTerminationNode extends GoalSketchingNode {
      * @param parent the specified parent graph node for this Assumption
      * Termination node.
      */
-    public void setParent(GraphNode parent) {
+    //public void setParent(GraphNode parent) {
 
-        this.par = parent;
+    //    this.par = parent;
 
-    }
+   // }
 
     /**
      * Gets the reference to this Assumption Termination node's parent.
      *
      * @return the parent graph node of this Assumption Termination node.
      */
-    public GraphNode getParent() {
+   // public GraphNode getParent() {
 
-        return this.par;
+    //    return this.par;
 
-    }
+    //}
 
 }

@@ -13,9 +13,11 @@ package goalsketchingtoolkit;
  * @author Chris Berryman.
  */
 public interface Judgement {
-    
+
     /**
      * Sets the confidence factor rating.
+     *
+     * @param cfr the confidence factor rating to add.
      */
     public void addConfidenceFactorRating(ConfidenceFactorRating cfr);
 

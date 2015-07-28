@@ -18,6 +18,10 @@ public class AssumptionJudgement implements Judgement {
      */
     private ConfidenceFactorRating cfr;
 
+    public AssumptionJudgement() {
+        
+    }
+    
     /**
      * Constructs an assumption judgement and initialises it's ASSUME 
      * confidence factor rating.

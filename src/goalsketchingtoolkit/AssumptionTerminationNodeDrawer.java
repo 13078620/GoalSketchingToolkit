@@ -28,9 +28,9 @@ public class AssumptionTerminationNodeDrawer implements Drawable {
     @Override
     public void draw(Graphics2D g2) {
 
-        GraphNode parent = node.getParent();
+       // GraphNode parent = node.getParent();
         
-        int x = (int) node.getX();
+       /* int x = (int) node.getX();
         int y = (int) node.getY();
         int width = node.getWidth();
         int height = node.getHeight();
@@ -48,6 +48,7 @@ public class AssumptionTerminationNodeDrawer implements Drawable {
 
         g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
 
-    }
+    }*/
 
+}
 }
