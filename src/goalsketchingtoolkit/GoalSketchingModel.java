@@ -12,21 +12,23 @@ import java.util.ArrayList;
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
-public class GoalSketchingModel extends Observable {
+public class GoalSketchingModel extends Observable  {
+    
+    
 
-    private GraphNode rootGraphNode;
+   /* private GraphNode rootGraphNode;
     private ArrayList<GoalSketchingNode> goalSketchingNodes = new ArrayList<>();
 
     /**
      * Sets the root graph node of this goal sketching model (goal graph).
      *
      * @param root the root graph node.
-     */
+     
     public void setRootGraphNode(GraphNode root) {
 
         this.rootGraphNode = root;
-        setChanged();
-        notifyObservers();
+        //setChanged();
+        //notifyObservers();
 
         this.goalSketchingNodes.add(root);
 
@@ -43,7 +45,7 @@ public class GoalSketchingModel extends Observable {
      *
      * @param parent the parent graph node.
      * @param child the child graph node to add to the parent.
-     */
+     
     public void addChildGraphNode(GraphNode parent, GraphNode child) {
 
         parent.addChildNode(child);
@@ -59,7 +61,7 @@ public class GoalSketchingModel extends Observable {
      *
      * @param parent the parent graph node.
      * @param ozn the operationalizer node to add to the parent.
-     */
+     
     public void addOperationalizerNode(GraphNode parent, OperationalizerNode ozn) {
 
         parent.setOperationalizerNode(ozn);
@@ -135,12 +137,12 @@ public class GoalSketchingModel extends Observable {
         notifyObservers();
 
     }
-
+/*
     public void reset() {
 
         for (int i = goalSketchingNodes.size() - 1; i >= 0; i--) {
             goalSketchingNodes.remove(i);
         }
-    }
+    }*/
 
 }

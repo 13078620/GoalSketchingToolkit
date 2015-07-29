@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -30,12 +30,12 @@ import org.w3c.dom.NodeList;
  */
 public class GoalSketchingController {
 
-    private GoalSketchingModel model;
+    private GoalGraphModel model;
     private GoalSketchingView view;
 
     private GraphParser parser;
 
-    public GoalSketchingController(GoalSketchingModel model) {
+   /* public GoalSketchingController(GoalSketchingModel model) {
 
         this.model = model;
         view = new GoalSketchingView(model, this);
@@ -45,25 +45,13 @@ public class GoalSketchingController {
 
         parser = new GraphParser();
 
-    }
-
-    public void addToGoalSketchingNodes(GraphNode gn) {
-        model.addToGoalSketchingNodes(gn);
-        view.addDrawable(new GraphNodeDrawer(gn));
-    }
-
-    public void addOpToGoalSketchingNodes(OperationalizerNode osn) {
-        model.addOpToGoalSketchingNodes(osn);
-        view.addDrawable(new OperationalizerNodeDrawer(osn));
-    }
-
-    public void addTerminationGoalSketchingNodes(AssumptionTerminationNode astn) {
-
-        model.addTerminationGoalSketchingNodes(astn);
-        view.addDrawable(new AssumptionTerminationNodeDrawer(astn));
-
-    }
-
+    } */
+    
+    /**
+     * Loads a goal graph.
+     *
+     * @param file the file path.
+     */
     public void loadGraph(String file) {
 
         try {
@@ -76,8 +64,8 @@ public class GoalSketchingController {
                 if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) nodes.item(i);
 
-                    GraphNode root = parser.getNode(element);
-                    model.setRootGraphNode(root);
+                    Goal root = parser.getNode(element);
+                    model.addRootGoal(root);
                     drawGraphFromRoot(root);
 
                 }
@@ -89,9 +77,15 @@ public class GoalSketchingController {
 
     }
 
-    public void drawGraphFromRoot(GraphNode graphNode) throws Exception {
+    /**
+     * Recursively adds all goal sketching nodes from a root goal to the list in
+     * the model.
+     *
+     * @param goal the root goal and then its subsequent children.
+     */
+    public void drawGraphFromRoot(Goal goal) throws Exception {
 
-        if (graphNode.isParent()) {
+        /*if (graphNode.isParent()) {
 
             ArrayList<GraphNode> childGraphNodes = graphNode.getChildNodes();
             addToGoalSketchingNodes(graphNode);
@@ -116,16 +110,19 @@ public class GoalSketchingController {
             AssumptionTerminationNode an = graphNode.getAssumptionTerminationNode();
             addTerminationGoalSketchingNodes(an);
 
-        }
+        } */
     }
-
-    public void saveGraph(GraphNode root, String fileName) throws ParserConfigurationException {
+    /**
+     * Saves a goal graph.
+     * @param root the root goal.
+     * @param fileName the file path.
+     */
+    public void saveGraph(Goal root, String fileName) throws ParserConfigurationException {
         GraphBuilder gb = new GraphBuilder(root);
         Document doc = gb.build();
 
         //System.out.println("file path: "+fileName);
         try {
-            if (gb.isComplete()) {
                 DOMSource source = new DOMSource(doc);
                 StreamResult result = new StreamResult(new File(fileName));
                 TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -133,19 +130,123 @@ public class GoalSketchingController {
                 transformer.setOutputProperty("encoding", "UTF-8");
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(4));
-                transformer.transform(source, result);
-            } else {
-                view.displayErrorMessage();
-            }
+                transformer.transform(source, result);           
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-
+    /**
+     * resets the model and view.
+     */
     public void reset() {
-        view.reset();
-        model.reset();
+        //view.reset();
+        //model.reset();
+    }
+    
+    /**
+     * Sets the root goal for the goal graph model.
+     *
+     * @param root the root goal to set.
+     */
+    void addRootGoal(Goal root){
+        
+    }
+    
+    /**
+     * Adds an AND entailment to a goal.
+     *
+     * @param parent the goal to add the entailment to.
+     * @param entailment the entailment.
+     */
+    public void addAndEntailment(Goal parent, ANDentailment entailment) {
+
+    }
+
+    /**
+     * Adds an OR entailment to a goal.
+     *
+     * @param parent the goal to add the entailment to.
+     * @param entailment the entailment.
+     */
+    public void addOrEntailment(Goal parent, ORentailment entailment) {
+
+    }
+
+    /**
+     * Adds a leaf goal to a given parent.
+     *
+     * @param parent the parent to add the leaf to.
+     * @param leaf the leaf goal to add.
+     */
+    public void addLeafGoal(Goal parent, Goal leaf) {
+
+    }
+
+    /**
+     * Adds an Operationalizing Products to a given leaf goal.
+     *
+     * @param parent the leaf goal to add the Operationalizing Products to.
+     * @param ops the Operationalizing Products to add.
+     */
+    public void addOperationalizingProducts(Goal parent, OperationalizingProducts ops) {
+
+    }
+
+    /**
+     * Adds an Product to a given Operationalizing Products.
+     *
+     * @param ops the Operationalizing Products to add the product to.
+     * @param product the product to add.
+     */
+    public void addProduct(OperationalizingProducts ops, String product) {
+
+    }
+
+    /**
+     * Removes a goal.
+     *
+     * @param child the goal to remove.
+     */
+    public void removeGoal(Goal child) {
+
+    }
+
+    /**
+     * Removes an Operationalizing Products.
+     *
+     * @param ops the Operationalizing Products to remove.
+     */
+    public void removeOperationalisingProducts(OperationalizingProducts ops) {
+
+    }
+
+    /**
+     * Deletes a given goal's ID.
+     *
+     * @param goal the goal to deleter the ID from.
+     */
+    public void deleteGoalID(Goal goal) {
+
+    }
+
+    /**
+     * Deletes a GOP from a given goal.
+     *
+     * @param goal the goal to delete the GOP from.
+     */
+    public void deleteGoalOrientedProposition(Goal goal) {
+
+    }
+
+    /**
+     * Adds annotation to the GOP of a goal.
+     *
+     * @param goal the goal which has the GOP.
+     * @param annotation the annotation to add.
+     */
+    public void addAnnotation(Goal goal, Annotation annotation) {
+
     }
 
 }

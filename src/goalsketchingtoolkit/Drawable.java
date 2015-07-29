@@ -20,5 +20,7 @@ public interface Drawable {
      * @param g2 the graphics context.
      */
     public void draw(Graphics2D g2);
+    
+    public boolean contains(int x, int y);
 
 }

@@ -24,102 +24,19 @@ public class GoalGraphModel extends Observable {
      */
     public void addRootGoal(Goal root) {
 
-    }
-
-    /**
-     * Adds an AND entailment to a goal.
-     *
-     * @param parent the goal to add the entailment to.
-     * @param entailment the entailment.
-     */
-    public void addAndEntailment(Goal parent, ANDentailment entailment) {
+        this.rootGoal = root;
+        this.goalSketchingNodes.add(root);
+        notifyView();
 
     }
 
     /**
-     * Adds an OR entailment to a goal.
+     * Returns the root goal from this graph model.
      *
-     * @param parent the goal to add the entailment to.
-     * @param entailment the entailment.
+     * @return the root goal.
      */
-    public void addOrEntailment(Goal parent, ORentailment entailment) {
-
-    }
-
-    /**
-     * Adds a leaf goal to a given parent.
-     *
-     * @param parent the parent to add the leaf to.
-     * @param leaf the leaf goal to add.
-     */
-    public void addLeafGoal(Goal parent, Goal leaf) {
-
-    }
-
-    /**
-     * Adds an Operationalizing Products to a given leaf goal.
-     *
-     * @param parent the leaf goal to add the Operationalizing Products to.
-     * @param ops the Operationalizing Products to add.
-     */
-    public void addOperationalizingProducts(Goal parent, OperationalizingProducts ops) {
-
-    }
-
-    /**
-     * Adds an Product to a given Operationalizing Products.
-     *
-     * @param ops the Operationalizing Products to add the product to.
-     * @param product the product to add.
-     */
-    public void addProduct(OperationalizingProducts ops, String product) {
-
-    }
-
-    /**
-     * Removes a goal.
-     *
-     * @param child the goal to remove.
-     */
-    public void removeGoal(Goal child) {
-
-    }
-
-    /**
-     * Removes an Operationalizing Products.
-     *
-     * @param ops the Operationalizing Products to remove.
-     */
-    public void removeOperationalisingProducts(OperationalizingProducts ops) {
-
-    }
-
-    /**
-     * Deletes a given goal's ID.
-     *
-     * @param goal the goal to deleter the ID from.
-     */
-    public void deleteGoalID(Goal goal) {
-
-    }
-
-    /**
-     * Deletes a GOP from a given goal.
-     *
-     * @param goal the goal to delete the GOP from.
-     */
-    public void deleteGoalOrientedProposition(Goal goal) {
-
-    }
-
-    /**
-     * Adds annotation to the GOP of a goal.
-     *
-     * @param goal the goal which has the GOP.
-     * @param annotation the annotation to add.
-     */
-    public void addAnnotation(Goal goal, Annotation annotation) {
-
+    public Goal getRootGoal() {
+        return this.rootGoal;
     }
 
     /**
@@ -128,16 +45,18 @@ public class GoalGraphModel extends Observable {
      * @param n the goal sketching node to add.
      */
     public void addToGSnodes(GSnode n) {
-
+        this.goalSketchingNodes.add(n);
+        notifyView();
     }
 
     /**
-     * Removes a goal sketching node to the list.
+     * Removes a goal sketching node from the list.
      *
-     * @param i the goal sketching node to remove.
+     * @param n the goal sketching node to remove.
      */
-    public void removeFromGSnodes(int i) {
-
+    public void removeFromGSnodes(GSnode n) {
+        this.goalSketchingNodes.remove(n);
+        notifyView();
     }
 
     /**
@@ -147,6 +66,24 @@ public class GoalGraphModel extends Observable {
      */
     public ArrayList getGSnodes() {
         return goalSketchingNodes;
+    }
+
+    /**
+     * Notifies the view of a change in state.
+     */
+    public void notifyView() {
+        setChanged();
+        notifyObservers();
+    }
+    
+    /**
+     * Resets the list of goal sketching nodes.
+     */
+    public void reset() {
+
+        for (int i = goalSketchingNodes.size() - 1; i >= 0; i--) {
+            goalSketchingNodes.remove(i);
+        }
     }
 
 }

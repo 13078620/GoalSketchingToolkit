@@ -98,6 +98,7 @@ public class Twin extends GSnode {
      */
     @Override
     public void setGraphicalProperties(GSgraphics graphicalProperties) {
+        graphicalProperties.setGSnode(this);
         this.graphicalProperties = (GSnodeGraphics) graphicalProperties;
     }
 

@@ -156,6 +156,7 @@ public class ANDentailment extends GSnode {
      */
     @Override
     public void setGraphicalProperties(GSgraphics graphicalProperties) {
+        graphicalProperties.setGSnode(this);
         this.graphicalProperties = (GSentailmentGraphics) graphicalProperties;
     }
 

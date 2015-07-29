@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * @author Chris Berryman.
  */
 public class ORentailment extends ANDentailment {
-    
+
     /**
      * The maximum goals an OR entailment can have.
      */
@@ -28,7 +28,7 @@ public class ORentailment extends ANDentailment {
      * The graphical properties object for this OR entailment.
      */
     private GSorEntailmentGraphics graphicalProperties;
-    
+
     /**
      * Constructs an OR entailment and initialises it's list of goals.
      */
@@ -36,7 +36,7 @@ public class ORentailment extends ANDentailment {
         super();
         logic = new ORentailmentLogic(this);
     }
-    
+
     /**
      * Constructs an OR entailment and initialises it's list of goals.
      *
@@ -48,7 +48,7 @@ public class ORentailment extends ANDentailment {
         logic = new ORentailmentLogic(this);
         this.graphicalProperties = graphicalProperties;
     }
-    
+
     /**
      * Adds a child node to this OR entailment which can be of the goal type.
      *
@@ -60,19 +60,19 @@ public class ORentailment extends ANDentailment {
      */
     @Override
     public void addChild(GSnode node) {
-        
+
         if (logic.isCorrect(node)) {
             //goals.add(node);
             //hasChildren = true;
-            super.addChild(node);            
-        }
-        
-        /*if(goals.size() >= MAXIMUM_GOALS) {
-            throw new UnsupportedOperationException("Can only add a maximum of"
-                    + " two goals to an OR entailment");
-        } else {
             super.addChild(node);
-        }*/
+        }
+
+        /*if(goals.size() >= MAXIMUM_GOALS) {
+         throw new UnsupportedOperationException("Can only add a maximum of"
+         + " two goals to an OR entailment");
+         } else {
+         super.addChild(node);
+         }*/
     }
 
     /**
@@ -85,7 +85,7 @@ public class ORentailment extends ANDentailment {
     @Override
     public void setChildren(ArrayList<GSnode> children) {
 
-        if(children.size() > MAXIMUM_GOALS) {
+        if (children.size() > MAXIMUM_GOALS) {
             throw new UnsupportedOperationException("An OR entailment can only "
                     + " have a maximum of"
                     + " two goals");
@@ -93,7 +93,6 @@ public class ORentailment extends ANDentailment {
         super.setChildren(children);
     }
 
-    
     /**
      * Returns this OR entailment's graphical properties.
      *
@@ -111,9 +110,10 @@ public class ORentailment extends ANDentailment {
      */
     @Override
     public void setGraphicalProperties(GSgraphics graphicalProperties) {
+        graphicalProperties.setGSnode(this);
         this.graphicalProperties = (GSorEntailmentGraphics) graphicalProperties;
     }
-    
+
     /**
      * Returns a boolean to denote whether an OR entailment has graphical
      * properties or not.
@@ -125,7 +125,5 @@ public class ORentailment extends ANDentailment {
     public boolean hasGraphics() {
         return this.graphicalProperties != null;
     }
-    
-    
-    
+
 }

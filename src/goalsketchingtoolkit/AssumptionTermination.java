@@ -35,6 +35,7 @@ public class AssumptionTermination extends GSnode {
      */
     @Override
     public void setGraphicalProperties(GSgraphics graphicalProperties) {
+        graphicalProperties.setGSnode(this);
         this.graphicalProperties = (GSnodeGraphics) graphicalProperties;
     }
 

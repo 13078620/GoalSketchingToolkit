@@ -13,14 +13,13 @@ import java.util.ArrayList;
  */
 public interface GoalGraphModelInterface {
 
-    void loadGoalGraph();
-
-    void saveGoalGraph();
-
-    void resetGoalGraph();
-
+   /**
+     * Sets the root goal for a goal graph model.
+     *
+     * @param root the root goal to set.
+     */
     void addRootGoal(Goal root);
-
+    
     void addAndEntailment(Goal parent, ANDentailment entailment);
 
     void addOrEntailment(Goal parent, ORentailment entailment);
@@ -50,4 +49,8 @@ public interface GoalGraphModelInterface {
     void removeFromGSnodes(int i);
 
     ArrayList getGSnodes();
+    /**
+     * Notifies the view of a change in state.
+     */
+    void notifyView();
 }
