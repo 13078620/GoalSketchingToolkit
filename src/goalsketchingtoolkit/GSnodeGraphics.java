@@ -12,6 +12,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.ArrayList;
+import java.awt.geom.Ellipse2D;
 
 /**
  * This class contains information about the graphical location and proportions
@@ -101,6 +102,16 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
         this.height = height;
 
     }
+    
+    /**
+     * Returns the goal sketching node of this goal sketching graphics.
+     *
+     * @return the goal sketching node.
+     */
+    @Override
+    public GSnode getGSnode() {
+        return super.getGSnode();
+    }
 
     /**
      * Checks if a point is within the bounds of this goal sketching node
@@ -135,6 +146,28 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                 && (h < y || h > Y));
 
     }
+    
+    /**
+     * Sets whether this goal sketching graphics is selected or not.
+     *
+     * @param selected a boolean value to denote if this goal sketching graphics
+     * is selected or not.
+     */
+    @Override
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+    }
+
+    /**
+     * Returns if this goal sketching graphics is selected.
+     *
+     * @return true if this goal sketching graphics is selected, false
+     * otherwise.
+     */
+    @Override
+    public boolean isSelected() {
+        return super.isSelected();
+    }
 
     /**
      * Draws the goal sketching node.
@@ -148,11 +181,11 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
         int x = getX();
         int y = getY();
-        int width = getWidth();
-        int height = getHeight();
+        //int width = this.width;
+        //int height = this.height;
         String text = "";
 
-        if (super.isSelected()) {
+        if (isSelected()) {
             super.setStrokeColor(Color.RED);
         } else {
             super.setStrokeColor(Color.BLACK);
@@ -181,7 +214,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                 int strHeight = fm.getHeight();
                 int strLength = text.length();
 
-                if (getWidth() > 50 && getHeight() > 25) {
+                if (width > 50 && height > 25) {
 
                     int charPerLine = (int) (strLength * width / (double) stringWidth);
 
@@ -259,7 +292,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
                         lineToX = (int) refinementIntersection[0];
                         lineToY = (int) refinementIntersection[1];
-                        
+
                         g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
                     }
 
@@ -271,10 +304,127 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
         } else if (nodeType.contains("OperationalizingProducts")) {
 
+            OperationalizingProducts ops = (OperationalizingProducts) node;
+
+            if (ops.getProducts().size() >= 1) {
+                ArrayList<String> ps = ops.getProducts();
+                text = "";
+
+                for (int i = 0; i < ps.size(); i++) {
+                    if (ps.indexOf(ps.get(i)) != ps.size() - 1) {
+                        text += ps.get(i) + ", ";
+                    } else {
+                        text += ps.get(i);
+                    }
+                }
+
+            }
+            int lineSep = 3;
+            int stringWidth = fm.stringWidth(text);
+            int strHeight = fm.getHeight();
+            int strLength = text.length();
+            if (getWidth() > 50 && getHeight() > 25) {
+
+                int charPerLine = (int) (strLength * width / (double) stringWidth);
+
+                if (charPerLine >= strLength) {
+                    g2.drawString(" " + text, x + 10, y + strHeight + 10);
+                } else {
+                    int lines = strLength / charPerLine;
+                    int skip = 0;
+                    for (int i = 1; i <= lines; i++) {
+                        String sTemp = text.substring(skip, skip + charPerLine - 1);
+                        if (!text.substring(skip + charPerLine - 1, skip + charPerLine).equals(" ") && !text.substring(skip + charPerLine - 2, skip + charPerLine - 1).equals(" ")) {
+
+                            sTemp += "-";
+                        }
+                        g2.drawString(" " + sTemp.trim() + " ", x + 10, y + i * strHeight + (i - 1) * lineSep + 10);
+                        skip += charPerLine - 1;
+                    }
+                    g2.drawString(" " + text.substring(skip, strLength).trim() + " ", x + 10, y + (lines + 1) * strHeight + (lines) * lineSep + 10);
+
+                }
+            }
+            g2.drawOval(x, y, width, height);
+            Goal parentGoal = (Goal) ops.getParent();
+            GSnodeGraphics g = parentGoal.getGraphicalProperties();
+
+            int lineStartX = x + width / 2;
+            int lineStartY = y;
+            int lineToX = (int) g.getX() + g.getWidth() / 2;
+            int lineToY = (int) g.getY() + g.getHeight();
+
+            g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+
         } else if (nodeType.contains("AssumptionTermination")) {
+
+            AssumptionTermination ats = (AssumptionTermination) node;
+            Goal parentGoal = (Goal) ats.getParent();
+            GSnodeGraphics g = parentGoal.getGraphicalProperties();
+
+            Ellipse2D.Double circle = new Ellipse2D.Double(x, y, width, height);
+            g2.draw(circle);
+
+            int lineStartX = x + width / 2;
+            int lineStartY = y;
+            int lineToX = (int) g.getX() + g.getWidth() / 2;
+            int lineToY = (int) g.getY() + g.getHeight();
+
+            g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
 
         } else if (nodeType.contains("Annotation")) {
 
+            Annotation a = (Annotation) node;
+            GoalOrientedProposition gop = (GoalOrientedProposition) a.getParent();
+            Goal parentGoal = (Goal) gop.getParent();
+            GSnodeGraphics g = parentGoal.getGraphicalProperties();
+            String judgementType = a.getJudgement().getClass().toString();
+
+            float dash1[] = {10.0f};
+            BasicStroke dashed = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
+            g2.setStroke(dashed);
+
+            if (judgementType.contains("GoalJudgement")) {
+
+                GoalJudgement j = (GoalJudgement) a.getJudgement();
+                ConfidenceFactorRating cfr1 = j.getRefineConfidenceFactorRating();
+                ConfidenceFactorRating cfr2 = j.getRefineConfidenceFactorRating();
+                SignificanceFactorRating sfr = j.getSignificanceFactorRating();
+                String text1 = cfr1.getKey() + ": " + cfr1.getValue();
+                String text2 = cfr2.getKey() + ": " + cfr1.getValue();;
+                String text3 = sfr.getKey() + ": " + sfr.getValue();;
+                int strHeight = fm.getHeight();
+                g2.drawString(" " + text1, x, y + 10);
+                g2.drawString(" " + text2, x, y + strHeight);
+                g2.drawString(" " + text3, x, y + strHeight);
+                g2.drawLine(g.getX() + g.getWidth() / 2, g.getY(), x + width / 2, y + height);
+                //drawline
+            } else if (judgementType.contains("LeafJudgement")) {
+
+                LeafJudgement j = (LeafJudgement) a.getJudgement();
+                ConfidenceFactorRating cfr1 = j.getConfidenceFactorRating();
+                SignificanceFactorRating sfr = j.getSignificanceFactorRating();
+                String text1 = cfr1.getKey() + ": " + cfr1.getValue();
+                String text2 = sfr.getKey() + ": " + sfr.getValue();
+                int strHeight = fm.getHeight();
+                g2.drawString(" " + text1, x, y + 10);
+                g2.drawString(" " + text2, x, y + strHeight);
+                g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight(), x + width / 2, y);
+
+            } else if (judgementType.contains("AssumptionJudgement")) {
+
+                AssumptionJudgement j = (AssumptionJudgement) a.getJudgement();
+                ConfidenceFactorRating cfr1 = j.getConfidenceFactorRating();
+                String text1 = cfr1.getKey() + ": " + cfr1.getValue();
+                g2.drawString(" " + text1, x, y + 10);
+                g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight(), x + width / 2, y);
+
+            }
+
+            g2.setStroke(super.getStroke());
+
+            g2.drawLine(x, y, x, y + height);
+            g2.drawLine(x + width, y, x, y + height);
         }
 
     }

@@ -110,25 +110,7 @@ public class GSgraphics {
         this.y = y;
 
     }
-
-    /**
-     * Returns the goal sketching node of this goal sketching graphics.
-     *
-     * @return the goal sketching node.
-     */
-    public GSnode getGSnode() {
-        return this.gsNode;
-    }
-
-    /**
-     * Sets the goal sketching node for this goal sketching graphics.
-     *
-     * @param gsNode the goal sketching node.
-     */
-    public void setGSnode(GSnode gsNode) {
-        this.gsNode = gsNode;
-    }
-
+    
     /**
      * Sets whether this goal sketching graphics is selected or not.
      *
@@ -148,6 +130,25 @@ public class GSgraphics {
     public boolean isSelected() {
         return selected;
     }
+
+    /**
+     * Returns the goal sketching node of this goal sketching graphics.
+     *
+     * @return the goal sketching node.
+     */
+    public GSnode getGSnode() {
+        return this.gsNode;
+    }
+
+    /**
+     * Sets the goal sketching node for this goal sketching graphics.
+     *
+     * @param gsNode the goal sketching node.
+     */
+    public void setGSnode(GSnode gsNode) {
+        this.gsNode = gsNode;
+    }
+    
 
     /**
      * Returns the stroke of this goal sketching graphics.

@@ -8,6 +8,7 @@ package goalsketchingtoolkit;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.BasicStroke;
+import java.awt.Color;
 
 /**
  * This class contains information about the graphical location and proportions
@@ -155,6 +156,16 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
     }
 
     /**
+     * Returns the goal sketching node of this goal sketching graphics.
+     *
+     * @return the goal sketching node.
+     */
+    @Override
+    public GSnode getGSnode() {
+        return super.getGSnode();
+    }
+    
+    /**
      * Returns a boolean to denote whether or not a point is within the circular
      * section of the entailment.
      *
@@ -166,6 +177,28 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
     @Override
     public boolean contains(int x, int y) {
         return this.circle.contains(x, y);
+    }
+    
+    /**
+     * Sets whether this goal sketching graphics is selected or not.
+     *
+     * @param selected a boolean value to denote if this goal sketching graphics
+     * is selected or not.
+     */
+    @Override
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+    }
+
+    /**
+     * Returns if this goal sketching graphics is selected.
+     *
+     * @return true if this goal sketching graphics is selected, false
+     * otherwise.
+     */
+    @Override
+    public boolean isSelected() {
+        return super.isSelected();
     }
 
     /**
@@ -203,6 +236,12 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
     @Override
     public void draw(Graphics2D g2) {
 
+        if (isSelected()) {
+            super.setStrokeColor(Color.RED);
+        } else {
+            super.setStrokeColor(Color.BLACK);
+        }
+        
         float dash1[] = {10.0f};
         BasicStroke dashed = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
         g2.setStroke(dashed);

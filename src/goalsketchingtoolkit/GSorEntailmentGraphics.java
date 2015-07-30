@@ -7,6 +7,7 @@ package goalsketchingtoolkit;
 
 import static goalsketchingtoolkit.GSentailmentGraphics.CIRCLE_WIDTH;
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 
@@ -188,6 +189,16 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
         this.circle2.x = x;
         this.circle2.y = y;
     }
+    
+    /**
+     * Returns the goal sketching node of this goal sketching graphics.
+     *
+     * @return the goal sketching node.
+     */
+    @Override
+    public GSnode getGSnode() {
+        return super.getGSnode();
+    }
 
     /**
      * Returns a boolean to denote whether or not a point is within the circular
@@ -204,17 +215,26 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
     }
 
     /**
-     * Returns a boolean to denote whether or not a point is within the second
-     * circular section of the entailment.
+     * Sets whether this goal sketching graphics is selected or not.
      *
-     * @param x the x coordinate.
-     * @param y the y coordinate.
-     * @return true if the point is within the second circular section of the
-     * entailment, false otherwise.
+     * @param selected a boolean value to denote if this goal sketching graphics
+     * is selected or not.
      */
-    /*public boolean secondEntailmentCircleContains(int x, int y) {
-        return this.circle2.contains(x, y);
-    }*/
+    @Override
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+    }
+
+    /**
+     * Returns if this goal sketching graphics is selected.
+     *
+     * @return true if this goal sketching graphics is selected, false
+     * otherwise.
+     */
+    @Override
+    public boolean isSelected() {
+        return super.isSelected();
+    }
 
     /**
      * Draws the goal sketching node.
@@ -223,6 +243,12 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
      */
     @Override
     public void draw(Graphics2D g2) {
+        
+        if (isSelected()) {
+            super.setStrokeColor(Color.RED);
+        } else {
+            super.setStrokeColor(Color.BLACK);
+        }
 
         float dash1[] = {10.0f};
         BasicStroke dashed = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);

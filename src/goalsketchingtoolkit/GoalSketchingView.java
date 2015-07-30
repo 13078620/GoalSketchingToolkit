@@ -39,21 +39,11 @@ import java.awt.Rectangle;
 
 import javax.swing.JOptionPane;
 
-//import java.awt.event.MouseListener;
-//import java.awt.event.MouseMotionListener;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -71,19 +61,16 @@ public class GoalSketchingView implements Observer {
 
     private JScrollPane scrollPane;
 
-    //JPanel testPanel;
-    GoalSketchingPanel panel;
-    private GoalSketchingModel model;
-    private GoalSketchingController controller;
+    private GoalSketchingPanel panel;
+    private GoalGraphModelInterface model;
+    private GoalSketchingControllerInterface controller;
 
-    private JPopupMenu popUpMenu;
-    private JPopupMenu popUpMenu2;
+    private JPopupMenu leafPopUpMenu;
+    private JPopupMenu rootPopUpMenu;
 
-    GoalSketchingNode currentSelection;
-
-    boolean rootNode;
-    int rootStartX;
-    int rootStartY;
+    private boolean rootNode;
+    private int rootStartX;
+    private int rootStartY;
 
     private LoadGoalGraphListener listener;
     private SaveGoalGraphListener listener2;
@@ -95,18 +82,24 @@ public class GoalSketchingView implements Observer {
     private JLabel addPropositionLabel;
     private JLabel selectPrefixLabel;
     private JLabel operationalizerLabel;
-    private JLabel addSubDomainLabel;
+
     private JComboBox combobox;
 
-    private MouseAdapter mouseListener = new MouseAdapter() {
+    class MouseListener extends MouseAdapter {
 
-        //private GoalSketchingNode currentSelection;
         private boolean mousePressed = false;
         private boolean dragging = false;
         final int PROX_DIST = 3;
 
+        public void setMousePressed(boolean pressed) {
+            mousePressed = pressed;
+        }
+
         @Override
         public void mousePressed(MouseEvent e) {
+
+            int eventX = e.getX();
+            int eventY = e.getY();
 
             if (panel.getCursor() != Cursor.getDefaultCursor()) {
                 // If cursor is set for resizing, allow dragging.
@@ -114,42 +107,22 @@ public class GoalSketchingView implements Observer {
             }
 
             if (e.getButton() == 1) {
-                int eventX = e.getX();
-                int eventY = e.getY();
-                //for (Object o : model.getGoalSketchingNodes()) {
-
-                //GoalSketchingNode gsn = (GoalSketchingNode) o;
-                for (int i = model.getGoalSketchingNodes().size() - 1; i >= 0; i--) {
-
-                    GoalSketchingNode gsn = (GoalSketchingNode) model.getGoalSketchingNodes().get(i);
-
-                    if (gsn.contains(eventX, eventY)) {
-
-                        mousePressed = true;
-                        currentSelection = gsn;
-                        currentSelection.setSelected(true);
-                        model.notifyView();
-                        break;
-                    }
-                }
-
-                //}
+                controller.setCurrentSelection(eventX, eventY);
             }
 
             if (e.getButton() == 3) {
-
-                int eventX = e.getX();
-                int eventY = e.getY();
-
-                if (model.getGoalSketchingNodes().size() == 0) {
-                    rootNode = true;
+                
+                if (controller.modelIsEmpty()) {
+                    controller.setIsRootNode(true);
                 }
-
-                if (rootNode) {
-                    popUpMenu2.show(e.getComponent(), eventX, eventY);
+                
+                if (controller.getIsRootNode()) {
+                    showRootPopUpMenu(e.getComponent(), eventX, eventY);
                     rootStartX = eventX;
                     rootStartY = eventY;
                 }
+                
+                controller.setCurrentSelection(eventX, eventY);
 
                 for (Object o : model.getGoalSketchingNodes()) {
                     GoalSketchingNode gsn = (GoalSketchingNode) o;
@@ -159,40 +132,40 @@ public class GoalSketchingView implements Observer {
                         currentSelection = gsn;
                         //currentSelection.setSelected(true);
                         if (gsn.getClass().toString().contains("OperationalizerNode")) {
-                            menuItem.setEnabled(false);
-                            menuItem3.setEnabled(false);
-                            menuItem4.setEnabled(false);
+                            addANDEntailmentMenuItem.setEnabled(false);
+                            addProductsMenuItem.setEnabled(false);
+                            addAssumpTerminationMenuItem.setEnabled(false);
                         } else if (gsn.getClass().toString().contains("GraphNode")) {
                             GraphNode cs = (GraphNode) gsn;
                             if (cs.isRootNode()) {
-                                menuItem.setEnabled(true);
-                                menuItem3.setEnabled(false);
-                                menuItem4.setEnabled(false);
+                                addANDEntailmentMenuItem.setEnabled(true);
+                                addProductsMenuItem.setEnabled(false);
+                                addAssumpTerminationMenuItem.setEnabled(false);
                             } else if (cs.isOperationalized2()) {
-                                menuItem.setEnabled(false);
-                                menuItem3.setEnabled(false);
-                                menuItem4.setEnabled(false);
+                                addANDEntailmentMenuItem.setEnabled(false);
+                                addProductsMenuItem.setEnabled(false);
+                                addAssumpTerminationMenuItem.setEnabled(false);
                             } else if (cs.isParent()) {
-                                menuItem.setEnabled(true);
-                                menuItem3.setEnabled(false);
-                                menuItem4.setEnabled(false);
+                                addANDEntailmentMenuItem.setEnabled(true);
+                                addProductsMenuItem.setEnabled(false);
+                                addAssumpTerminationMenuItem.setEnabled(false);
                             } else if (cs.isTerminated()) {
-                                menuItem.setEnabled(false);
-                                menuItem4.setEnabled(false);
-                                menuItem3.setEnabled(false);
-                                /*null pointer*/                            } else if ((cs.getProposition() != null && cs.getProposition().getPrefix().contains("a")) || (cs.getParent().getProposition() != null && cs.getParent().getProposition().getPrefix().contains("a"))) {
-                                menuItem4.setEnabled(true);
-                                menuItem3.setEnabled(false);
+                                addANDEntailmentMenuItem.setEnabled(false);
+                                addAssumpTerminationMenuItem.setEnabled(false);
+                                addProductsMenuItem.setEnabled(false);
+                                //null pointer                        } else if ((cs.getProposition() != null && cs.getProposition().getPrefix().contains("a")) || (cs.getParent().getProposition() != null && cs.getParent().getProposition().getPrefix().contains("a"))) {
+                                addAssumpTerminationMenuItem.setEnabled(true);
+                                addProductsMenuItem.setEnabled(false);
                             } else {
-                                menuItem.setEnabled(true);
-                                menuItem3.setEnabled(true);
-                                menuItem4.setEnabled(false);
+                                addANDEntailmentMenuItem.setEnabled(true);
+                                addProductsMenuItem.setEnabled(true);
+                                addAssumpTerminationMenuItem.setEnabled(false);
                             }
                         } else {
                             //menuItem.setEnabled(true);
                             //menuItem3.setEnabled(true);
                         }
-                        popUpMenu.show(e.getComponent(), eventX, eventY);
+                        leafPopUpMenu.show(e.getComponent(), eventX, eventY);
                     }
                 }
             }
@@ -417,13 +390,13 @@ public class GoalSketchingView implements Observer {
          * Make a smaller Rectangle and use it to locate the cursor relative to
          * the Rectangle center.
          */
-        private int getOutcode(Point p) {
-            Rectangle r = new Rectangle((int) currentSelection.getX(), (int) currentSelection.getY(), currentSelection.getWidth(), currentSelection.getHeight());
-            r.grow(-PROX_DIST, -PROX_DIST);
-            return r.outcode(p.x, p.y);
-        }
+        /*private int getOutcode(Point p) {
+         Rectangle r = new Rectangle((int) currentSelection.getX(), (int) currentSelection.getY(), currentSelection.getWidth(), currentSelection.getHeight());
+         r.grow(-PROX_DIST, -PROX_DIST);
+         return r.outcode(p.x, p.y);
+         }
 
-        /**
+         /**
          * Make a larger Rectangle and check to see if the cursor is over it.
          */
         private boolean isOverRect(Point p) {
@@ -431,10 +404,21 @@ public class GoalSketchingView implements Observer {
             r.grow(PROX_DIST, PROX_DIST);
             return r.contains(p);
         }
+    }
+    
 
-    };
-
-    JMenuItem menuItem = new JMenuItem(new AbstractAction("Add leaf goal") {
+    JMenuItem addRootMenuItem = new JMenuItem(new AbstractAction("Add root goal") {
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int x = rootStartX;
+            int y = rootStartY;            
+            controller.addRootGoal(x, y);
+        }
+    });
+    
+    JMenuItem addANDEntailmentMenuItem = new JMenuItem(new AbstractAction("Add AND entailment") {
+        
         @Override
         public void actionPerformed(ActionEvent e) {
 
@@ -471,29 +455,23 @@ public class GoalSketchingView implements Observer {
             }
         }
     });
-
-    JMenuItem menuItem2 = new JMenuItem(new AbstractAction("Add root goal") {
+    
+    JMenuItem addGoalMenuItem = new JMenuItem(new AbstractAction("Add goal") {
         @Override
         public void actionPerformed(ActionEvent e) {
-
-            double x = rootStartX;
-            double y = rootStartY;
-            //GraphNode cs = new GraphNode(x, y, 100, 60, new Proposition("/b/", "test", false), true, false, "GrootTest");
-            //GraphNode cs = new GraphNode(x, y, 100, 60, "GrootTest", "1");
-            GraphNode cs = new GraphNode();
-            cs.setX(x);
-            cs.setY(y);
-            cs.setWidth(100);
-            cs.setHeight(60);
-            cs.setIsRootNode(true);
-            cs.setIsParent(true);
-            model.setRootGraphNode(cs);
-            controller.addToGoalSketchingNodes(cs);
-            rootNode = false;
+            
         }
-    });
+    });    
+    
+    JMenuItem addOREntailmentMenuItem = new JMenuItem(new AbstractAction("Add OR entailment") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    });      
+        
 
-    JMenuItem menuItem3 = new JMenuItem(new AbstractAction("Add operationalizer") {
+    JMenuItem addProductsMenuItem = new JMenuItem(new AbstractAction("Add operationalizing products") {
         @Override
         public void actionPerformed(ActionEvent e) {
 
@@ -519,7 +497,7 @@ public class GoalSketchingView implements Observer {
         }
     });
 
-    JMenuItem menuItem4 = new JMenuItem(new AbstractAction("Add assumption termination") {
+    JMenuItem addAssumpTerminationMenuItem = new JMenuItem(new AbstractAction("Add assumption termination") {
         @Override
         public void actionPerformed(ActionEvent e) {
 
@@ -538,6 +516,62 @@ public class GoalSketchingView implements Observer {
                 controller.addTerminationGoalSketchingNodes(child);
 
             }
+        }
+    });
+    
+    JMenuItem addAnnotationMenuItem = new JMenuItem(new AbstractAction("Add annotation") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    });
+    
+    JMenuItem addGOPMenuItem = new JMenuItem(new AbstractAction("Add goal oriented proposition") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    });
+    
+    JMenuItem deleteEntailmentMenuItem = new JMenuItem(new AbstractAction("Delete entailment") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    });
+    
+    JMenuItem deleteGoalMenuItem = new JMenuItem(new AbstractAction("Delete goal") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    });
+    
+    JMenuItem deleteProductsMenuItem = new JMenuItem(new AbstractAction("Delete operationalizing products") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    });
+    
+    JMenuItem deleteAssumpTerminationMenuItem = new JMenuItem(new AbstractAction("Delete assumption termination") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    });
+    
+    JMenuItem deleteAnnotationMenuItem = new JMenuItem(new AbstractAction("Delete annotation") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    });
+    
+    JMenuItem deleteGOPMenuItem = new JMenuItem(new AbstractAction("Delete goal oriented proposition") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
         }
     });
 
@@ -569,7 +603,7 @@ public class GoalSketchingView implements Observer {
 
             GraphNode root = model.getRootGraphNode();
             String file = fileDialog.getDirectory() + fileDialog.getFile();
-            System.out.println(file);
+            //System.out.println(file);
             if (file != null) {
                 try {
                     controller.saveGraph(root, file);
@@ -776,17 +810,6 @@ public class GoalSketchingView implements Observer {
 
     }
 
-    /*JMenuItem menuItem4 = new JMenuItem(new AbstractAction("Load") {
-     @Override
-     public void actionPerformed(ActionEvent e) {
-            
-     GraphParser parser = new GraphParser();
-     Document xmlDoc = parser.getDocument("testGoalGraph.xml");
-     Element theRoot = xmlDoc.getDocumentElement();
-     NodeList nodes = theRoot.getChildNodes();
-            
-     }
-     });*/
     JMenuItem menuItem5 = new JMenuItem(new AbstractAction("Save Goal Graph") {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -799,7 +822,7 @@ public class GoalSketchingView implements Observer {
      *
      * @param model the observable which this view observes.
      */
-    public GoalSketchingView(GoalSketchingModel model, GoalSketchingController controller) {
+    public GoalSketchingView(GoalGraphModelInterface model, GoalSketchingControllerInterface controller) {
 
         this.model = model;
         this.controller = controller;
@@ -840,21 +863,21 @@ public class GoalSketchingView implements Observer {
 
     public void createContextualMenuControls() {
 
-        popUpMenu = new JPopupMenu();
-        popUpMenu2 = new JPopupMenu();
-        popUpMenu.add(menuItem);
-        popUpMenu.add(menuItem3);
+        leafPopUpMenu = new JPopupMenu();
+        rootPopUpMenu = new JPopupMenu();
+        leafPopUpMenu.add(addANDEntailmentMenuItem);
+        leafPopUpMenu.add(addProductsMenuItem);
 
-        popUpMenu.add(menuItem4);
+        leafPopUpMenu.add(addAssumpTerminationMenuItem);
 
         JMenuItem edit = new JMenuItem("Edit");
         ActionListener listener = new EditGoalListener();
         edit.addActionListener(listener);
-        popUpMenu.add(edit);
+        leafPopUpMenu.add(edit);
 
-        popUpMenu2.add(menuItem2);
-        popUpMenu.setLightWeightPopupEnabled(false);
-        popUpMenu2.setLightWeightPopupEnabled(false);
+        rootPopUpMenu.add(addRootMenuItem);
+        leafPopUpMenu.setLightWeightPopupEnabled(false);
+        rootPopUpMenu.setLightWeightPopupEnabled(false);
 
     }
 
@@ -914,9 +937,130 @@ public class GoalSketchingView implements Observer {
     public void reset() {
         panel.reset();
     }
-    
+
     public void displayErrorMessage() {
         JOptionPane.showMessageDialog(null, "Not structurally complete, graph NOT saved.");
     }
 
+    public ArrayList<Drawable> getDrawables() {
+        return panel.getDrawables();
+    }
+
+    //public void setMousePressed(boolean pressed) {
+    //    this.
+    //}
+    
+    public void showRootPopUpMenu(MouseEvent e, int eventX, int eventY) {
+         rootPopUpMenu.show(e.getComponent(), eventX, eventY);
+    }
+    
+    public void showLeafPopUpMenu(MouseEvent e, int eventX, int eventY) {
+        leafPopUpMenu.show(e.getComponent(), eventX, eventY);
+    }
+    
+    public void enableAddANDEntailmentMenuItem() {
+        addANDEntailmentMenuItem.setEnabled(true);
+    }
+    
+    public void disableAddANDEntailmentMenuItem() {
+        addANDEntailmentMenuItem.setEnabled(false);
+    }
+    
+    public void enableAddOREntailmentMenuItem() {
+        addOREntailmentMenuItem.setEnabled(true);
+    }
+    
+    public void disableAddOREntailmentMenuItem() {
+        addOREntailmentMenuItem.setEnabled(false);
+    }
+    
+    public void enableAddProductsMenuItem() {
+        addProductsMenuItem.setEnabled(true);
+    }
+    
+    public void disableAddProductsMenuItem() {
+        addProductsMenuItem.setEnabled(false);
+    }
+    
+    public void enableAddAssumpTerminationMenuItem() {
+        addAssumpTerminationMenuItem.setEnabled(true);
+    }
+    
+    public void disableAddAssumpTerminationMenuItem() {
+        addAssumpTerminationMenuItem.setEnabled(false);
+    }
+    
+    public void enableAddAnnotationMenuItem() {
+        addAnnotationMenuItem.setEnabled(true);
+    }
+    
+    public void disableAddAnnotationMenuItem() {
+        addAnnotationMenuItem.setEnabled(false);
+    }
+    
+    public void enableAddGOPMenuItem() {
+        addGOPMenuItem.setEnabled(true);
+    }
+    
+    public void disableAddGOPMenuItem() {
+        addGOPMenuItem.setEnabled(false);
+    }
+    
+    public void enableDeleteEntailmentMenuItem() {
+        deleteEntailmentMenuItem.setEnabled(true);
+    }
+    
+    public void disableDeleteEntailmentMenuItem() {
+        deleteEntailmentMenuItem.setEnabled(false);
+    }
+    
+    public void enableDeleteGoalMenuItem() {
+        deleteGoalMenuItem.setEnabled(true);
+    }
+    
+    public void disableDeleteGoalMenuItem() {
+        deleteGoalMenuItem.setEnabled(false);
+    }
+    
+    public void enableDeleteProductsMenuItem() {
+        deleteProductsMenuItem.setEnabled(true);
+    }
+    
+    public void disableDeleteProductsMenuItem() {
+        deleteProductsMenuItem.setEnabled(false);
+    }
+    
+    public void enableDeleteAssumpTerminationMenuItem() {
+        deleteAssumpTerminationMenuItem.setEnabled(true);
+    }
+    
+    public void disableDeleteAssumpTerminationMenuItem() {
+        deleteAssumpTerminationMenuItem.setEnabled(false);
+    }
+    
+    public void enableDeleteAnnotationMenuItem() {
+        deleteAnnotationMenuItem.setEnabled(true);
+    }
+    
+    public void disableDeleteAnnotationMenuItem() {
+        deleteAnnotationMenuItem.setEnabled(false);
+    }
+    
+    public void enableDeleteGOPMenuItem() {
+        deleteGOPMenuItem.setEnabled(true);
+    }
+    
+    public void disableDeleteGOPMenuItem() {
+        deleteGOPMenuItem.setEnabled(false);
+    }
+    
+    
+    
+
+
+
+
+
+            
+            
 }

@@ -9,7 +9,7 @@ package goalsketchingtoolkit;
  *
  * @author Chris Berryman.
  */
-public class GSnodeFactory extends AbstractGSnodeFactory {
+public class GSnodeFactory  {
 
     /**
      * Returns a new goal.
@@ -22,11 +22,20 @@ public class GSnodeFactory extends AbstractGSnodeFactory {
      * @param gop the GOP for the goal.
      * @return a new goal initialised with the given arguments.
      */
-    @Override
+    //@Override
     public Goal createGoal(int x, int y, int width, int height, String ID, GoalOrientedProposition gop) {
 
         GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);
         Goal goal = new Goal(ID, gop, g);
+        return goal;
+
+    }
+    
+    public Goal createGoal(int x, int y, int width, int height) {
+
+        GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);
+        Goal goal = new Goal();
+        goal.setGraphicalProperties(g);
         return goal;
 
     }
@@ -38,7 +47,7 @@ public class GSnodeFactory extends AbstractGSnodeFactory {
      * @param statement the statement.
      * @return a new GOP initialised with the given arguments.
      */
-    @Override
+    //@Override
     public GoalOrientedProposition createGOP(GoalType prefix, String statement) {
 
         GoalOrientedProposition gop = new GoalOrientedProposition(prefix, statement);
@@ -56,7 +65,7 @@ public class GSnodeFactory extends AbstractGSnodeFactory {
      * @param length the length of the goal sketching node.
      * @return a new initialised with the given arguments.
      */
-    @Override
+    //@Override
     public ANDentailment createANDentailment(int x, int y, int toX, int toY, int length) {
 
         GSentailmentGraphics g = new GSentailmentGraphics(x, y, toX, toY, length);
@@ -77,7 +86,7 @@ public class GSnodeFactory extends AbstractGSnodeFactory {
      * @param length2 the length of the second part of the entailment.
      * @return a new initialised with the given arguments.
      */
-    @Override
+    //@Override
     public ORentailment createORentailment(int x, int y, int toX, int toY, int length, int toX2, int toY2, int length2) {
         
         GSorEntailmentGraphics g = new GSorEntailmentGraphics(x, y, toX, toY, length, toX2, toY2, length2);
@@ -96,7 +105,7 @@ public class GSnodeFactory extends AbstractGSnodeFactory {
      * @param product an agent.
      * @return a new initialised with the given arguments.
      */
-    @Override
+    //@Override
     public OperationalizingProducts createOperationalizingProducts(int x, int y, int width, int height, String product) {
         
         GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);
@@ -116,7 +125,7 @@ public class GSnodeFactory extends AbstractGSnodeFactory {
      * @param height the height of the goal sketching node.
      * @return a new initialised with the given arguments.
      */
-    @Override
+    //@Override
     public AssumptionTermination createAssumptionTermination(int x, int y, int width, int height) {
         
         GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);
@@ -137,7 +146,7 @@ public class GSnodeFactory extends AbstractGSnodeFactory {
      * associated with.
      * @return a new initialised with the given arguments.
      */
-    @Override
+    //@Override
     public Annotation createAnnotation(int x, int y, int width, int height, Judgement judgement) {
         
         GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);

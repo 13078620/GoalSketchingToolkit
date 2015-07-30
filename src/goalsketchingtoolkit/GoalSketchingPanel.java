@@ -7,7 +7,6 @@ package goalsketchingtoolkit;
 
 import javax.swing.JPanel;
 import java.util.ArrayList;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -48,6 +47,15 @@ public class GoalSketchingPanel extends JPanel {
     }
 
     /**
+     * Returns the list of drawables for this goal sketching panel.
+     *
+     * @return the list of drawables.
+     */
+    public ArrayList<Drawable> getDrawables() {
+        return this.drawables;
+    }
+
+    /**
      * Paints the goal sketching panel and draws the goal sketching nodes, the
      * panel is not displayed as opaque as super's implementation is invoked.
      *
@@ -66,8 +74,11 @@ public class GoalSketchingPanel extends JPanel {
         }
     }
 
+    /**
+     * Resets the list of drawables for this panel.
+     */
     public void reset() {
-        
+
         for (int i = drawables.size() - 1; i >= 0; i--) {
             drawables.remove(i);
         }

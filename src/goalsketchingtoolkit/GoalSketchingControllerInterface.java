@@ -5,11 +5,28 @@
  */
 package goalsketchingtoolkit;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 /**
  *
  * @author Chris Berryman.
  */
 public interface GoalSketchingControllerInterface {
+
+    /**
+     * Returns the selected goal sketching node.
+     *
+     * @return the currently selected goal sketching node.
+     */
+    GSnode getCurrentSelection();
+
+    /**
+     * Sets the selected goal sketching node.
+     *
+     * @param eventX the x coordinate of the event.
+     * @param eventY the y coordinate of the event.
+     */
+    void setCurrentSelection(int eventX, int eventY);
 
     /**
      * Loads a goal graph.
@@ -28,10 +45,12 @@ public interface GoalSketchingControllerInterface {
 
     /**
      * Saves a goal graph.
+     *
      * @param root the root goal.
      * @param fileName the file path.
+     * @throws javax.xml.parsers.ParserConfigurationException
      */
-    void saveGraph(Goal root, String fileName);
+    void saveGraph(Goal root, String fileName) throws ParserConfigurationException;
 
     /**
      * resets the model and view.
@@ -41,9 +60,10 @@ public interface GoalSketchingControllerInterface {
     /**
      * Sets the root goal for the goal graph model.
      *
-     * @param root the root goal to set.
+     * @param x the x coordinate of the root goal.
+     * @param y the y coordinate of the root goal.
      */
-    void addRootGoal(Goal root);
+    void addRootGoal(int x, int y);
 
     /**
      * Adds an AND entailment to a goal.
@@ -120,5 +140,33 @@ public interface GoalSketchingControllerInterface {
      * @param annotation the annotation to add.
      */
     void addAnnotation(Goal goal, Annotation annotation);
+
+    /**
+     * Denotes whether or not the goal to add is the root node.
+     *
+     * @param rootNode true if the node to add is the root.
+     */
+    void setIsRootNode(boolean rootNode);
+
+    /**
+     * Denotes whether or not the goal to add is the root node. *
+     *
+     * @return true if the goal to add is the root node, false otherwise.
+     */
+    boolean getIsRootNode();
+
+    /**
+     * Returns a boolean to denote whether or not there are any goal sketching
+     * nodes in the model.
+     *
+     * @return true if the model is empty, false otherwise.
+     */
+    boolean modelIsEmpty();
+
+    /**
+     * Enables or disables the menu items relevant to the current node of
+     * interest.
+     */
+    void configureContextualMenuItems();
 
 }

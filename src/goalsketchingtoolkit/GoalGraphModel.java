@@ -26,7 +26,6 @@ public class GoalGraphModel extends Observable {
 
         this.rootGoal = root;
         this.goalSketchingNodes.add(root);
-        notifyView();
 
     }
 

@@ -7,19 +7,20 @@ package goalsketchingtoolkit;
 
 import java.util.ArrayList;
 
+import java.util.Observer;
 /**
  *
  * @author Chris Berryman.
  */
 public interface GoalGraphModelInterface {
 
-   /**
+    /**
      * Sets the root goal for a goal graph model.
      *
      * @param root the root goal to set.
      */
     void addRootGoal(Goal root);
-    
+
     void addAndEntailment(Goal parent, ANDentailment entailment);
 
     void addOrEntailment(Goal parent, ORentailment entailment);
@@ -49,8 +50,15 @@ public interface GoalGraphModelInterface {
     void removeFromGSnodes(int i);
 
     ArrayList getGSnodes();
+
     /**
      * Notifies the view of a change in state.
      */
     void notifyView();
+
+    /**
+     * Adds an observer to this model.
+     * @param view the observer to add.
+     */
+    void addObserver(Observer view);
 }
