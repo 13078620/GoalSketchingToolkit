@@ -69,7 +69,7 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
         this.toY = toY;
         this.length = length;
 
-        setCircle(toX);
+        this.setCircle(toX);
     }
 
     /**
@@ -164,7 +164,7 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
     public GSnode getGSnode() {
         return super.getGSnode();
     }
-    
+
     /**
      * Returns a boolean to denote whether or not a point is within the circular
      * section of the entailment.
@@ -175,10 +175,10 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
      * entailment, false otherwise.
      */
     @Override
-    public boolean contains(int x, int y) {
+    public boolean contains(int x, int y) {        
         return this.circle.contains(x, y);
     }
-    
+
     /**
      * Sets whether this goal sketching graphics is selected or not.
      *
@@ -241,16 +241,35 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
         } else {
             super.setStrokeColor(Color.BLACK);
         }
-        
+
         float dash1[] = {10.0f};
         BasicStroke dashed = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
         g2.setStroke(dashed);
 
-        //int lineLength = getLength();
-        int lineStartX = super.getX();
-        int lineStartY = super.getY();
-        int lineToX = getToX();
-        int lineToY = getToY();
+        int lineStartX = 0;
+        int lineStartY = 0;
+        if (getGSnode() != null) {
+            ANDentailment ae = (ANDentailment) getGSnode();
+            if (ae.hasParent) {
+                Goal goal = (Goal) ae.getParent();
+                GSnodeGraphics g = goal.getGraphicalProperties();
+                lineStartX = g.getX() + g.getWidth() / 2;
+                lineStartY = g.getY() + g.getHeight();
+            } else {
+                lineStartX = super.getX();
+                lineStartY = super.getY();
+            }
+        }
+
+        //int lineToX = getToX();
+        int lineToX = (int) circle.x + CIRCLE_WIDTH / 2;
+        int lineToY = (int) circle.y + CIRCLE_WIDTH / 2;
+
+        double[] refinementIntersection = getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
+
+        lineToX = (int) refinementIntersection[0];
+        lineToY = (int) refinementIntersection[1];
+
         g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
 
         g2.setStroke(super.getStroke());

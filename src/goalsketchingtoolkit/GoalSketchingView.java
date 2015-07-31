@@ -79,7 +79,7 @@ public class GoalSketchingView implements Observer {
     private SaveGoalGraphListener listener2;
     private NewGoalGraphListener listener3;
 
-    private MouseListener mouseListener;
+    private GSmouseListener mouseListener;
 
     private JTextField text;
     private JTextField text2;
@@ -90,254 +90,14 @@ public class GoalSketchingView implements Observer {
 
     private JComboBox combobox;
 
-    class MouseListener extends MouseAdapter {
-
-        private boolean mousePressed = false;
-        private boolean dragging = false;
-        final int PROX_DIST = 3;
-
-        public void setMousePressed(boolean pressed) {
-            mousePressed = pressed;
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-            int eventX = e.getX();
-            int eventY = e.getY();
-
-            if (panel.getCursor() != Cursor.getDefaultCursor()) {
-                // If cursor is set for resizing, allow dragging.
-                dragging = true;
-            }
-
-            if (e.getButton() == 1) {
-                controller.setCurrentSelection(eventX, eventY);
-            }
-
-            if (e.getButton() == 3) {
-                controller.configureContextualMenuItems(e, eventY, eventY);
-            }
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-            dragging = false;
-
-            if (e.getButton() == 1) {
-                mousePressed = false;
-                if (controller.getCurrentSelection() != null) {
-                    GSnode gsn = controller.getCurrentSelection();
-                    GSgraphics g = gsn.getGraphicalProperties();
-                    g.setSelected(false);
-                }
-
-            }
-            controller.configureMouseReleased();
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-
-            int eventX = e.getX();
-            int eventY = e.getY();
-
-            if (dragging) {
-                mousePressed = false;
-
-                Point p = e.getPoint();
-                GoalSketchingNode gsn = currentSelection;
-                int type = panel.getCursor().getType();
-                double dx = p.x - gsn.getX();
-                double dy = p.y - gsn.getY();
-                switch (type) {
-                    case Cursor.N_RESIZE_CURSOR:
-                        int height = gsn.getHeight() - (int) dy;
-                        gsn.setY(gsn.getY() + dy);
-                        gsn.setHeight(height);
-                        //r.setRect(r.x, r.y + dy, r.width, height);
-                        break;
-                    case Cursor.NW_RESIZE_CURSOR:
-                        int width = gsn.getWidth() - (int) dx;
-                        height = gsn.getHeight() - (int) dy;
-                        gsn.setX(gsn.getX() + dx);
-                        gsn.setY(gsn.getY() + dy);
-                        gsn.setWidth(width);
-                        gsn.setHeight(height);
-                        //r.setRect(r.x + dx, r.y + dy, width, height);
-                        break;
-                    case Cursor.W_RESIZE_CURSOR:
-                        width = gsn.getWidth() - (int) dx;
-                        gsn.setX(gsn.getX() + dx);
-                        gsn.setWidth(width);
-                        //r.setRect(r.x + dx, r.y, width, r.height);
-                        break;
-                    case Cursor.SW_RESIZE_CURSOR:
-                        width = gsn.getWidth() - (int) dx;
-                        height = (int) dy;
-                        gsn.setX(gsn.getX() + dx);
-                        gsn.setWidth(width);
-                        gsn.setHeight(height);
-                        //r.setRect(r.x + dx, r.y, width, height);
-                        break;
-                    case Cursor.S_RESIZE_CURSOR:
-                        height = (int) dy;
-                        gsn.setHeight(height);
-                        //r.setRect(r.x, r.y, r.width, height);
-                        break;
-                    case Cursor.SE_RESIZE_CURSOR:
-                        width = (int) dx;
-                        height = (int) dy;
-                        gsn.setWidth(width);
-                        gsn.setHeight(height);
-                        //r.setRect(r.x, r.y, width, height);
-                        break;
-                    case Cursor.E_RESIZE_CURSOR:
-                        width = (int) dx;
-                        gsn.setWidth(width);
-                        //r.setRect(r.x, r.y, width, r.height);
-                        break;
-                    case Cursor.NE_RESIZE_CURSOR:
-                        width = (int) dx;
-                        height = gsn.getHeight() - (int) dy;
-                        gsn.setY(gsn.getY() + dy);
-                        gsn.setWidth(width);
-                        gsn.setHeight(height);
-                        //r.setRect(r.x, r.y + dy, width, height);
-                        break;
-                    default:
-                        System.out.println("unexpected type: " + type);
-                }
-                model.notifyView();
-            }
-
-            if (mousePressed) {
-                currentSelection.setLocation(eventX, eventY);
-                model.notifyView();
-            }
-
-        }
-
-        @Override
-        public void mouseMoved(MouseEvent e
-        ) {
-
-            if (currentSelection != null) {
-                Point p = e.getPoint();
-                if (!isOverRect(p)) {
-                    if (panel.getCursor() != Cursor.getDefaultCursor()) {
-                        // If cursor is not over rect reset it to the default.
-                        panel.setCursor(Cursor.getDefaultCursor());
-                    }
-                    return;
-                }
-                // Locate cursor relative to center of rect.
-                int outcode = getOutcode(p);
-                GoalSketchingNode gsn = currentSelection;
-                double y = gsn.getY();
-                double x = gsn.getX();
-                int height = gsn.getHeight();
-                int width = gsn.getWidth();
-
-                switch (outcode) {
-                    case Rectangle.OUT_TOP:
-                        if (Math.abs(p.y - y) < PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.N_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_TOP + Rectangle.OUT_LEFT:
-                        if (Math.abs(p.y - y) < PROX_DIST
-                                && Math.abs(p.x - x) < PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.NW_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_LEFT:
-                        if (Math.abs(p.x - x) < PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.W_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_LEFT + Rectangle.OUT_BOTTOM:
-                        if (Math.abs(p.x - x) < PROX_DIST
-                                && Math.abs(p.y - (y + height)) < PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.SW_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_BOTTOM:
-                        if (Math.abs(p.y - (y + height)) < PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.S_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_BOTTOM + Rectangle.OUT_RIGHT:
-                        if (Math.abs(p.x - (x + width)) < PROX_DIST
-                                && Math.abs(p.y - (y + height)) < PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.SE_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_RIGHT:
-                        if (Math.abs(p.x - (x + width)) < PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.E_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_RIGHT + Rectangle.OUT_TOP:
-                        if (Math.abs(p.x - (x + width)) < PROX_DIST
-                                && Math.abs(p.y - y) < PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.NE_RESIZE_CURSOR));
-                        }
-                        break;
-                    default:    // center
-                        panel.setCursor(Cursor.getDefaultCursor());
-                }
-            }
-        }
-
-        /**
-         * Make a smaller Rectangle and use it to locate the cursor relative to
-         * the Rectangle center.
-         */
-        /*private int getOutcode(Point p) {
-         Rectangle r = new Rectangle((int) currentSelection.getX(), (int) currentSelection.getY(), currentSelection.getWidth(), currentSelection.getHeight());
-         r.grow(-PROX_DIST, -PROX_DIST);
-         return r.outcode(p.x, p.y);
-         }
-
-         /**
-         * Make a larger Rectangle and check to see if the cursor is over it.
-         */
-        private boolean isOverRect(Point p) {
-            Rectangle r = new Rectangle((int) currentSelection.getX(), (int) currentSelection.getY(), currentSelection.getWidth(), currentSelection.getHeight());
-            r.grow(PROX_DIST, PROX_DIST);
-            return r.contains(p);
-        }
-    }
+    
 
     JMenuItem addRootMenuItem = new JMenuItem(new AbstractAction("Add root goal") {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int x = rootStartX;
-            int y = rootStartY;
+            int x = controller.getRootStartX();
+            int y = controller.getRootStartY();
             controller.addRootGoal(x, y);
         }
     });
@@ -346,52 +106,23 @@ public class GoalSketchingView implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            controller.addAndEntailment();
+        }
+    });
+    
+    
 
-            GraphNode cs = (GraphNode) currentSelection;
-
-            if (!cs.isOperationalized2()) {
-
-                double x = cs.getX();
-                double y = cs.getY();
-                ArrayList<GraphNode> childNodes = cs.getChildNodes();
-
-                if (childNodes != null && !childNodes.isEmpty()) {
-
-                    x = childNodes.get(childNodes.size() - 1).getX() + childNodes.get(childNodes.size() - 1).getWidth() + 10;
-
-                    //for (int i = 0; i < childNodes.size() - 1; i++) {
-                    //  x += childNodes.get(i).getX() + childNodes.get(i).getWidth() + 10;
-                    //}
-                }
-                y += cs.getHeight() + 175;
-
-                //GraphNode child = new GraphNode(cs.getX() - (cs.getWidth() / 2 + 100), cs.getY() + cs.getHeight() + 160, 100, 60, new Proposition("/b/", "test", false), false, true, "Gtest");
-                //GraphNode child = new GraphNode(x, y, 100, 60, new Proposition("/b/", "test", false), false, true, "Gtest");
-                GraphNode child = new GraphNode();
-                child.setX(x);
-                child.setY(y);
-                child.setWidth(100);
-                child.setHeight(60);
-                child.setIsChild(true);
-                cs.addChildNode(child);
-                cs.setIsParent(true);
-                controller.addToGoalSketchingNodes(child);
-
-            }
+    JMenuItem addOREntailmentMenuItem = new JMenuItem(new AbstractAction("Add OR entailment") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            controller.addOREntailment();
         }
     });
 
     JMenuItem addGoalMenuItem = new JMenuItem(new AbstractAction("Add goal") {
         @Override
         public void actionPerformed(ActionEvent e) {
-
-        }
-    });
-
-    JMenuItem addOREntailmentMenuItem = new JMenuItem(new AbstractAction("Add OR entailment") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
+            controller.addLeafGoal();            
         }
     });
 
@@ -399,7 +130,7 @@ public class GoalSketchingView implements Observer {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            GraphNode cs = (GraphNode) currentSelection;
+            /*GraphNode cs = (GraphNode) currentSelection;
 
             if (!cs.isParent() && !cs.isOperationalized2()) {
 
@@ -417,7 +148,7 @@ public class GoalSketchingView implements Observer {
                 //addDrawable(new OperationalizerNodeDrawer(child));
                 controller.addOpToGoalSketchingNodes(child);
 
-            }
+            }*/
         }
     });
 
@@ -432,9 +163,9 @@ public class GoalSketchingView implements Observer {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            GraphNode cs = (GraphNode) currentSelection;
+            /*GraphNode cs = (GraphNode) currentSelection;
 
-            if (!cs.isParent() && !cs.isOperationalized2() /*&& cs.getProposition() != null && cs.getProposition().isAssumption()*/) {
+            if (!cs.isParent() && !cs.isOperationalized2() /*&& cs.getProposition() != null && cs.getProposition().isAssumption()) {
 
                 //GraphNode child = new GraphNode(cs.getX() - (cs.getWidth() / 2 + 100), cs.getY() + cs.getHeight() + 160, 100, 60, new Proposition("/b/", "test", false), false, true, "Gtest");
                 double x = cs.getX() + (cs.getWidth() - 30) / 2;
@@ -446,7 +177,7 @@ public class GoalSketchingView implements Observer {
                 //addDrawable(new OperationalizerNodeDrawer(child));
                 controller.addTerminationGoalSketchingNodes(child);
 
-            }
+            }*/
         }
     });
 
@@ -512,6 +243,71 @@ public class GoalSketchingView implements Observer {
 
         }
     });
+    
+    class GSmouseListener extends MouseAdapter {
+
+        private boolean mousePressed = false;
+        private boolean dragging = false;
+        final int PROX_DIST = 3;
+
+        public boolean isMousePressed() {
+            return this.mousePressed;
+        }
+        
+        public void setMousePressed(boolean pressed) {
+            mousePressed = pressed;
+        }
+        
+        public boolean isDragging() {
+            return dragging;
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if (panel.getCursor() != Cursor.getDefaultCursor()) {
+                // If cursor is set for resizing, allow dragging.
+                dragging = true;
+            }
+            if (e.getButton() == 1) {
+                controller.setCurrentSelection(e);
+            }
+            if (e.getButton() == 3) {
+                controller.setCurrentSelection(e);
+                controller.configureContextualMenuItems(e);
+            }
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            dragging = false;            
+            controller.configureMouseReleased(e);
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            controller.configureMouseDragged(e);            
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {            
+            controller.configureMouseMoved(e);   
+        }
+
+         
+    }
 
     class LoadGoalGraphListener implements ActionListener {
 
@@ -539,7 +335,7 @@ public class GoalSketchingView implements Observer {
             fileDialog.setMode(FileDialog.SAVE);
             fileDialog.setVisible(true);
 
-            GraphNode root = model.getRootGraphNode();
+            /*GraphNode root = model.getRootGraphNode();
             String file = fileDialog.getDirectory() + fileDialog.getFile();
             //System.out.println(file);
             if (file != null) {
@@ -548,7 +344,7 @@ public class GoalSketchingView implements Observer {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }
+            }*/
         }
     }
 
@@ -575,7 +371,7 @@ public class GoalSketchingView implements Observer {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if (currentSelection.getClass().toString().contains("GraphNode")) {
+            /*if (currentSelection.getClass().toString().contains("GraphNode")) {
 
                 GraphNode cs = (GraphNode) currentSelection;
 
@@ -654,16 +450,17 @@ public class GoalSketchingView implements Observer {
                 dialog.pack();
                 dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
                 dialog.setVisible(true);
-            }
+            }*/
 
         }
+    }
 
         class EditGoalButtonListener implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                GraphNode cs = (GraphNode) currentSelection;
+                /*GraphNode cs = (GraphNode) currentSelection;
                 statement = "";
                 statement += text.getText();
                 id = "";
@@ -679,7 +476,7 @@ public class GoalSketchingView implements Observer {
                 dialog.setVisible(false);
                 model.notifyView();
 
-            }
+            }*/
         }
 
         class EditOperationalizerButtonListener implements ActionListener {
@@ -687,7 +484,7 @@ public class GoalSketchingView implements Observer {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                OperationalizerNode cs = (OperationalizerNode) currentSelection;
+                /*OperationalizerNode cs = (OperationalizerNode) currentSelection;
                 agentName = "";
                 agentName += text.getText();
                 op = new Operationalizer();
@@ -695,7 +492,7 @@ public class GoalSketchingView implements Observer {
                 //op.setSubDomains(subDomains);
                 cs.addOperationalizer(op);
                 dialog.setVisible(false);
-                model.notifyView();
+                model.notifyView();*/
 
             }
         }
@@ -706,7 +503,7 @@ public class GoalSketchingView implements Observer {
             public void actionPerformed(ActionEvent e) {
 
                 String subDomain = text2.getText();
-                subDomains.add(subDomain);
+                //subDomains.add(subDomain);
                 text2.setText("");
                 model.notifyView();
 
@@ -718,9 +515,9 @@ public class GoalSketchingView implements Observer {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                GraphNode cs = (GraphNode) currentSelection;
+                //GraphNode cs = (GraphNode) currentSelection;
 
-                if (e.getSource() == combobox) {
+                /*if (e.getSource() == combobox) {
                     JComboBox cb = (JComboBox) e.getSource();
                     String selection = (String) cb.getSelectedItem();
                     switch (selection) {
@@ -742,7 +539,7 @@ public class GoalSketchingView implements Observer {
                             prefix = "\\ \\";
                     }
 
-                }
+                }*/
             }
         }
 
@@ -776,7 +573,7 @@ public class GoalSketchingView implements Observer {
         panel = new GoalSketchingPanel(2000, 2000);
         panel.setPreferredSize(new Dimension(2000, 2000));
 
-        mouseListener = new MouseListener();
+        mouseListener = new GSmouseListener();
         
         panel.addMouseListener(mouseListener);
         panel.addMouseMotionListener(mouseListener);
@@ -908,9 +705,7 @@ public class GoalSketchingView implements Observer {
         return panel.getDrawables();
     }
 
-    //public void setMousePressed(boolean pressed) {
-    //    this.
-    //}
+    
     public void showRootPopUpMenu(MouseEvent e, int eventX, int eventY) {
         rootPopUpMenu.show(e.getComponent(), eventX, eventY);
     }
@@ -1060,8 +855,13 @@ public class GoalSketchingView implements Observer {
     }
     
     
-    public MouseListener getMouseListener() {
+    public GSmouseListener getMouseListener() {
         return this.mouseListener;
+    }
+    
+    public GoalSketchingPanel getPanel() {
+        return this.panel;
     }
 
 }
+

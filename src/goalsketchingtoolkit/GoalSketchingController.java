@@ -5,6 +5,9 @@
  */
 package goalsketchingtoolkit;
 
+import java.awt.Cursor;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -24,6 +27,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.awt.event.MouseEvent;
+
 /**
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
@@ -32,7 +37,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
     private GoalGraphModelInterface model;
     private GoalSketchingView view;
-    private GoalSketchingView.MouseListener mouseListener;
+    private GoalSketchingView.GSmouseListener mouseListener;
 
     private GraphParser parser;
     private GSnodeFactory factory;
@@ -42,17 +47,22 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     private int rootStartX;
     private int rootStartY;
 
+    public static final int ENTAILMENT_START_LENGTH = 80;
+    public static final int GOAL_START_WIDTH = 100;
+    public static final int GOAL_START_HEIGHT = 60;
+
     public GoalSketchingController(GoalGraphModelInterface model) {
 
         this.model = model;
         view = new GoalSketchingView(model, this);
-        mouseListener = view.new MouseListener();
+        
 
-        //view.createGUI();
-        //view.createContextualMenuControls();
-        //view.createFileControls();
+        view.createGUI();
+        view.createContextualMenuControls();
+        view.createFileControls();
         parser = new GraphParser();
-        factory = new GSnodeFactory();
+        factory = new GSnodeFactory();        
+        mouseListener = view.getMouseListener();
 
     }
 
@@ -69,11 +79,13 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     /**
      * Sets the selected goal sketching node.
      *
-     * @param eventX the x coordinate of the event.
-     * @param eventY the y coordinate of the event.
+     * @param e the mouse event.
      */
     @Override
-    public void setCurrentSelection(int eventX, int eventY) {
+    public void setCurrentSelection(MouseEvent e) {
+
+        int eventX = e.getX();
+        int eventY = e.getY();
 
         ArrayList<Drawable> drawables = view.getDrawables();
 
@@ -81,7 +93,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
             Drawable d = drawables.get(i);
 
-            if (d.contains(eventX, eventY)) {
+            if (d.contains(eventX, eventY)) {                 
                 mouseListener.setMousePressed(true);
                 currentSelection = d.getGSnode();
                 d.setSelected(true);
@@ -127,7 +139,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
      *
      * @param goal the root goal and then its subsequent children.
      */
-    public void drawGraphFromRoot(Goal goal) throws Exception {
+    public void drawGraphFromRoot(Goal goal) {
 
         /*if (graphNode.isParent()) {
 
@@ -163,6 +175,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
      * @param root the root goal.
      * @param fileName the file path.
      */
+    @Override
     public void saveGraph(Goal root, String fileName) throws ParserConfigurationException {
         GraphBuilder gb = new GraphBuilder(root);
         Document doc = gb.build();
@@ -186,9 +199,10 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     /**
      * resets the model and view.
      */
+    @Override
     public void reset() {
-        //view.reset();
-        //model.reset();
+        view.reset();
+        model.reset();
     }
 
     /**
@@ -197,11 +211,10 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
      * @param x the x coordinate of the root goal.
      * @param y the y coordinate of the root goal.
      */
+    @Override
     public void addRootGoal(int x, int y) {
 
-        int startWidth = 100;
-        int startHeight = 60;
-        Goal root = factory.createGoal(x, y, startWidth, startHeight);
+        Goal root = factory.createGoal(x, y, GOAL_START_WIDTH, GOAL_START_HEIGHT);
         root.setIsRootGoal(true);
         view.addDrawable(root.getGraphicalProperties());
         model.addRootGoal(root);
@@ -211,44 +224,102 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
     /**
      * Adds an AND entailment to a goal.
-     *
-     * @param parent the goal to add the entailment to.
-     * @param entailment the entailment.
      */
-    public void addAndEntailment(Goal parent, ANDentailment entailment) {
+    @Override
+    public void addAndEntailment() {
+
+        Goal goal = (Goal) currentSelection;
+        GSnodeGraphics g = goal.getGraphicalProperties();
+        int x = g.getX() + g.getWidth() / 2;
+        int y = g.getY() + g.getHeight();
+        int toX = x;
+        int toY = y + ENTAILMENT_START_LENGTH;
+        ANDentailment ae = factory.createANDentailment(x, y, toX, toY, ENTAILMENT_START_LENGTH);
+        currentSelection.addChild(ae);
+        view.addDrawable(ae.getGraphicalProperties());
+        model.addToGSnodes(ae);
 
     }
 
     /**
      * Adds an OR entailment to a goal.
-     *
-     * @param parent the goal to add the entailment to.
-     * @param entailment the entailment.
      */
     @Override
-    public void addOrEntailment(Goal parent, ORentailment entailment) {
+    public void addOREntailment() {
+
+        Goal goal = (Goal) currentSelection;
+        GSnodeGraphics g = goal.getGraphicalProperties();
+        int x = g.getX();
+        int y = g.getY();
+        int toX = x - 50;
+        int toY = y + ENTAILMENT_START_LENGTH;
+        int toX2 = x + 50;
+        int toY2 = y + ENTAILMENT_START_LENGTH;
+        ORentailment oe = factory.createORentailment(x, y, toX, toY, ENTAILMENT_START_LENGTH, toX2, toY2, ENTAILMENT_START_LENGTH);
+        currentSelection.addChild(oe);
+        view.addDrawable(oe.getGraphicalProperties());
+        model.addToGSnodes(oe);
 
     }
 
     /**
      * Adds a leaf goal to a given parent.
-     *
-     * @param parent the parent to add the leaf to.
-     * @param leaf the leaf goal to add.
      */
     @Override
-    public void addLeafGoal(Goal parent, Goal leaf) {
+    public void addLeafGoal() {
+
+        String currentSelectionType = currentSelection.getClass().toString();
+
+        if (currentSelectionType.contains("ANDentailment")) {
+
+            ANDentailment ae = (ANDentailment) currentSelection;
+            GSentailmentGraphics g = ae.getGraphicalProperties();
+
+            int x = g.getX() - GOAL_START_WIDTH / 2;
+            int y = g.getToY();
+            ArrayList<GSnode> childNodes = ae.getChildren();
+
+            if (childNodes != null && !childNodes.isEmpty()) {
+                GSnodeGraphics gs = (GSnodeGraphics) childNodes.get(childNodes.size() - 1).getGraphicalProperties();
+                x += gs.getWidth() + 10;
+            }
+
+            y += g.getLength() + 175;
+            Goal goal = factory.createGoal(x, y, GOAL_START_WIDTH, GOAL_START_HEIGHT);
+            ae.addChild(goal);
+            view.addDrawable(goal.getGraphicalProperties());
+            model.addToGSnodes(goal);
+
+        } else if (currentSelectionType.contains("ORentailment")) {
+            ORentailment oe = (ORentailment) currentSelection;
+            GSorEntailmentGraphics g = oe.getGraphicalProperties();
+            int x = 0;
+            int y = 0;
+            ArrayList<GSnode> childNodes = oe.getChildren();
+
+            if (childNodes.isEmpty()) {
+                x = (int) g.getCircle().x - 50;
+                y = (int) g.getCircle().y;
+            } else if (childNodes.size() == 1) {
+                x = (int) g.getSecondCircle().x - 50;
+                y = (int) g.getSecondCircle().y;
+            }
+
+            y += g.getLength() + 175;
+
+            Goal goal = factory.createGoal(x, y, GOAL_START_WIDTH, GOAL_START_HEIGHT);
+            oe.addChild(goal);
+            view.addDrawable(goal.getGraphicalProperties());
+            model.addToGSnodes(goal);
+        }
 
     }
 
     /**
      * Adds an Operationalizing Products to a given leaf goal.
-     *
-     * @param parent the leaf goal to add the Operationalizing Products to.
-     * @param ops the Operationalizing Products to add.
      */
     @Override
-    public void addOperationalizingProducts(Goal parent, OperationalizingProducts ops) {
+    public void addOperationalizingProducts() {
 
     }
 
@@ -348,100 +419,447 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     /**
      * Enables or disables the menu items relevant to the current node of
      * interest.
+     *
+     * @param e the mouse event.
      */
     @Override
-    public void configureContextualMenuItems() {
+    public void configureContextualMenuItems(MouseEvent e) {
 
-        String currentSelectionType = currentSelection.getClass().toString();
+        int x = e.getX();
+        int y = e.getY();
 
-        if (currentSelectionType.contains("Goal")) {
-            Goal g = (Goal) currentSelection;
+        if (modelIsEmpty()) {
+            setIsRootNode(true);
+            rootStartX = x;
+            rootStartY = y;
+        }
 
-            if (!g.hasGop()) {
-                view.enableAddGOPMenuItem();
-                view.disableDeleteGOPMenuItem();
-                view.disableAddAnnotationMenuItem();
-                view.disableDeleteAnnotationMenuItem();
-            } else {
-                GoalOrientedProposition gop = g.getProposition();
-                view.disableAddGOPMenuItem();
-                view.enableDeleteGOPMenuItem();
-                if (gop.hasChildren) {
+        if (getIsRootNode()) {
+            view.showRootPopUpMenu(e, x, y);
+            rootStartX = x;
+            rootStartY = y;
+        }
 
-                    view.enableAddAnnotationMenuItem();
+        if (currentSelection != null) {
+
+            String currentSelectionType = currentSelection.getClass().toString();
+
+            if (currentSelectionType.contains("Goal")) {
+                Goal g = (Goal) currentSelection;
+
+                if (!g.hasGop()) {
+                    view.enableAddGOPMenuItem();
+                    view.disableAddAnnotationMenuItem();
                 } else {
+                    GoalOrientedProposition gop = g.getProposition();
+                    view.disableAddGOPMenuItem();
+                    view.enableDeleteGOPMenuItem();
                     view.enableAddAnnotationMenuItem();
-                    view.disableDeleteAnnotationMenuItem();
+                }
+
+                if (g.isRootGoal() && !g.isEntailed()) {
+                    view.enableAddANDEntailmentMenuItem();
+                    view.enableAddOREntailmentMenuItem();
+                    view.disableAddProductsMenuItem();
+                    view.disableAddAssumpTerminationMenuItem();
+                } else if (g.isRootGoal() && g.isEntailed()) {
+                    view.disableAddANDEntailmentMenuItem();
+                    view.disableAddOREntailmentMenuItem();
+                    view.disableAddProductsMenuItem();
+                    view.disableAddAssumpTerminationMenuItem();
+                } else if (!g.isEntailed() && !g.isOperationalized() && !g.isTerminated()) {
+                    view.enableAddANDEntailmentMenuItem();
+                    view.enableAddOREntailmentMenuItem();
+                    view.enableAddProductsMenuItem();
+                    view.enableAddAssumpTerminationMenuItem();
+                } else if (g.isEntailed()) {
+                    view.disableAddProductsMenuItem();
+                    view.disableAddANDEntailmentMenuItem();
+                    view.disableAddOREntailmentMenuItem();
+                    view.disableAddAssumpTerminationMenuItem();
+                } else if (g.isOperationalized()) {
+                    view.disableAddProductsMenuItem();
+                    view.disableAddANDEntailmentMenuItem();
+                    view.disableAddOREntailmentMenuItem();
+                } else if (g.isTerminated()) {
+                    view.disableAddAssumpTerminationMenuItem();
+                    view.disableAddProductsMenuItem();
+                    view.disableAddANDEntailmentMenuItem();
+                    view.disableAddOREntailmentMenuItem();
+                }
+                view.showGoalPopUpMenu(e, x, y);
+
+            } else if (currentSelectionType.contains("ANDentailment")) {
+                //ANDentailment ae = (ANDentailment) currentSelection;
+
+                view.enableAddGoalMenuItem();
+                view.enableDeleteEntailmentMenuItem();
+                view.showEntailmentPopUpMenu(e, y, y);
+
+            } else if (currentSelectionType.contains("ORentailment")) {
+                ORentailment oe = (ORentailment) currentSelection;
+
+                if (oe.getChildren().size() >= 2) {
+                    view.disableAddGoalMenuItem();
+                } else {
+                    view.enableAddGoalMenuItem();
+                }
+                view.enableDeleteEntailmentMenuItem();
+                view.showEntailmentPopUpMenu(e, y, y);
+
+            } else if (currentSelectionType.contains("OperationalizingProducts")) {
+                OperationalizingProducts ops = (OperationalizingProducts) currentSelection;
+
+                view.enableDeleteProductsMenuItem();
+                view.enableAddProductMenuItem();
+                if (ops.getProducts().size() > 0) {
+                    view.enableRemoveProductMenuItem();
+                } else {
+                    view.disableRemoveProductMenuItem();
+                }
+                view.showProductsPopUpMenu(e, y, y);
+
+            } else if (currentSelectionType.contains("AssumptionTermination")) {
+                AssumptionTermination at = (AssumptionTermination) currentSelection;
+
+                view.enableDeleteAnnotationMenuItem();
+                view.showAssumpTerminationPopUpMenu(e, y, y);
+
+            } else if (currentSelectionType.contains("Annotation")) {
+                Annotation a = (Annotation) currentSelection;
+
+                view.enableDeleteAnnotationMenuItem();
+                view.showAnnotationPopUpMenu(e, y, y);
+            }
+        }
+
+    }
+
+    /**
+     * Defines what happens when the mouse buttons are released.
+     */
+    @Override
+    public void configureMouseReleased(MouseEvent e) {
+
+        if (currentSelection != null) {
+
+            GSnode gsn = currentSelection;
+            String currentSelectionType = gsn.getClass().toString();
+
+            if (currentSelectionType.contains("Goal")
+                    || currentSelectionType.contains("OperationalizingProducts")
+                    || currentSelectionType.contains("Annotation")) {
+                GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
+
+                int width = g.getWidth();
+                int height = g.getHeight();
+
+                if (width <= 0) {
+                    g.setWidth(width + 100);
+                    g.setHeight(height);                    
+                    model.notifyView();
+                }
+
+                if (height <= 0) {
+                    g.setHeight(height + 100);
+                    g.setWidth(width);                    
+                    model.notifyView();
+                }
+                
+                if(width <= 0 && height <= 0) {
+                    g.setWidth(width + 100);
+                    g.setHeight(height + 100);
+                }
+            } else if (currentSelectionType.contains("ANDentailment")) {
+
+                GSentailmentGraphics g = (GSentailmentGraphics) gsn.getGraphicalProperties();
+                int length = g.getLength();
+
+                if (length <= 0) {
+                    g.setLength(length + ENTAILMENT_START_LENGTH);
+                    model.notifyView();
+                }
+
+            } else if (currentSelectionType.contains("ORentailment")) {
+
+                GSorEntailmentGraphics g = (GSorEntailmentGraphics) gsn.getGraphicalProperties();
+                int length = g.getLength();
+                int length2 = g.getLength2();
+
+                if (length <= 0) {
+                    g.setLength(length + ENTAILMENT_START_LENGTH);
+                    model.notifyView();
+                }
+
+                if (length2 <= 0) {
+                    g.setLength2(length2 + ENTAILMENT_START_LENGTH);
+                    model.notifyView();
                 }
 
             }
 
-            if (g.isRootGoal() && !g.isEntailed()) {
+            if (e.getButton() == 1) {
+                mouseListener.setMousePressed(false);
+                if (getCurrentSelection() != null) {
+                    GSgraphics g = gsn.getGraphicalProperties();
+                    g.setSelected(false);
+                }
 
-                view.enableAddANDEntailmentMenuItem();
-                view.enableAddOREntailmentMenuItem();
-                view.disableDeleteEntailmentMenuItem();
-                view.disableAddProductsMenuItem();
-                view.disableAddAssumpTerminationMenuItem();
-                view.disableDeleteProductsMenuItem();
-                view.disableDeleteAssumpTerminationMenuItem();
-
-            } else if (g.isRootGoal() && g.isEntailed()) {
-                view.disableAddANDEntailmentMenuItem();
-                view.disableAddOREntailmentMenuItem();
-                view.enableDeleteEntailmentMenuItem();
-                view.disableAddProductsMenuItem();
-                view.disableAddAssumpTerminationMenuItem();
-                view.disableDeleteProductsMenuItem();
-                view.disableDeleteAssumpTerminationMenuItem();
-            }
-//----------------------------------------------------------------------------//
-            if (!g.isEntailed() && !g.isOperationalized()) {
-                view.enableAddANDEntailmentMenuItem();
-                view.enableAddOREntailmentMenuItem();
-                view.enableAddProductsMenuItem();
-                view.enableAddAssumpTerminationMenuItem();
-                view.disableDeleteEntailmentMenuItem();
-                view.disableDeleteProductsMenuItem();
-                view.disableDeleteAssumpTerminationMenuItem();
-            } else {
-                view.disableAddProductsMenuItem();
-                view.disableAddANDEntailmentMenuItem();
-                view.disableAddOREntailmentMenuItem();
-                view.disableAddAssumpTerminationMenuItem();
             }
 
-            if (!g.isOperationalized()) {
-                view.enableAddANDEntailmentMenuItem();
-                view.enableAddOREntailmentMenuItem();
-                view.enableAddProductsMenuItem();
-                view.enableAddAssumpTerminationMenuItem();
-            } else {
-                view.disableAddProductsMenuItem();
-                view.disableAddANDEntailmentMenuItem();
-                view.disableAddOREntailmentMenuItem();
+            view.hidePopUpMenu();
+        }
+    }
+
+    /**
+     * Defines what happens when the mouse is dragged.
+     */
+    @Override
+    public void configureMouseDragged(MouseEvent e) {
+
+        int eventX = e.getX();
+        int eventY = e.getY();
+
+        if (mouseListener.isDragging()) {    
+            
+            mouseListener.setMousePressed(false);
+
+            Point p = e.getPoint();
+            GSnode gsn = currentSelection;
+            String currentSelectionType = gsn.getClass().toString();
+            if (currentSelectionType.contains("Goal")
+                    || currentSelectionType.contains("OperationalizingProducts")
+                    || currentSelectionType.contains("Annotation")) {
+                GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
+
+                GoalSketchingPanel panel = view.getPanel();
+                int type = panel.getCursor().getType();
+                int dx = p.x - g.getX();
+                int dy = p.y - g.getY();
+                switch (type) {
+                    case Cursor.N_RESIZE_CURSOR:
+                        int height = g.getHeight() - (int) dy;
+                        g.setY(g.getY() + dy);
+                        g.setHeight(height);
+                        break;
+                    case Cursor.NW_RESIZE_CURSOR:
+                        int width = g.getWidth() - dx;
+                        height = g.getHeight() - dy;
+                        g.setX(g.getX() + dx);
+                        g.setY(g.getY() + dy);
+                        g.setWidth(width);
+                        g.setHeight(height);
+                        //r.setRect(r.x + dx, r.y + dy, width, height);
+                        break;
+                    case Cursor.W_RESIZE_CURSOR:
+                        width = g.getWidth() - dx;
+                        g.setX(g.getX() + dx);
+                        g.setWidth(width);
+                        //r.setRect(r.x + dx, r.y, width, r.height);
+                        break;
+                    case Cursor.SW_RESIZE_CURSOR:
+                        width = g.getWidth() - dx;
+                        height = (int) dy;
+                        g.setX(g.getX() + dx);
+                        g.setWidth(width);
+                        g.setHeight(height);
+                        break;
+                    case Cursor.S_RESIZE_CURSOR:
+                        height = (int) dy;
+                        g.setHeight(height);
+                        //r.setRect(r.x, r.y, r.width, height);
+                        break;
+                    case Cursor.SE_RESIZE_CURSOR:
+                        width = dx;
+                        height = dy;
+                        g.setWidth(width);
+                        g.setHeight(height);
+                        break;
+                    case Cursor.E_RESIZE_CURSOR:
+                        width = (int) dx;
+                        g.setWidth(width);
+                        break;
+                    case Cursor.NE_RESIZE_CURSOR:
+                        width = (int) dx;
+                        height = g.getHeight() - dy;
+                        g.setY(g.getY() + dy);
+                        g.setWidth(width);
+                        g.setHeight(height);
+                        break;
+                    default:
+                    //System.out.println("unexpected type: " + type);
+                }
+                model.notifyView();
             }
-
-            if (!g.isTerminated()) {
-                view.enableAddAssumpTerminationMenuItem();
+        }
+        
+        if (mouseListener.isMousePressed()) {
+                GSgraphics g = currentSelection.getGraphicalProperties();
+                g.setLocation(eventX, eventY);
+                model.notifyView();
+                
+                if(currentSelection.getClass().toString().contains("ANDentailment")) {
+                    GSentailmentGraphics g2 = (GSentailmentGraphics) currentSelection.getGraphicalProperties();
+                    g2.setCircleLocation(eventX, eventY);
+                    model.notifyView();
+                }
             }
+    }
 
-        } else if (currentSelectionType.contains("ANDentailment")) {
-            ANDentailment ae = (ANDentailment) currentSelection;
+    /**
+     * Defines what happens when the mouse is moved.
+     *
+     * @param e the mouse event.
+     */
+    @Override
+    public void configureMouseMoved(MouseEvent e) {
 
-        } else if (currentSelectionType.contains("ORentailment")) {
-            ORentailment oe = (ORentailment) currentSelection;
+        if (currentSelection != null) {
+            Point p = e.getPoint();
+            GoalSketchingPanel panel = view.getPanel();
+            if (!isOverRect(p)) {
+                if (panel.getCursor() != Cursor.getDefaultCursor()) {
+                    // If cursor is not over rect reset it to the default.
+                    panel.setCursor(Cursor.getDefaultCursor());
+                }
+                return;
+            }
+            // Locate cursor relative to center of rect.
+            int outcode = getOutcode(p);
+            GSnode gsn = currentSelection;
+            String currentSelectionType = gsn.getClass().toString();
+            if (currentSelectionType.contains("Goal")
+                    || currentSelectionType.contains("OperationalizingProducts")
+                    || currentSelectionType.contains("Annotation")) {
+                GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
 
-        } else if (currentSelectionType.contains("OperationalizingProducts")) {
-            OperationalizingProducts ops = (OperationalizingProducts) currentSelection;
+                double y = g.getY();
+                double x = g.getX();
+                int height = g.getHeight();
+                int width = g.getWidth();
 
-        } else if (currentSelectionType.contains("AssumptionTermination")) {
-            AssumptionTermination at = (AssumptionTermination) currentSelection;
+                switch (outcode) {
+                    case Rectangle.OUT_TOP:
+                        if (Math.abs(p.y - y) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.N_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_TOP + Rectangle.OUT_LEFT:
+                        if (Math.abs(p.y - y) < mouseListener.PROX_DIST
+                                && Math.abs(p.x - x) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.NW_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_LEFT:
+                        if (Math.abs(p.x - x) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.W_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_LEFT + Rectangle.OUT_BOTTOM:
+                        if (Math.abs(p.x - x) < mouseListener.PROX_DIST
+                                && Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.SW_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_BOTTOM:
+                        if (Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.S_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_BOTTOM + Rectangle.OUT_RIGHT:
+                        if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST
+                                && Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.SE_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_RIGHT:
+                        if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.E_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_RIGHT + Rectangle.OUT_TOP:
+                        if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST
+                                && Math.abs(p.y - y) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.NE_RESIZE_CURSOR));
+                        }
+                        break;
+                    default:    // centre
+                        panel.setCursor(Cursor.getDefaultCursor());
+                }
 
-        } else if (currentSelectionType.contains("Annotation")) {
-            Annotation a = (Annotation) currentSelection;
+            }
+        }
+    }
+
+    /**
+     * Make a larger Rectangle and check to see if the cursor is over it.
+     */
+    @Override
+    public boolean isOverRect(Point p) {
+
+        String currentSelectionType = currentSelection.getClass().toString();
+        Rectangle r = new Rectangle();
+        if (currentSelectionType.contains("Goal")
+                || currentSelectionType.contains("OperationalizingProducts")
+                || currentSelectionType.contains("Annotation")) {
+
+            GSnodeGraphics g = (GSnodeGraphics) currentSelection.getGraphicalProperties();
+            r = new Rectangle((int) g.getX(), (int) g.getY(), g.getWidth(), g.getHeight());
+        }
+         
+        r.grow(mouseListener.PROX_DIST, mouseListener.PROX_DIST);
+        return r.contains(p);
+    }
+
+    /**
+     * Make a smaller Rectangle and use it to locate the cursor relative to the
+     * Rectangle centre.
+     */
+    @Override
+    public int getOutcode(Point p) {
+
+        String currentSelectionType = currentSelection.getClass().toString();
+        GSnodeGraphics g = null;
+
+        if (currentSelectionType.contains("Goal")
+                || currentSelectionType.contains("OperationalizingProducts")
+                || currentSelectionType.contains("Annotation")) {
+
+            g = (GSnodeGraphics) currentSelection.getGraphicalProperties();
 
         }
 
+        Rectangle r = new Rectangle((int) g.getX(), (int) g.getY(), g.getWidth(), g.getHeight());
+        r.grow(-mouseListener.PROX_DIST, -mouseListener.PROX_DIST);
+        return r.outcode(p.x, p.y);
     }
+    
+    /**
+     * Returns the starting x coordinate of the root goal.
+     *
+     * @return  the starting x coordinate.
+     */
+    @Override
+    public int getRootStartX() {
+        return this.rootStartX;
+    }
+
+    /**
+     * Returns the starting y coordinate of the root goal.
+     *
+     * @return  the starting y coordinate.
+     */
+    @Override
+    public int getRootStartY() {
+        return this.rootStartY;
+    }
+
 }

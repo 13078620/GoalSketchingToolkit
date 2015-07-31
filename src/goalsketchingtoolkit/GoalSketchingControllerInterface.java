@@ -5,6 +5,7 @@
  */
 package goalsketchingtoolkit;
 
+import java.awt.Point;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.event.MouseEvent;
 
@@ -24,10 +25,9 @@ public interface GoalSketchingControllerInterface {
     /**
      * Sets the selected goal sketching node.
      *
-     * @param eventX the x coordinate of the event.
-     * @param eventY the y coordinate of the event.
+     * @param e the mouse event.
      */
-    void setCurrentSelection(int eventX, int eventY);
+    void setCurrentSelection(MouseEvent e);
 
     /**
      * Loads a goal graph.
@@ -68,35 +68,23 @@ public interface GoalSketchingControllerInterface {
 
     /**
      * Adds an AND entailment to a goal.
-     *
-     * @param parent the goal to add the entailment to.
-     * @param entailment the entailment.
      */
-    void addAndEntailment(Goal parent, ANDentailment entailment);
+    void addAndEntailment();
 
     /**
      * Adds an OR entailment to a goal.
-     *
-     * @param parent the goal to add the entailment to.
-     * @param entailment the entailment.
      */
-    void addOrEntailment(Goal parent, ORentailment entailment);
+    void addOREntailment();
 
     /**
      * Adds a leaf goal to a given parent.
-     *
-     * @param parent the parent to add the leaf to.
-     * @param leaf the leaf goal to add.
      */
-    void addLeafGoal(Goal parent, Goal leaf);
+    void addLeafGoal();
 
     /**
      * Adds an Operationalizing Products to a given leaf goal.
-     *
-     * @param parent the leaf goal to add the Operationalizing Products to.
-     * @param ops the Operationalizing Products to add.
      */
-    void addOperationalizingProducts(Goal parent, OperationalizingProducts ops);
+    void addOperationalizingProducts();
 
     /**
      * Adds an Product to a given Operationalizing Products.
@@ -169,20 +157,59 @@ public interface GoalSketchingControllerInterface {
      * interest.
      *
      * @param e the mouse event.
-     * @param x the x coordinate for the contextual menu.
-     * @param y the y coordinate of the contextual menu.
      */
-    void configureContextualMenuItems(MouseEvent e, int x, int y);
-
+    void configureContextualMenuItems(MouseEvent e);
 
     /**
      * Defines what happens when the mouse buttons are released.
+     *
+     * @param e the mouse event.
      */
-    void configureMouseReleased();
-    
-     /**
+    void configureMouseReleased(MouseEvent e);
+
+    /**
      * Defines what happens when the mouse is dragged.
+     *
+     * @param e the mouse event.
      */
-    void configureMouseDragged();
+    void configureMouseDragged(MouseEvent e);
+
+    /**
+     * Defines what happens when the mouse is moved.
+     *
+     * @param e the mouse event.
+     */
+    void configureMouseMoved(MouseEvent e);
+
+    /**
+     * Make a larger Rectangle and check to see if the cursor is over it.
+     *
+     * @param p the location of the cursor.
+     * @return true if the cursor is over the rectangle.
+     */
+    boolean isOverRect(Point p);
+
+    /**
+     * Make a smaller Rectangle and use it to locate the cursor relative to the
+     * Rectangle centre.
+     *
+     * @param p the location of the cursor.
+     * @return the rectangle's outcode.
+     */
+    int getOutcode(Point p);
+
+    /**
+     * Returns the starting x coordinate of the root goal.
+     *
+     * @return  the starting x coordinate.
+     */
+    int getRootStartX();
+
+    /**
+     * Returns the starting y coordinate of the root goal.
+     *
+     * @return  the starting y coordinate.
+     */
+    int getRootStartY();
 
 }

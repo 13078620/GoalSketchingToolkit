@@ -20,34 +20,46 @@ public interface GoalGraphModelInterface {
      * @param root the root goal to set.
      */
     void addRootGoal(Goal root);
+    
+    /**
+     * Returns the root goal from this graph model.
+     *
+     * @return the root goal.
+     */
+    public Goal getRootGoal();
 
-    void addAndEntailment(Goal parent, ANDentailment entailment);
+    //void addAndEntailment(Goal parent, ANDentailment entailment);
 
-    void addOrEntailment(Goal parent, ORentailment entailment);
+    //void addOrEntailment(Goal parent, ORentailment entailment);
 
-    void addLeafGoal(Goal parent, Goal leaf);
+    //void addLeafGoal(Goal parent, Goal leaf);
 
     //void addLeafToANDentailment(ANDentailment parent, Goal leaf);
     //void addLeafToORentailment(ORentailment parent, Goal leaf);
-    void addOperationalizingProducts(Goal parent, OperationalizingProducts ops);
+   // void addOperationalizingProducts(Goal parent, OperationalizingProducts ops);
 
-    void addProduct(OperationalizingProducts ops, String product);
+   // void addProduct(OperationalizingProducts ops, String product);
 
-    void removeGoal(Goal child);
+    //void removeGoal(Goal child);
 
     //void removeLeafGoal(Goal child);
     //void removeParentGoal(GSnode parent);
-    void removeOperationalisingProducts(Goal parent);
+   // void removeOperationalisingProducts(Goal parent);
 
-    void deleteGoalID(Goal goal);
+   // void deleteGoalID(Goal goal);
 
-    void deleteGoalOrientedProposition(Goal goal);
+   // void deleteGoalOrientedProposition(Goal goal);
 
-    void addAnnotation(Goal goal, Annotation annotation);
+    //void addAnnotation(Goal goal, Annotation annotation);
 
     void addToGSnodes(GSnode n);
 
-    void removeFromGSnodes(int i);
+    /**
+     * Removes a goal sketching node from the list.
+     *
+     * @param n the goal sketching node to remove.
+     */
+    void removeFromGSnodes(GSnode n);
 
     ArrayList getGSnodes();
 
@@ -61,4 +73,9 @@ public interface GoalGraphModelInterface {
      * @param view the observer to add.
      */
     void addObserver(Observer view);
+    
+    /**
+     * Resets the list of goal sketching nodes.
+     */
+    void reset();
 }

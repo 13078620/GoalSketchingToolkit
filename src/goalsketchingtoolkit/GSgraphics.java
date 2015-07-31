@@ -110,7 +110,7 @@ public class GSgraphics {
         this.y = y;
 
     }
-    
+
     /**
      * Sets whether this goal sketching graphics is selected or not.
      *
@@ -148,7 +148,6 @@ public class GSgraphics {
     public void setGSnode(GSnode gsNode) {
         this.gsNode = gsNode;
     }
-    
 
     /**
      * Returns the stroke of this goal sketching graphics.
@@ -171,7 +170,7 @@ public class GSgraphics {
         this.stroke = new BasicStroke(lineWidth);
 
     }
-    
+
     /**
      * Returns the stroke colour of this goal sketching graphics.
      *
@@ -191,6 +190,20 @@ public class GSgraphics {
     public void setStrokeColor(Color color) {
 
         this.strokeColor = color;
+
+    }
+
+    /**
+     * Sets the location of the goal sketching node this goal sketching graphics
+     * points to.
+     *
+     * @param x
+     * @param y
+     */
+    public void setLocation(int x, int y) {
+
+        this.x = x;
+        this.y = y;
 
     }
 

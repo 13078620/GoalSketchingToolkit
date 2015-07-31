@@ -70,6 +70,7 @@ public class GSnodeFactory  {
 
         GSentailmentGraphics g = new GSentailmentGraphics(x, y, toX, toY, length);
         ANDentailment ae =  new ANDentailment(g);
+        g.setGSnode(ae);
         return ae;
     }
 

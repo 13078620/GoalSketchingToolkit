@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Chris Berryman.
  */
-public class GoalGraphModel extends Observable {
+public class GoalGraphModel extends Observable implements GoalGraphModelInterface {
 
     private Goal rootGoal;
     private ArrayList<GSnode> goalSketchingNodes = new ArrayList<>();
@@ -22,10 +22,12 @@ public class GoalGraphModel extends Observable {
      *
      * @param root the root goal to set.
      */
+    @Override
     public void addRootGoal(Goal root) {
 
         this.rootGoal = root;
         this.goalSketchingNodes.add(root);
+        notifyView();
 
     }
 
@@ -34,6 +36,7 @@ public class GoalGraphModel extends Observable {
      *
      * @return the root goal.
      */
+    @Override
     public Goal getRootGoal() {
         return this.rootGoal;
     }
@@ -43,6 +46,7 @@ public class GoalGraphModel extends Observable {
      *
      * @param n the goal sketching node to add.
      */
+    @Override
     public void addToGSnodes(GSnode n) {
         this.goalSketchingNodes.add(n);
         notifyView();
@@ -53,6 +57,7 @@ public class GoalGraphModel extends Observable {
      *
      * @param n the goal sketching node to remove.
      */
+    @Override
     public void removeFromGSnodes(GSnode n) {
         this.goalSketchingNodes.remove(n);
         notifyView();
@@ -63,6 +68,7 @@ public class GoalGraphModel extends Observable {
      *
      * @return the goal sketching nodes.
      */
+    @Override
     public ArrayList getGSnodes() {
         return goalSketchingNodes;
     }
@@ -70,6 +76,7 @@ public class GoalGraphModel extends Observable {
     /**
      * Notifies the view of a change in state.
      */
+    @Override
     public void notifyView() {
         setChanged();
         notifyObservers();
@@ -78,6 +85,7 @@ public class GoalGraphModel extends Observable {
     /**
      * Resets the list of goal sketching nodes.
      */
+    @Override
     public void reset() {
 
         for (int i = goalSketchingNodes.size() - 1; i >= 0; i--) {
