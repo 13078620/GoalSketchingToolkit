@@ -6,6 +6,7 @@
 package goalsketchingtoolkit;
 
 import javax.xml.parsers.ParserConfigurationException;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -166,7 +167,22 @@ public interface GoalSketchingControllerInterface {
     /**
      * Enables or disables the menu items relevant to the current node of
      * interest.
+     *
+     * @param e the mouse event.
+     * @param x the x coordinate for the contextual menu.
+     * @param y the y coordinate of the contextual menu.
      */
-    void configureContextualMenuItems();
+    void configureContextualMenuItems(MouseEvent e, int x, int y);
+
+
+    /**
+     * Defines what happens when the mouse buttons are released.
+     */
+    void configureMouseReleased();
+    
+     /**
+     * Defines what happens when the mouse is dragged.
+     */
+    void configureMouseDragged();
 
 }

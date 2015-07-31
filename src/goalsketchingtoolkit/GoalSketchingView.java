@@ -65,16 +65,21 @@ public class GoalSketchingView implements Observer {
     private GoalGraphModelInterface model;
     private GoalSketchingControllerInterface controller;
 
-    private JPopupMenu leafPopUpMenu;
     private JPopupMenu rootPopUpMenu;
+    private JPopupMenu goalPopUpMenu;
+    private JPopupMenu entailmentPopUpMenu;
+    private JPopupMenu productsPopUpMenu;
+    private JPopupMenu assumpTerminationPopUpMenu;
+    private JPopupMenu annotationPopUpMenu;
 
-    private boolean rootNode;
+    //private boolean rootNode;
     private int rootStartX;
     private int rootStartY;
-
     private LoadGoalGraphListener listener;
     private SaveGoalGraphListener listener2;
     private NewGoalGraphListener listener3;
+
+    private MouseListener mouseListener;
 
     private JTextField text;
     private JTextField text2;
@@ -111,128 +116,49 @@ public class GoalSketchingView implements Observer {
             }
 
             if (e.getButton() == 3) {
-                
-                if (controller.modelIsEmpty()) {
-                    controller.setIsRootNode(true);
-                }
-                
-                if (controller.getIsRootNode()) {
-                    showRootPopUpMenu(e.getComponent(), eventX, eventY);
-                    rootStartX = eventX;
-                    rootStartY = eventY;
-                }
-                
-                controller.setCurrentSelection(eventX, eventY);
-
-                for (Object o : model.getGoalSketchingNodes()) {
-                    GoalSketchingNode gsn = (GoalSketchingNode) o;
-
-                    if (gsn.contains(eventX, eventY)) {
-                        //panel.setComponentPopupMenu(popUpMenu);                           
-                        currentSelection = gsn;
-                        //currentSelection.setSelected(true);
-                        if (gsn.getClass().toString().contains("OperationalizerNode")) {
-                            addANDEntailmentMenuItem.setEnabled(false);
-                            addProductsMenuItem.setEnabled(false);
-                            addAssumpTerminationMenuItem.setEnabled(false);
-                        } else if (gsn.getClass().toString().contains("GraphNode")) {
-                            GraphNode cs = (GraphNode) gsn;
-                            if (cs.isRootNode()) {
-                                addANDEntailmentMenuItem.setEnabled(true);
-                                addProductsMenuItem.setEnabled(false);
-                                addAssumpTerminationMenuItem.setEnabled(false);
-                            } else if (cs.isOperationalized2()) {
-                                addANDEntailmentMenuItem.setEnabled(false);
-                                addProductsMenuItem.setEnabled(false);
-                                addAssumpTerminationMenuItem.setEnabled(false);
-                            } else if (cs.isParent()) {
-                                addANDEntailmentMenuItem.setEnabled(true);
-                                addProductsMenuItem.setEnabled(false);
-                                addAssumpTerminationMenuItem.setEnabled(false);
-                            } else if (cs.isTerminated()) {
-                                addANDEntailmentMenuItem.setEnabled(false);
-                                addAssumpTerminationMenuItem.setEnabled(false);
-                                addProductsMenuItem.setEnabled(false);
-                                //null pointer                        } else if ((cs.getProposition() != null && cs.getProposition().getPrefix().contains("a")) || (cs.getParent().getProposition() != null && cs.getParent().getProposition().getPrefix().contains("a"))) {
-                                addAssumpTerminationMenuItem.setEnabled(true);
-                                addProductsMenuItem.setEnabled(false);
-                            } else {
-                                addANDEntailmentMenuItem.setEnabled(true);
-                                addProductsMenuItem.setEnabled(true);
-                                addAssumpTerminationMenuItem.setEnabled(false);
-                            }
-                        } else {
-                            //menuItem.setEnabled(true);
-                            //menuItem3.setEnabled(true);
-                        }
-                        leafPopUpMenu.show(e.getComponent(), eventX, eventY);
-                    }
-                }
+                controller.configureContextualMenuItems(e, eventY, eventY);
             }
         }
 
         @Override
-
-        public void mouseClicked(MouseEvent e
-        ) {
+        public void mouseClicked(MouseEvent e) {
 
         }
 
         @Override
-        public void mouseReleased(MouseEvent e
-        ) {
+        public void mouseReleased(MouseEvent e) {
 
             dragging = false;
 
-            GoalSketchingNode gsn = currentSelection;
-
-            if (currentSelection != null) {
-                int width = gsn.getWidth();
-                int height = gsn.getHeight();
-
-                if (width <= 0) {
-                    gsn.setWidth(width + 100);
-                    gsn.setHeight(height);
-                    model.notifyView();
+            if (e.getButton() == 1) {
+                mousePressed = false;
+                if (controller.getCurrentSelection() != null) {
+                    GSnode gsn = controller.getCurrentSelection();
+                    GSgraphics g = gsn.getGraphicalProperties();
+                    g.setSelected(false);
                 }
 
-                if (height <= 0) {
-                    gsn.setHeight(height + 100);
-                    gsn.setWidth(width);
-                    model.notifyView();
-                }
-
-                if (e.getButton() == 1) {
-                    mousePressed = false;
-                    if (currentSelection != null) {
-                        currentSelection.setSelected(false);
-                    }
-                    //currentSelection = null;
-                }
-
-                panel.setComponentPopupMenu(null);
             }
+            controller.configureMouseReleased();
         }
 
         @Override
-        public void mouseEntered(MouseEvent e
-        ) {
+        public void mouseEntered(MouseEvent e) {
         }
 
         @Override
-        public void mouseExited(MouseEvent e
-        ) {
+        public void mouseExited(MouseEvent e) {
         }
 
         @Override
-        public void mouseDragged(MouseEvent e
-        ) {
+        public void mouseDragged(MouseEvent e) {
 
             int eventX = e.getX();
             int eventY = e.getY();
 
             if (dragging) {
                 mousePressed = false;
+
                 Point p = e.getPoint();
                 GoalSketchingNode gsn = currentSelection;
                 int type = panel.getCursor().getType();
@@ -405,20 +331,19 @@ public class GoalSketchingView implements Observer {
             return r.contains(p);
         }
     }
-    
 
     JMenuItem addRootMenuItem = new JMenuItem(new AbstractAction("Add root goal") {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             int x = rootStartX;
-            int y = rootStartY;            
+            int y = rootStartY;
             controller.addRootGoal(x, y);
         }
     });
-    
+
     JMenuItem addANDEntailmentMenuItem = new JMenuItem(new AbstractAction("Add AND entailment") {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
 
@@ -455,21 +380,20 @@ public class GoalSketchingView implements Observer {
             }
         }
     });
-    
+
     JMenuItem addGoalMenuItem = new JMenuItem(new AbstractAction("Add goal") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
-    });    
-    
+    });
+
     JMenuItem addOREntailmentMenuItem = new JMenuItem(new AbstractAction("Add OR entailment") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
-    });      
-        
+    });
 
     JMenuItem addProductsMenuItem = new JMenuItem(new AbstractAction("Add operationalizing products") {
         @Override
@@ -497,6 +421,13 @@ public class GoalSketchingView implements Observer {
         }
     });
 
+    JMenuItem addProductMenuItem = new JMenuItem(new AbstractAction("Add product") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    });
+
     JMenuItem addAssumpTerminationMenuItem = new JMenuItem(new AbstractAction("Add assumption termination") {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -518,60 +449,67 @@ public class GoalSketchingView implements Observer {
             }
         }
     });
-    
+
     JMenuItem addAnnotationMenuItem = new JMenuItem(new AbstractAction("Add annotation") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
     });
-    
+
     JMenuItem addGOPMenuItem = new JMenuItem(new AbstractAction("Add goal oriented proposition") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
     });
-    
+
     JMenuItem deleteEntailmentMenuItem = new JMenuItem(new AbstractAction("Delete entailment") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
     });
-    
+
     JMenuItem deleteGoalMenuItem = new JMenuItem(new AbstractAction("Delete goal") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
     });
-    
+
     JMenuItem deleteProductsMenuItem = new JMenuItem(new AbstractAction("Delete operationalizing products") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
     });
-    
+
+    JMenuItem removeProductMenuItem = new JMenuItem(new AbstractAction("Remove products") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    });
+
     JMenuItem deleteAssumpTerminationMenuItem = new JMenuItem(new AbstractAction("Delete assumption termination") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
     });
-    
+
     JMenuItem deleteAnnotationMenuItem = new JMenuItem(new AbstractAction("Delete annotation") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
     });
-    
+
     JMenuItem deleteGOPMenuItem = new JMenuItem(new AbstractAction("Delete goal oriented proposition") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
         }
     });
 
@@ -837,6 +775,9 @@ public class GoalSketchingView implements Observer {
         frame.setSize(1000, 800);
         panel = new GoalSketchingPanel(2000, 2000);
         panel.setPreferredSize(new Dimension(2000, 2000));
+
+        mouseListener = new MouseListener();
+        
         panel.addMouseListener(mouseListener);
         panel.addMouseMotionListener(mouseListener);
         frame.setResizable(true);
@@ -861,23 +802,44 @@ public class GoalSketchingView implements Observer {
 
     }
 
-    public void createContextualMenuControls() {
+    public void createContextualMenuControls() {      
 
-        leafPopUpMenu = new JPopupMenu();
         rootPopUpMenu = new JPopupMenu();
-        leafPopUpMenu.add(addANDEntailmentMenuItem);
-        leafPopUpMenu.add(addProductsMenuItem);
+        rootPopUpMenu.add(addRootMenuItem);
+        rootPopUpMenu.setLightWeightPopupEnabled(false);
 
-        leafPopUpMenu.add(addAssumpTerminationMenuItem);
+        goalPopUpMenu = new JPopupMenu();
+        goalPopUpMenu.add(addANDEntailmentMenuItem);
+        goalPopUpMenu.add(addOREntailmentMenuItem);
+        goalPopUpMenu.add(addGOPMenuItem);
+        goalPopUpMenu.add(addProductsMenuItem);
+        goalPopUpMenu.add(addAssumpTerminationMenuItem);
+        goalPopUpMenu.add(addAnnotationMenuItem);
+        goalPopUpMenu.setLightWeightPopupEnabled(false);
+
+        entailmentPopUpMenu = new JPopupMenu();
+        entailmentPopUpMenu.add(addGoalMenuItem);
+        entailmentPopUpMenu.add(deleteEntailmentMenuItem);
+        entailmentPopUpMenu.setLightWeightPopupEnabled(false);
+
+        productsPopUpMenu = new JPopupMenu();
+        productsPopUpMenu.add(addProductMenuItem);
+        productsPopUpMenu.add(deleteProductsMenuItem);
+        productsPopUpMenu.add(removeProductMenuItem);
+        productsPopUpMenu.setLightWeightPopupEnabled(false);
+
+        assumpTerminationPopUpMenu = new JPopupMenu();
+        assumpTerminationPopUpMenu.add(deleteAssumpTerminationMenuItem);
+        assumpTerminationPopUpMenu.setLightWeightPopupEnabled(false);
+
+        annotationPopUpMenu = new JPopupMenu();
+        annotationPopUpMenu.add(deleteAnnotationMenuItem);
+        annotationPopUpMenu.setLightWeightPopupEnabled(false);
 
         JMenuItem edit = new JMenuItem("Edit");
         ActionListener listener = new EditGoalListener();
         edit.addActionListener(listener);
-        leafPopUpMenu.add(edit);
-
-        rootPopUpMenu.add(addRootMenuItem);
-        leafPopUpMenu.setLightWeightPopupEnabled(false);
-        rootPopUpMenu.setLightWeightPopupEnabled(false);
+        goalPopUpMenu.add(edit);
 
     }
 
@@ -949,118 +911,157 @@ public class GoalSketchingView implements Observer {
     //public void setMousePressed(boolean pressed) {
     //    this.
     //}
-    
     public void showRootPopUpMenu(MouseEvent e, int eventX, int eventY) {
-         rootPopUpMenu.show(e.getComponent(), eventX, eventY);
+        rootPopUpMenu.show(e.getComponent(), eventX, eventY);
     }
-    
-    public void showLeafPopUpMenu(MouseEvent e, int eventX, int eventY) {
-        leafPopUpMenu.show(e.getComponent(), eventX, eventY);
+
+    public void showGoalPopUpMenu(MouseEvent e, int eventX, int eventY) {
+        goalPopUpMenu.show(e.getComponent(), eventX, eventY);
     }
-    
+
+    public void showEntailmentPopUpMenu(MouseEvent e, int eventX, int eventY) {
+        entailmentPopUpMenu.show(e.getComponent(), eventY, eventY);
+    }
+
+    public void showProductsPopUpMenu(MouseEvent e, int eventX, int eventY) {
+        productsPopUpMenu.show(e.getComponent(), eventY, eventY);
+    }
+
+    public void showAssumpTerminationPopUpMenu(MouseEvent e, int eventX, int eventY) {
+        assumpTerminationPopUpMenu.show(e.getComponent(), eventY, eventY);
+    }
+
+    public void showAnnotationPopUpMenu(MouseEvent e, int eventX, int eventY) {
+        annotationPopUpMenu.show(e.getComponent(), eventY, eventY);
+    }
+
+    public void hidePopUpMenu() {
+        panel.setComponentPopupMenu(null);
+    }
+
     public void enableAddANDEntailmentMenuItem() {
         addANDEntailmentMenuItem.setEnabled(true);
     }
-    
+
     public void disableAddANDEntailmentMenuItem() {
         addANDEntailmentMenuItem.setEnabled(false);
     }
-    
+
     public void enableAddOREntailmentMenuItem() {
         addOREntailmentMenuItem.setEnabled(true);
     }
-    
+
     public void disableAddOREntailmentMenuItem() {
         addOREntailmentMenuItem.setEnabled(false);
     }
-    
+
+    public void enableAddGoalMenuItem() {
+        addGoalMenuItem.setEnabled(true);
+    }
+
+    public void disableAddGoalMenuItem() {
+        addGoalMenuItem.setEnabled(false);
+    }
+
     public void enableAddProductsMenuItem() {
         addProductsMenuItem.setEnabled(true);
     }
-    
+
     public void disableAddProductsMenuItem() {
         addProductsMenuItem.setEnabled(false);
     }
-    
+
+    public void enableAddProductMenuItem() {
+        addProductMenuItem.setEnabled(true);
+    }
+
+    public void disableAddProductMenuItem() {
+        addProductMenuItem.setEnabled(false);
+    }
+
     public void enableAddAssumpTerminationMenuItem() {
         addAssumpTerminationMenuItem.setEnabled(true);
     }
-    
+
     public void disableAddAssumpTerminationMenuItem() {
         addAssumpTerminationMenuItem.setEnabled(false);
     }
-    
+
     public void enableAddAnnotationMenuItem() {
         addAnnotationMenuItem.setEnabled(true);
     }
-    
+
     public void disableAddAnnotationMenuItem() {
         addAnnotationMenuItem.setEnabled(false);
     }
-    
+
     public void enableAddGOPMenuItem() {
         addGOPMenuItem.setEnabled(true);
     }
-    
+
     public void disableAddGOPMenuItem() {
         addGOPMenuItem.setEnabled(false);
     }
-    
+
     public void enableDeleteEntailmentMenuItem() {
         deleteEntailmentMenuItem.setEnabled(true);
     }
-    
+
     public void disableDeleteEntailmentMenuItem() {
         deleteEntailmentMenuItem.setEnabled(false);
     }
-    
+
     public void enableDeleteGoalMenuItem() {
         deleteGoalMenuItem.setEnabled(true);
     }
-    
+
     public void disableDeleteGoalMenuItem() {
         deleteGoalMenuItem.setEnabled(false);
     }
-    
+
     public void enableDeleteProductsMenuItem() {
         deleteProductsMenuItem.setEnabled(true);
     }
-    
+
     public void disableDeleteProductsMenuItem() {
         deleteProductsMenuItem.setEnabled(false);
     }
-    
+
+    public void enableRemoveProductMenuItem() {
+        removeProductMenuItem.setEnabled(true);
+    }
+
+    public void disableRemoveProductMenuItem() {
+        removeProductMenuItem.setEnabled(false);
+    }
+
     public void enableDeleteAssumpTerminationMenuItem() {
         deleteAssumpTerminationMenuItem.setEnabled(true);
     }
-    
+
     public void disableDeleteAssumpTerminationMenuItem() {
         deleteAssumpTerminationMenuItem.setEnabled(false);
     }
-    
+
     public void enableDeleteAnnotationMenuItem() {
         deleteAnnotationMenuItem.setEnabled(true);
     }
-    
+
     public void disableDeleteAnnotationMenuItem() {
         deleteAnnotationMenuItem.setEnabled(false);
     }
-    
+
     public void enableDeleteGOPMenuItem() {
         deleteGOPMenuItem.setEnabled(true);
     }
-    
+
     public void disableDeleteGOPMenuItem() {
         deleteGOPMenuItem.setEnabled(false);
     }
     
     
-    
+    public MouseListener getMouseListener() {
+        return this.mouseListener;
+    }
 
-
-
-
-
-            
-            
 }
