@@ -125,10 +125,8 @@ public interface GoalSketchingControllerInterface {
 
     /**
      * Deletes a GOP from a given goal.
-     *
-     * @param goal the goal to delete the GOP from.
      */
-    void deleteGoalOrientedProposition(Goal goal);
+    void deleteGoalOrientedProposition();
 
     /**
      * Adds annotation to the GOP of a goal.

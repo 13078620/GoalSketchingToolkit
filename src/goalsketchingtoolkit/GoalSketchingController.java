@@ -381,6 +381,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
        
         try {
             goal.addChild(gop);
+            model.addToGSnodes(gop);
         } catch (UnsupportedOperationException e) {
             view.displayErrorMessage(e.getMessage());
         }
@@ -389,11 +390,13 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
     /**
      * Deletes a GOP from a given goal.
-     *
-     * @param goal the goal to delete the GOP from.
      */
     @Override
-    public void deleteGoalOrientedProposition(Goal goal) {
+    public void deleteGoalOrientedProposition() {
+        Goal goal = (Goal) currentSelection;
+        GoalOrientedProposition gop = goal.getProposition();
+        goal.removeChild(gop);
+        model.removeFromGSnodes(gop);
 
     }
 
@@ -472,9 +475,10 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
                 if (!g.hasGop()) {
                     view.enableAddGOPMenuItem();
+                    view.disableDeleteGOPMenuItem();
                     view.disableAddAnnotationMenuItem();
                 } else {
-                    GoalOrientedProposition gop = g.getProposition();
+                    //GoalOrientedProposition gop = g.getProposition();
                     view.disableAddGOPMenuItem();
                     view.enableDeleteGOPMenuItem();
                     view.enableAddAnnotationMenuItem();

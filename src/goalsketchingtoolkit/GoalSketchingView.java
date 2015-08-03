@@ -246,8 +246,8 @@ public class GoalSketchingView implements Observer {
 
     JMenuItem deleteGOPMenuItem = new JMenuItem(new AbstractAction("Delete goal oriented proposition") {
         @Override
-        public void actionPerformed(ActionEvent e) {
-
+        public void actionPerformed(ActionEvent e) {            
+            controller.deleteGoalOrientedProposition();
         }
     });
 
@@ -364,10 +364,8 @@ public class GoalSketchingView implements Observer {
     }
 
     class EditGOPListener implements ActionListener {
-        
-        
 
-       @Override
+        @Override
         public void actionPerformed(ActionEvent e) {
             controller.editGOP();
         }
@@ -482,7 +480,7 @@ public class GoalSketchingView implements Observer {
 
         }
     }
-    
+
     class EditGOPButtonListener implements ActionListener {
 
         @Override
@@ -491,7 +489,6 @@ public class GoalSketchingView implements Observer {
             String statement = "";
             statement += propText.getText();
             controller.setGOP(prefix, statement);
-            
 
             dialog.setVisible(false);
 
@@ -633,6 +630,7 @@ public class GoalSketchingView implements Observer {
         goalPopUpMenu.add(addProductsMenuItem);
         goalPopUpMenu.add(addAssumpTerminationMenuItem);
         goalPopUpMenu.add(addAnnotationMenuItem);
+        goalPopUpMenu.add(deleteGOPMenuItem);
 
         editGoalIDMenuItem = new JMenuItem("Edit goal ID");
         editGoalIDMenuItem.addActionListener(editGoalListener);
@@ -923,12 +921,11 @@ public class GoalSketchingView implements Observer {
         button.addActionListener(editGOPButtonListener);
         p.add(addPropositionLabel, BorderLayout.PAGE_START);
         p.add(propText, BorderLayout.PAGE_START);
-        
 
         String[] prefixOptions = {"", "Motivation", "Behaviour", "Constraint", "Assumption", "Obstacle"};
         combobox = new JComboBox(prefixOptions);
         p.add(combobox);
-        
+
         p.add(button, BorderLayout.PAGE_END);
 
         dialog.add(p);
