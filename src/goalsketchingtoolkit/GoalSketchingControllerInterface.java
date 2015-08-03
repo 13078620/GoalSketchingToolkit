@@ -116,6 +116,14 @@ public interface GoalSketchingControllerInterface {
     void deleteGoalID(Goal goal);
 
     /**
+     * Adds a GOP to a given goal.
+     *
+     * @param prefix the goal type of the GOP.
+     * @param statement the statement of the GOP.
+     */
+    void addGOP(GoalType prefix, String statement);
+
+    /**
      * Deletes a GOP from a given goal.
      *
      * @param goal the goal to delete the GOP from.
@@ -201,15 +209,40 @@ public interface GoalSketchingControllerInterface {
     /**
      * Returns the starting x coordinate of the root goal.
      *
-     * @return  the starting x coordinate.
+     * @return the starting x coordinate.
      */
     int getRootStartX();
 
     /**
      * Returns the starting y coordinate of the root goal.
      *
-     * @return  the starting y coordinate.
+     * @return the starting y coordinate.
      */
     int getRootStartY();
+
+    /**
+     * Handles events for setting the ID of the currently selected goal.
+     */
+    void editGoalID();
+
+    /**
+     * Sets the ID of the currently selected goal.
+     *
+     * @param ID the ID to set.
+     */
+    void setGoalID(String ID);
+
+    /**
+     * Handles events for setting the GOP of the currently selected goal.
+     */
+    void editGOP();
+
+    /**
+     * Sets the goal type and statement for the GOP in question.
+     *
+     * @param prefix the goal type of the GOP.
+     * @param statement th statement of the GOP.
+     */
+    void setGOP(String prefix, String statement);
 
 }

@@ -12,7 +12,7 @@ import java.awt.geom.Ellipse2D;
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
-public class AssumptionTerminationNodeDrawer implements Drawable {
+public class AssumptionTerminationNodeDrawer  {
 
     private AssumptionTerminationNode node;
 
@@ -25,7 +25,7 @@ public class AssumptionTerminationNodeDrawer implements Drawable {
      *
      * @param g2 the graphics context.
      */
-    @Override
+    //@Override
     public void draw(Graphics2D g2) {
 
        // GraphNode parent = node.getParent();

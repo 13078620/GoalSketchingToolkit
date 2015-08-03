@@ -42,6 +42,8 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
      */
     private Ellipse2D.Double circle2;
 
+    private Ellipse2D.Double selectedCircle;
+
     /**
      * Constructs a goal sketching or entailment graphics object without
      * initialising attributes.
@@ -70,7 +72,8 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
         this.toY2 = toY2;
         this.length2 = length2;
 
-        setCircle(x);
+        this.circle1 = new Ellipse2D.Double(toX - CIRCLE_WIDTH / 2, toY, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+        this.circle2 = new Ellipse2D.Double(toX2 - CIRCLE_WIDTH / 2, toY, CIRCLE_WIDTH, CIRCLE_HEIGHT);
 
     }
 
@@ -175,8 +178,8 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
      */
     @Override
     public void setCircleLocation(int x, int y) {
-        this.circle1.x = x;
-        this.circle1.y = y;
+        this.selectedCircle.x = x;
+        this.selectedCircle.y = y;
     }
 
     /**
@@ -185,11 +188,11 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
      * @param x the x coordinate.
      * @param y the y coordinate.
      */
-    public void setSecondCircleLocation(int x, int y) {
+    /*public void setSecondCircleLocation(int x, int y) {
         this.circle2.x = x;
         this.circle2.y = y;
-    }
-    
+    }*/
+
     /**
      * Returns the goal sketching node of this goal sketching graphics.
      *
@@ -211,7 +214,22 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
      */
     @Override
     public boolean contains(int x, int y) {
+        if(this.circle1.contains(x, y)) {
+            selectedCircle = circle1;
+        }
+        if (this.circle2.contains(x, y)) {
+            selectedCircle = circle2;
+        }
         return this.circle1.contains(x, y) || this.circle2.contains(x, y);
+    }
+
+    /**
+     * Returns the selected circle.
+     *
+     * @return a circle which contains the x and y coordinates.
+     */
+    public Ellipse2D.Double getSelectedCircle() {
+        return selectedCircle;
     }
 
     /**
@@ -243,7 +261,7 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
      */
     @Override
     public void draw(Graphics2D g2) {
-        
+
         if (isSelected()) {
             super.setStrokeColor(Color.RED);
         } else {
@@ -254,23 +272,50 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
         BasicStroke dashed = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
         g2.setStroke(dashed);
 
+        int lineStartX = 0;
+        int lineStartY = 0;
+        if (getGSnode() != null) {
+            ORentailment oe = (ORentailment) getGSnode();
+            if (oe.hasParent) {
+                Goal goal = (Goal) oe.getParent();
+                GSnodeGraphics g = goal.getGraphicalProperties();
+                lineStartX = g.getX() + g.getWidth() / 2;
+                lineStartY = g.getY() + g.getHeight();
+            } else {
+                lineStartX = super.getX();
+                lineStartY = super.getY();
+            }
+        }
+
         //int lineLength = getLength();
-        int lineStartX = super.getX();
-        int lineStartY = super.getY();
-        int lineToX = getToX();
-        int lineToY = getToY();
-        int lineToX2 = getToX2();
-        int lineToY2 = getToY2();
+        //int lineStartX = super.getX();
+        //int lineStartY = super.getY();
+        int lineToX = (int) circle1.x + CIRCLE_WIDTH / 2;
+        int lineToY = (int) circle1.y + CIRCLE_WIDTH / 2;
+
+        double[] refinementIntersection = getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
+
+        lineToX = (int) refinementIntersection[0];
+        lineToY = (int) refinementIntersection[1];
 
         g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+
+        int lineToX2 = (int) circle2.x + CIRCLE_WIDTH / 2;
+        int lineToY2 = (int) circle2.y + CIRCLE_WIDTH / 2;
+
+        double[] refinementIntersection2 = getRefinementIntersection(lineStartX, lineStartY, lineToX2, lineToY2);
+
+        lineToX2 = (int) refinementIntersection2[0];
+        lineToY2 = (int) refinementIntersection2[1];
+
         g2.drawLine(lineStartX, lineStartY, lineToX2, lineToY2);
 
         g2.setStroke(super.getStroke());
         int ovalDiameter = CIRCLE_WIDTH;
-        int ovalX = (int) this.getCircle().x;
-        int ovalY = (int) this.getCircle().y;
-        int ovalX2 = (int) this.getSecondCircle().x;
-        int ovalY2 = (int) this.getSecondCircle().y;
+        int ovalX = (int) circle1.x;
+        int ovalY = (int) circle1.y;
+        int ovalX2 = (int) circle2.x;
+        int ovalY2 = (int) circle2.y;
 
         g2.drawOval(ovalX, ovalY, ovalDiameter, ovalDiameter);
         g2.drawOval(ovalX2, ovalY2, ovalDiameter, ovalDiameter);

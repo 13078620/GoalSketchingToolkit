@@ -92,6 +92,7 @@ public class GSnodeFactory  {
         
         GSorEntailmentGraphics g = new GSorEntailmentGraphics(x, y, toX, toY, length, toX2, toY2, length2);
         ORentailment oe =  new ORentailment(g);
+        g.setGSnode(oe);
         return oe;
         
     }

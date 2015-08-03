@@ -69,7 +69,7 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
         this.toY = toY;
         this.length = length;
 
-        this.setCircle(toX);
+        this.circle = new Ellipse2D.Double(x - CIRCLE_WIDTH / 2, toY, CIRCLE_WIDTH, CIRCLE_HEIGHT);
     }
 
     /**

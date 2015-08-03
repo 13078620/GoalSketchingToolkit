@@ -102,7 +102,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
         this.height = height;
 
     }
-    
+
     /**
      * Returns the goal sketching node of this goal sketching graphics.
      *
@@ -146,7 +146,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                 && (h < y || h > Y));
 
     }
-    
+
     /**
      * Sets whether this goal sketching graphics is selected or not.
      *
@@ -237,6 +237,9 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                     }
                 }
 
+            } else if (goal.getId() != null) {
+                text += "   (" + goal.getId() + ")";
+                g2.drawString(text, x, y +  fm.getHeight());
             }
 
             if (goal.isChild()) {
@@ -251,8 +254,8 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
                     int lineStartX = x + width / 2;
                     int lineStartY = y;
-                    int lineToX = (int) egs.getCircle().x;
-                    int lineToY = (int) egs.getCircle().y;
+                    int lineToX = (int) egs.getCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+                    int lineToY = (int) egs.getCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
 
                     double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
 
@@ -271,8 +274,8 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
                         int lineStartX = x + width / 2;
                         int lineStartY = y;
-                        int lineToX = (int) egs.getCircle().x;
-                        int lineToY = (int) egs.getCircle().y;
+                        int lineToX = (int) egs.getCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+                        int lineToY = (int) egs.getCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
 
                         double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
 
@@ -285,8 +288,8 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
                         int lineStartX = x + width / 2;
                         int lineStartY = y;
-                        int lineToX = (int) egs.getSecondCircle().x;
-                        int lineToY = (int) egs.getSecondCircle().y;
+                        int lineToX = (int) egs.getSecondCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+                        int lineToY = (int) egs.getSecondCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
 
                         double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
 
