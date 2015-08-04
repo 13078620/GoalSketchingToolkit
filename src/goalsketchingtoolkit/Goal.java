@@ -63,6 +63,10 @@ public class Goal extends GSnode {
      * The graphical properties of this goal.
      */
     private GSnodeGraphics graphicalProperties;
+    /**
+     * Flags whether this goal was refined from an assumption
+     */
+    private boolean refinedFromAssumption;
 
     /**
      * Constructs a Goal and initialises it's array list of children.
@@ -161,11 +165,11 @@ public class Goal extends GSnode {
         }
 
         children.remove(node);
-        
-        if(getTwins().isEmpty()) {
+
+        if (getTwins().isEmpty()) {
             hasTwin = false;
         }
-        
+
         if (children.isEmpty()) {
             hasChildren = false;
         }
@@ -547,5 +551,26 @@ public class Goal extends GSnode {
             }
         }
         return twins;
+    }
+
+    /**
+     * Returns the flag which denotes whether this goal descends from an
+     * assumption.
+     *
+     * @return true if this goal descends from an assumption, false otherwise.
+     */
+    public boolean isRefinedFromAssumption() {
+        return refinedFromAssumption;
+    }
+
+    /**
+     * Sets the flag which denotes whether this goal descends from an
+     * assumption.
+     *
+     * @param refinedFromAssumption the boolean value which denotes if this goal
+     * descends from an assumption.
+     */
+    public void setRefinedFromAssumption(boolean refinedFromAssumption) {
+        this.refinedFromAssumption = refinedFromAssumption;
     }
 }

@@ -125,5 +125,29 @@ public class ORentailment extends ANDentailment {
     public boolean hasGraphics() {
         return this.graphicalProperties != null;
     }
+    
+    /**
+     * Returns a boolean value which denotes whether this and entailment belongs
+     * to an assumption.
+     *
+     * @return true if this and entailment belongs to an assumption, false
+     * otherwise.
+     */
+    @Override
+    public boolean entailsAssumption() {
+        return super.entailsAssumption();
+    }
+
+    /**
+     * Sets the flag which denotes whether this and entailment belongs to an
+     * assumption.
+     *
+     * @param entailsAssumption the boolean value which denotes whether this and
+     * entailment belongs to an assumption.
+     */
+    @Override
+    public void setEntailsAssumption(boolean entailsAssumption) {
+        super.setEntailsAssumption(entailsAssumption); 
+    }
 
 }

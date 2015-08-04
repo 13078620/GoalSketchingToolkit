@@ -44,7 +44,7 @@ public class GoalLogic implements GoalSketchingLogic {
      */
     @Override
     public boolean isCorrect(GSnode nodeToAdd) {
-
+//System.out.println(goal.isRefinedFromAssumption());
         boolean correct = false;
         String nodeToAddClassString = nodeToAdd.getClass().toString();
 
@@ -62,8 +62,18 @@ public class GoalLogic implements GoalSketchingLogic {
         if (goal.isEntailed() && (nodeToAddClassString.contains("ANDentailment")
                 || nodeToAddClassString.contains("ORentailment"))) {
             throw new UnsupportedOperationException("This goal is already entailed");
-        } else if (nodeToAddClassString.contains("ANDentailment")
-                || nodeToAddClassString.contains("ORentailment")) {
+        } else if (nodeToAddClassString.contains("ANDentailment")) {
+            ANDentailment ae = (ANDentailment) nodeToAdd;
+            if (goal.isRefinedFromAssumption()) {
+                ae.setEntailsAssumption(true);
+            }
+            goal.setIsEntailed(true);
+            correct = true;
+        } else if (nodeToAddClassString.contains("ORentailment")) {
+            ORentailment oe = (ORentailment) nodeToAdd;
+            if (goal.isRefinedFromAssumption()) {
+                oe.setEntailsAssumption(true);
+            }
             goal.setIsEntailed(true);
             correct = true;
         } else if (goal.isEntailed()
@@ -77,6 +87,7 @@ public class GoalLogic implements GoalSketchingLogic {
                     + "operationalised"
                     + ", cannot add entailment");
         } else if (nodeToAddClassString.contains("OperationalizingProducts")) {
+
             if (goal.hasGop()) {
                 GoalOrientedProposition gop = goal.getProposition();
                 if (gop.hasPrefix()) {
@@ -91,6 +102,12 @@ public class GoalLogic implements GoalSketchingLogic {
                     goal.setIsOperationalized(true);
                     correct = true;
                 }
+            } else if (goal.isRefinedFromAssumption()) {
+                System.out.println("got here");
+                throw new UnsupportedOperationException("Parent goal decends"
+                        + "from an assumption, cannot add"
+                        + "operationalizing products to assumptions.");
+
             } else {
                 goal.setIsOperationalized(true);
                 correct = true;
@@ -111,15 +128,52 @@ public class GoalLogic implements GoalSketchingLogic {
             correct = true;
         } else if (nodeToAddClassString.contains("GoalOrientedProposition")) {
             GoalOrientedProposition gop = (GoalOrientedProposition) nodeToAdd;
+            
             if (gop.hasPrefix()) {
+                
+                Goal parentGoal = (Goal) goal.getParent().getParent();
+                
                 if (goal.isOperationalized() && gop.getPrefix().equalsIgnoreCase("/a/")) {
                     throw new UnsupportedOperationException("Cannot add an "
                             + "assumption goal oriented proposition"
                             + " to this goal because it is already "
                             + "operationalised");
+                } else if (gop.isAssumption()) {
+                    if (goal.getEntailment() != null) {
+                        
+                        
+                        checkDecendentNotAssumption(goal);
+                        
+
+                    }
+                    goal.setRefinedFromAssumption(true);
+                    goal.setHasGop(true);
+                    correct = true;
+                } else if (!gop.isAssumption()) {
+                    if (goal.isRefinedFromAssumption()) {
+                        throw new UnsupportedOperationException("Cannot add a "
+                                + gop.getPrefix()
+                                + " type GOP to this goal because it decends "
+                                + "from an assumption");
+                    } else {
+                        goal.setHasGop(true);
+                        correct = true;
+                    }
                 } else if (goal.isRootGoal() && !gop.getPrefix().equalsIgnoreCase("/m/")) { //else if (isAwayGoal()
                     throw new UnsupportedOperationException("Only motivation type"
                             + " propositions can be added to the root goal");
+                } else if (parentGoal.hasGop()) {
+                    GoalOrientedProposition parentGoalGop = parentGoal.getProposition();
+                    if (parentGoalGop.hasPrefix()) {
+                        if (parentGoalGop.isAssumption() && !gop.isAssumption()) {
+                            throw new UnsupportedOperationException("The goal this proposition belongs "
+                                    + "to's parent goal's proposition is an assumption, this"
+                                    + "proposition cannot have a goal type other than assumption");
+                        } else {
+                            goal.setHasGop(true);
+                            correct = true;
+                        }
+                    }
                 } else {
                     goal.setHasGop(true);
                     correct = true;
@@ -128,10 +182,12 @@ public class GoalLogic implements GoalSketchingLogic {
                 goal.setHasGop(true);
                 correct = true;
             }
-        } else if (nodeToAddClassString.contains("Annotation")) {
+        } else if (nodeToAddClassString.contains(
+                "Annotation")) {
             throw new UnsupportedOperationException("Annotations can only be added"
                     + " to a goal's goal oriented proposition");
-        } else if (nodeToAddClassString.contains("Twin")) {           
+        } else if (nodeToAddClassString.contains(
+                "Twin")) {
             goal.setHasTwin(true);
         } else {
             throw new UnsupportedOperationException("Cannot add goal to a goal, "
@@ -142,4 +198,40 @@ public class GoalLogic implements GoalSketchingLogic {
         return correct;
 
     }
+
+    public void checkDecendentNotAssumption(Goal goal) {
+
+        String entailmentType = goal.getEntailment().getClass().toString();
+        if (entailmentType.contains("ANDentailment")) {
+
+            ANDentailment ae = (ANDentailment) goal.getEntailment();
+            ArrayList<GSnode> goals = ae.getChildren();
+
+            for (GSnode n : goals) {
+                Goal g = (Goal) n;
+
+                if (g.hasGop() && g.getProposition().hasPrefix()) {
+                    GoalOrientedProposition prop = g.getProposition();
+                    if (!prop.isAssumption()) {
+                        throw new UnsupportedOperationException("Cannot add an "
+                                + "assumption "
+                                + " type GOP to this goal because it's decendent(s) "
+                                + " are not assumptions");
+                    }
+                }
+
+                if (g.getEntailment() != null) {
+                    checkDecendentNotAssumption(g);
+                }
+            }
+
+            ae.setEntailsAssumption(true);
+
+        } else if (entailmentType.contains("ORentailment")) {
+            ORentailment oe = (ORentailment) goal.getEntailment();
+            oe.setEntailsAssumption(true);
+        }
+
+    }
+
 }

@@ -54,6 +54,8 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     public static final int ENTAILMENT_START_LENGTH = 80;
     public static final int GOAL_START_WIDTH = 100;
     public static final int GOAL_START_HEIGHT = 60;
+    public static final int PRODUCTS_START_WIDTH = 80;
+    public static final int PRODUCTS_START_HEIGHT = 40;
 
     public GoalSketchingController(GoalGraphModelInterface model) {
 
@@ -325,6 +327,19 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     @Override
     public void addOperationalizingProducts() {
 
+        try {
+            Goal goal = (Goal) currentSelection;
+            GSnodeGraphics g = goal.getGraphicalProperties();
+            int x = g.getX() + g.getWidth() / 2 - PRODUCTS_START_WIDTH / 2;
+            int y = g.getY() + g.getHeight() + 60;
+            OperationalizingProducts ops = factory.createOperationalizingProducts(x, y, PRODUCTS_START_WIDTH, PRODUCTS_START_HEIGHT);
+            currentSelection.addChild(ops);
+            view.addDrawable(ops.getGraphicalProperties());
+            model.addToGSnodes(ops);
+        } catch (UnsupportedOperationException e) {
+            view.displayErrorMessage(e.getMessage());
+        }
+
     }
 
     /**
@@ -378,14 +393,14 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     public void addGOP(GoalType prefix, String statement) {
         Goal goal = (Goal) currentSelection;
         GoalOrientedProposition gop = factory.createGOP(prefix, statement);
-       
+
         try {
             goal.addChild(gop);
             model.addToGSnodes(gop);
         } catch (UnsupportedOperationException e) {
             view.displayErrorMessage(e.getMessage());
         }
-        
+
     }
 
     /**
@@ -396,6 +411,17 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         Goal goal = (Goal) currentSelection;
         GoalOrientedProposition gop = goal.getProposition();
         goal.removeChild(gop);
+        goal.setRefinedFromAssumption(false);
+        if (goal.isEntailed()) {
+            String entailmentType = goal.getEntailment().getClass().toString();
+            if (entailmentType.contains("ANDentailment")) {
+                ANDentailment ae = (ANDentailment) goal.getEntailment();
+                ae.setEntailsAssumption(false);
+            } else if (entailmentType.contains("ORentailment")) {
+                ORentailment oe = (ORentailment) goal.getEntailment();
+                oe.setEntailsAssumption(false);
+            }
+        }
         model.removeFromGSnodes(gop);
 
     }
@@ -909,7 +935,6 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             dialog.setVisible(true);
 
         }
-
     }
 
     /**
@@ -920,6 +945,17 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     @Override
     public void setGoalID(String ID) {
         Goal goal = (Goal) currentSelection;
+        ArrayList<GSnode> nodes = model.getGSnodes();
+        for (GSnode n : nodes) {
+            String nodeType = n.getClass().toString();
+            if (nodeType.contains("Goal")) {
+                Goal g = (Goal) n;
+                if (g.getId() != null && g.getId().equalsIgnoreCase(ID)) {
+                    throw new UnsupportedOperationException("Goal with ID: \"" + ID + "\" already exists, goal IDs must be distinct");
+                }
+            }
+        }
+
         goal.setID(ID);
         model.notifyView();
     }
@@ -947,14 +983,14 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
      * @param statement th statement of the GOP.
      */
     @Override
-    public void setGOP(String prefix, String statement) {        
-        
+    public void setGOP(String prefix, String statement) {
+
         GoalType gt = GoalType.MOTIVATION;
 
         if (prefix.equalsIgnoreCase("motivation")) {
             gt = GoalType.MOTIVATION;
         } else if (prefix.equalsIgnoreCase("behaviour")) {
-            gt =  GoalType.BEHAVIOUR;
+            gt = GoalType.BEHAVIOUR;
         } else if (prefix.equalsIgnoreCase("constraint")) {
             gt = GoalType.CONSTRAINT;
         } else if (prefix.equalsIgnoreCase("assumption")) {
@@ -962,7 +998,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         } else if (prefix.equalsIgnoreCase("obstacle")) {
             gt = GoalType.OBSTACLE;
         }
-        
+
         addGOP(gt, statement);
     }
 

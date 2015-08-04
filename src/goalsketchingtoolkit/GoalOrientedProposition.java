@@ -73,6 +73,7 @@ public class GoalOrientedProposition extends GSnode {
      */
     public GoalOrientedProposition(GoalType prefix, String statement) {
         this.goaltype = prefix;
+        //this.setPrefix(prefix);
         hasPrefix = true;
         this.statement = statement;
         this.annotations = new ArrayList();
@@ -204,7 +205,9 @@ public class GoalOrientedProposition extends GSnode {
      */
     public void setPrefix(GoalType goaltype) {
 
+        System.out.println(super.isChild());
         if (isChild()) {
+            
             Goal g = (Goal) getParent();
             if (g.isOperationalized() && goaltype.prefix.equalsIgnoreCase("/a/")) {
                 throw new UnsupportedOperationException("The goal this proposition belongs to is "
@@ -213,7 +216,7 @@ public class GoalOrientedProposition extends GSnode {
                 throw new UnsupportedOperationException("The goal this proposition belongs to is "
                         + "the root goal, cannot set goal type as anything other than motivation");
             } else if (g.hasParent) {
-                Goal parentGoal = (Goal) g.getParent().getParent();
+                Goal parentGoal = (Goal) g.getParent().getParent();                
                 if (parentGoal.hasGop()) {
                     GoalOrientedProposition parentGoalGOP = parentGoal.getProposition();
                     if (parentGoalGOP.hasPrefix) {

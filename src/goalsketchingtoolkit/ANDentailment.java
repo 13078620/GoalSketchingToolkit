@@ -29,6 +29,11 @@ public class ANDentailment extends GSnode {
      * The graphical properties object for this AND entailment.
      */
     private GSentailmentGraphics graphicalProperties;
+    /**
+     * Flags whether this and entailment belongs to a goal with an assumption
+     * type GOP.
+     */
+    private boolean entailsAssumption;
 
     /**
      * Constructs an AND entailment and initialises it's list of goals and
@@ -180,6 +185,44 @@ public class ANDentailment extends GSnode {
     @Override
     public boolean hasGraphics() {
         return this.graphicalProperties != null;
+    }
+
+    /**
+     * Returns a boolean value which denotes whether this and entailment belongs
+     * to an assumption.
+     *
+     * @return true if this and entailment belongs to an assumption, false
+     * otherwise.
+     */
+    public boolean entailsAssumption() {
+        return entailsAssumption;
+    }
+
+    /**
+     * Sets the flag which denotes whether this and entailment belongs to an
+     * assumption.
+     *
+     * @param entailsAssumption the boolean value which denotes whether this and
+     * entailment belongs to an assumption.
+     */
+    public void setEntailsAssumption(boolean entailsAssumption) {
+        this.entailsAssumption = entailsAssumption;
+
+        if (super.isParent()) {
+            for (GSnode n : goals) {
+                Goal g = (Goal) n;
+                g.setRefinedFromAssumption(entailsAssumption);
+                
+                if (g.getEntailment() != null) {
+                    
+                    String entailmentType = g.getEntailment().getClass().toString();
+                    if (entailmentType.contains("ANDentailment")) {
+                        ANDentailment ae = (ANDentailment) g.getEntailment();
+                        ae.setEntailsAssumption(entailsAssumption);
+                    }
+                }
+            }
+        }
     }
 
 }

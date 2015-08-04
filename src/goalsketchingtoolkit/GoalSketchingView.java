@@ -136,26 +136,7 @@ public class GoalSketchingView implements Observer {
     JMenuItem addProductsMenuItem = new JMenuItem(new AbstractAction("Add operationalizing products") {
         @Override
         public void actionPerformed(ActionEvent e) {
-
-            /*GraphNode cs = (GraphNode) currentSelection;
-
-             if (!cs.isParent() && !cs.isOperationalized2()) {
-
-             //GraphNode child = new GraphNode(cs.getX() - (cs.getWidth() / 2 + 100), cs.getY() + cs.getHeight() + 160, 100, 60, new Proposition("/b/", "test", false), false, true, "Gtest");
-             OperationalizerNode child = new OperationalizerNode();
-             child.setWidth(80);
-             child.setHeight(40);
-             double x = cs.getX() + (cs.getWidth() - child.getWidth()) / 2;
-             double y = cs.getY() + 100;
-             child.setX(x);
-             child.setY(y);
-
-             cs.setOperationalizerNode(child);
-             cs.setIsOperationalized(true);
-             //addDrawable(new OperationalizerNodeDrawer(child));
-             controller.addOpToGoalSketchingNodes(child);
-
-             }*/
+            controller.addOperationalizingProducts();
         }
     });
 
@@ -474,7 +455,13 @@ public class GoalSketchingView implements Observer {
 
             String id = "";
             id += idText.getText();
-            controller.setGoalID(id);
+            
+            try {
+                 controller.setGoalID(id);
+            } catch (UnsupportedOperationException ex) {
+                displayErrorMessage(ex.getMessage());
+            }
+           
 
             dialog.setVisible(false);
 
@@ -488,6 +475,7 @@ public class GoalSketchingView implements Observer {
 
             String statement = "";
             statement += propText.getText();
+            
             controller.setGOP(prefix, statement);
 
             dialog.setVisible(false);
@@ -540,6 +528,7 @@ public class GoalSketchingView implements Observer {
                     case "Behaviour":
                         prefix = "";
                         prefix += GoalType.BEHAVIOUR;
+                        System.out.println(prefix);
                         break;
                     case "Constraint":
                         prefix = "";
@@ -636,7 +625,7 @@ public class GoalSketchingView implements Observer {
         editGoalIDMenuItem.addActionListener(editGoalListener);
         goalPopUpMenu.add(editGoalIDMenuItem);
 
-        addGOPMenuItem = new JMenuItem("Edit GOP");
+        addGOPMenuItem = new JMenuItem("Add goal oriented proposition");
         addGOPMenuItem.addActionListener(editGOPListener);
         goalPopUpMenu.add(addGOPMenuItem);
 
@@ -924,6 +913,9 @@ public class GoalSketchingView implements Observer {
 
         String[] prefixOptions = {"", "Motivation", "Behaviour", "Constraint", "Assumption", "Obstacle"};
         combobox = new JComboBox(prefixOptions);
+        
+        ActionListener editGoalComboBoxListener = new EditGoalComboBoxListener();
+        combobox.addActionListener(editGoalComboBoxListener);
         p.add(combobox);
 
         p.add(button, BorderLayout.PAGE_END);

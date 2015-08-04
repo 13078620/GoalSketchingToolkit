@@ -59,6 +59,11 @@ public class ANDentailmentLogic implements GoalSketchingLogic {
                                 + "to a assumption goals");
                     }
                 }
+            } else {
+                
+                if(entailment.entailsAssumption()) {
+                    g.setRefinedFromAssumption(true);
+                }
             }
         } else if (nodeToAddClassString.contains("Twin")) {
 
@@ -87,4 +92,32 @@ public class ANDentailmentLogic implements GoalSketchingLogic {
         }
         return correct;
     }
+
+    /**
+     * Returns whether or not the and entailment for this and entailment
+     * graphics instance entails an assumption or not.
+     *
+     * @return true if the and entailment entails an assumption, false
+     * otherwise.
+     */
+    public boolean isAssumptionEntailment() {
+
+        boolean entailsAssumption = false;
+
+        if (this.entailment.isChild()) {
+            Goal g = (Goal) entailment.getParent();
+            if (g.hasGop()) {
+                GoalOrientedProposition gop = g.getProposition();
+                if (gop.isAssumption()) {
+                    entailsAssumption = true;
+                }
+            } else {
+                if (g.isRefinedFromAssumption()) {
+                    entailsAssumption = true;
+                }
+            }
+        }
+        return entailsAssumption;
+    }
+
 }

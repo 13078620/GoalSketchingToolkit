@@ -114,6 +114,27 @@ public class GSnodeFactory  {
         OperationalizingProducts ops = new OperationalizingProducts();
         ops.setGraphicalProperties(g);
         ops.addProduct(product);
+        g.setGSnode(ops);
+        return ops;
+        
+    }
+    
+     /**
+     * Returns a new Operationalizing Products.
+     *
+     * @param x the x position of the goal sketching node.
+     * @param y the y position of the goal sketching node.
+     * @param width the width of the goal sketching node.
+     * @param height the height of the goal sketching node.
+     * @return a new initialised with the given arguments.
+     */
+    //@Override
+    public OperationalizingProducts createOperationalizingProducts(int x, int y, int width, int height) {
+        
+        GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);
+        OperationalizingProducts ops = new OperationalizingProducts();
+        ops.setGraphicalProperties(g);
+        g.setGSnode(ops);
         return ops;
         
     }
