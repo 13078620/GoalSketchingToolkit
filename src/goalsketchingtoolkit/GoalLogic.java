@@ -44,7 +44,7 @@ public class GoalLogic implements GoalSketchingLogic {
      */
     @Override
     public boolean isCorrect(GSnode nodeToAdd) {
-//System.out.println(goal.isRefinedFromAssumption());
+        
         boolean correct = false;
         String nodeToAddClassString = nodeToAdd.getClass().toString();
 

@@ -82,13 +82,15 @@ public class GoalSketchingView implements Observer {
     private GSmouseListener mouseListener;
     private EditGoalListener editGoalListener;
     private EditGOPListener editGOPListener;
+    private EditProductsListener editProductsListener;
 
     private JTextField propText;
     private JTextField idText;
+    private JTextField productText;
     private JLabel enterGoalIdLabel;
     private JLabel addPropositionLabel;
     private JLabel selectPrefixLabel;
-    private JLabel operationalizerLabel;
+    private JLabel addProductLabel;
 
     private JComboBox combobox;
     private String prefix = "";
@@ -125,13 +127,7 @@ public class GoalSketchingView implements Observer {
         }
     });
 
-    JMenuItem editGoalIDMenuItem; /*= new JMenuItem(new AbstractAction("Edit goal ID") {
-     @Override
-     public void actionPerformed(ActionEvent e) {
-     controller.setGoalID();            
-     }
-     });*/
-
+    JMenuItem editGoalIDMenuItem;
 
     JMenuItem addProductsMenuItem = new JMenuItem(new AbstractAction("Add operationalizing products") {
         @Override
@@ -140,32 +136,13 @@ public class GoalSketchingView implements Observer {
         }
     });
 
-    JMenuItem addProductMenuItem = new JMenuItem(new AbstractAction("Add product") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-        }
-    });
+    JMenuItem addProductMenuItem;
 
     JMenuItem addAssumpTerminationMenuItem = new JMenuItem(new AbstractAction("Add assumption termination") {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            /*GraphNode cs = (GraphNode) currentSelection;
-
-             if (!cs.isParent() && !cs.isOperationalized2() /*&& cs.getProposition() != null && cs.getProposition().isAssumption()) {
-
-             //GraphNode child = new GraphNode(cs.getX() - (cs.getWidth() / 2 + 100), cs.getY() + cs.getHeight() + 160, 100, 60, new Proposition("/b/", "test", false), false, true, "Gtest");
-             double x = cs.getX() + (cs.getWidth() - 30) / 2;
-             double y = cs.getY() + 100;
-             AssumptionTerminationNode child = new AssumptionTerminationNode(x, y, 30, 30);
-
-             cs.setAssumptionTerminationNode(child);
-             cs.setIsOperationalized(true);
-             //addDrawable(new OperationalizerNodeDrawer(child));
-             controller.addTerminationGoalSketchingNodes(child);
-
-             }*/
+            controller.addAssumptionTermination();
         }
     });
 
@@ -176,12 +153,7 @@ public class GoalSketchingView implements Observer {
         }
     });
 
-    JMenuItem addGOPMenuItem;/*new JMenuItem(new AbstractAction("Add goal oriented proposition") {
-     @Override
-     public void actionPerformed(ActionEvent e) {
-
-     }
-     });*/
+    JMenuItem addGOPMenuItem;
 
     JMenuItem deleteEntailmentMenuItem = new JMenuItem(new AbstractAction("Delete entailment") {
         @Override
@@ -193,14 +165,14 @@ public class GoalSketchingView implements Observer {
     JMenuItem deleteGoalMenuItem = new JMenuItem(new AbstractAction("Delete goal") {
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            controller.deleteGoal();
         }
     });
 
     JMenuItem deleteProductsMenuItem = new JMenuItem(new AbstractAction("Delete operationalizing products") {
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            controller.deleteOperationalizingProducts();
         }
     });
 
@@ -214,7 +186,7 @@ public class GoalSketchingView implements Observer {
     JMenuItem deleteAssumpTerminationMenuItem = new JMenuItem(new AbstractAction("Delete assumption termination") {
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            controller.deleteAssumptionTermination();
         }
     });
 
@@ -227,7 +199,7 @@ public class GoalSketchingView implements Observer {
 
     JMenuItem deleteGOPMenuItem = new JMenuItem(new AbstractAction("Delete goal oriented proposition") {
         @Override
-        public void actionPerformed(ActionEvent e) {            
+        public void actionPerformed(ActionEvent e) {
             controller.deleteGoalOrientedProposition();
         }
     });
@@ -355,96 +327,17 @@ public class GoalSketchingView implements Observer {
 
     class EditGoalListener implements ActionListener {
 
-        String id = "";
-        String agentName = "";
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            controller.editGoalID();
+        }
+    }
 
-        Operationalizer op;
+    class EditProductsListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-
-            controller.editGoalID();
-
-            /*if (currentSelection.getClass().toString().contains("GraphNode")) {
-
-             GraphNode cs = (GraphNode) currentSelection;
-
-             dialog = new JDialog(frame);
-             dialog.setTitle("Edit ID");
-             JPanel p = new JPanel();
-             enterGoalIdLabel = new JLabel("Enter goal ID: ");
-             addPropositionLabel = new JLabel("Enter Proposition: ");
-             selectPrefixLabel = new JLabel("Select Prefix: ");
-             text = new JTextField(20);
-             text2 = new JTextField(5);
-             JButton button = new JButton("Ok");
-             ActionListener listener = new EditGoalButtonListener();
-             button.addActionListener(listener);
-
-             //System.out.println(cs.isRootNode());
-             if (cs.isRootNode()) {
-             String[] prefixOptions = {"", "Motivation", "Behaviour"};
-             combobox = new JComboBox(prefixOptions);
-             } else if ((cs.getProposition() != null && cs.getProposition().getPrefix().contains("a")) || (cs.getParent().getProposition() != null && cs.getParent().getProposition().getPrefix().contains("a"))) {
-             String[] prefixOptions = {"Assumption"};
-             combobox = new JComboBox(prefixOptions);
-             } else if (cs.isOperationalized2()) {
-             String[] prefixOptions = {"", "Motivation", "Behaviour"};
-             combobox = new JComboBox(prefixOptions);
-             } else {
-             String[] prefixOptions = {"", "Motivation", "Behaviour", "Assumption"};
-             combobox = new JComboBox(prefixOptions);
-             }
-
-             ActionListener listener2 = new EditGoalComboBoxListener();
-             combobox.addActionListener(listener2);
-
-             if (cs.getProposition() != null && cs.getProposition().getStatement() != null) {
-             text.setText(cs.getProposition().getStatement());
-             }
-
-             p.add(enterGoalIdLabel, BorderLayout.PAGE_START);
-             p.add(text2, BorderLayout.PAGE_START);
-             p.add(addPropositionLabel, BorderLayout.PAGE_START);
-             p.add(text, BorderLayout.PAGE_START);
-             p.add(selectPrefixLabel, BorderLayout.PAGE_START);
-             p.add(combobox, BorderLayout.PAGE_END);
-             p.add(button, BorderLayout.PAGE_END);
-
-             dialog.add(p);
-             dialog.pack();
-             dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-             dialog.setVisible(true);
-
-             } else if (currentSelection.getClass().toString().contains("OperationalizerNode")) {
-
-             dialog = new JDialog(frame);
-             dialog.setTitle("Edit Operationalizers");
-             JPanel p = new JPanel();
-             operationalizerLabel = new JLabel("Enter Operationalizer Name: ");
-             //addSubDomainLabel = new JLabel("Add Sub Domain: ");
-             text = new JTextField(20);
-             //text2 = new JTextField(5);
-             JButton button = new JButton("Ok");
-             JButton button2 = new JButton("Add");
-             ActionListener listener = new EditOperationalizerButtonListener();
-             //ActionListener listener2 = new AddSubDomainButtonListener();
-             button.addActionListener(listener);
-             //button2.addActionListener(listener2);
-
-             subDomains = new ArrayList<>();
-
-             p.add(operationalizerLabel);
-             p.add(text, BorderLayout.PAGE_START);
-             //p.add(addSubDomainLabel, BorderLayout.PAGE_START);
-             //p.add(text2, BorderLayout.PAGE_START);
-             //p.add(button2, BorderLayout.PAGE_END);
-             p.add(button, BorderLayout.PAGE_END);
-             dialog.add(p);
-             dialog.pack();
-             dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-             dialog.setVisible(true);
-             }*/
+            controller.editProducts();
         }
     }
 
@@ -455,13 +348,12 @@ public class GoalSketchingView implements Observer {
 
             String id = "";
             id += idText.getText();
-            
+
             try {
-                 controller.setGoalID(id);
+                controller.setGoalID(id);
             } catch (UnsupportedOperationException ex) {
                 displayErrorMessage(ex.getMessage());
             }
-           
 
             dialog.setVisible(false);
 
@@ -475,40 +367,31 @@ public class GoalSketchingView implements Observer {
 
             String statement = "";
             statement += propText.getText();
-            
             controller.setGOP(prefix, statement);
-
             dialog.setVisible(false);
 
         }
-    }
-
-    class EditOperationalizerButtonListener implements ActionListener {
+    } 
+    
+    class AddProductButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            /*OperationalizerNode cs = (OperationalizerNode) currentSelection;
-             agentName = "";
-             agentName += text.getText();
-             op = new Operationalizer();
-             op.setAgentName(agentName);
-             //op.setSubDomains(subDomains);
-             cs.addOperationalizer(op);
-             dialog.setVisible(false);
-             model.notifyView();*/
+            String product = "";
+            product += productText.getText();
+            controller.addProduct(product);
+            productText.setText("");
+            
         }
     }
 
-    class AddSubDomainButtonListener implements ActionListener {
+    class EditProductButtonListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-
-            /*String subDomain = text2.getText();
-             //subDomains.add(subDomain);
-             text2.setText("");
-             model.notifyView();*/
+            
+            dialog.setVisible(false);
         }
     }
 
@@ -562,6 +445,8 @@ public class GoalSketchingView implements Observer {
      * Constructs a goal sketching view.
      *
      * @param model the observable which this view observes.
+     * @param controller the controller which provides the strategy for this
+     * view.
      */
     public GoalSketchingView(GoalGraphModelInterface model, GoalSketchingControllerInterface controller) {
 
@@ -582,6 +467,7 @@ public class GoalSketchingView implements Observer {
         mouseListener = new GSmouseListener();
         editGoalListener = new EditGoalListener();
         editGOPListener = new EditGOPListener();
+        editProductsListener = new EditProductsListener();
 
         panel.addMouseListener(mouseListener);
         panel.addMouseMotionListener(mouseListener);
@@ -620,15 +506,13 @@ public class GoalSketchingView implements Observer {
         goalPopUpMenu.add(addAssumpTerminationMenuItem);
         goalPopUpMenu.add(addAnnotationMenuItem);
         goalPopUpMenu.add(deleteGOPMenuItem);
-
+        goalPopUpMenu.add(deleteGoalMenuItem);
         editGoalIDMenuItem = new JMenuItem("Edit goal ID");
         editGoalIDMenuItem.addActionListener(editGoalListener);
         goalPopUpMenu.add(editGoalIDMenuItem);
-
         addGOPMenuItem = new JMenuItem("Add goal oriented proposition");
         addGOPMenuItem.addActionListener(editGOPListener);
         goalPopUpMenu.add(addGOPMenuItem);
-
         goalPopUpMenu.setLightWeightPopupEnabled(false);
 
         entailmentPopUpMenu = new JPopupMenu();
@@ -637,6 +521,8 @@ public class GoalSketchingView implements Observer {
         entailmentPopUpMenu.setLightWeightPopupEnabled(false);
 
         productsPopUpMenu = new JPopupMenu();
+        addProductMenuItem = new JMenuItem("Add product");
+        addProductMenuItem.addActionListener(editProductsListener);
         productsPopUpMenu.add(addProductMenuItem);
         productsPopUpMenu.add(deleteProductsMenuItem);
         productsPopUpMenu.add(removeProductMenuItem);
@@ -700,9 +586,17 @@ public class GoalSketchingView implements Observer {
      * @param d the drawable to add.
      */
     public void addDrawable(Drawable d) {
-
         panel.addDrawable(d);
-
+    }
+    
+    /**
+     * Removes a an object of the drawable type from the list of this views goal
+     * sketching panel.
+     *
+     * @param d the drawable to remove.
+     */
+    public void removeDrawable(Drawable d) {
+        panel.removeDrawable(d);
     }
 
     public void reset() {
@@ -913,12 +807,39 @@ public class GoalSketchingView implements Observer {
 
         String[] prefixOptions = {"", "Motivation", "Behaviour", "Constraint", "Assumption", "Obstacle"};
         combobox = new JComboBox(prefixOptions);
-        
+
         ActionListener editGoalComboBoxListener = new EditGoalComboBoxListener();
         combobox.addActionListener(editGoalComboBoxListener);
         p.add(combobox);
 
         p.add(button, BorderLayout.PAGE_END);
+
+        dialog.add(p);
+        dialog.pack();
+        dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+
+        return dialog;
+    }
+
+    public JDialog getAddProductsDialog() {
+
+        dialog = new JDialog(frame);
+        dialog.setTitle("Add products");
+        JPanel p = new JPanel();
+        addProductLabel = new JLabel("Add product: ");
+        productText = new JTextField(20);
+        JButton button = new JButton("Add");
+        ActionListener addProductButtonListener = new AddProductButtonListener();
+        button.addActionListener(addProductButtonListener);
+        p.add(addProductLabel, BorderLayout.PAGE_START);
+        p.add(productText, BorderLayout.PAGE_START);
+        p.add(button, BorderLayout.PAGE_END);
+        
+        JButton button2 = new JButton("Ok");
+        ActionListener editProductButtonListener = new EditProductButtonListener();
+        button2.addActionListener(editProductButtonListener);
+        p.add(button2, BorderLayout.PAGE_END);
+        
 
         dialog.add(p);
         dialog.pack();

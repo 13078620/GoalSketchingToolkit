@@ -10,14 +10,14 @@ import java.util.ArrayList;
 /**
  * This class checks if the goal sketching node added to an OR entailment is
  * supported by the rules of goal sketching, depending on the current state of
- * the OR entailment. Factors to consider are if the parent goal of the 
- * OR entailment has an assumption goal oriented proposition and the goal to 
- * be added to the OR entailment has a goal type other than an assumption.
+ * the OR entailment. Factors to consider are if the parent goal of the OR
+ * entailment has an assumption goal oriented proposition and the goal to be
+ * added to the OR entailment has a goal type other than an assumption.
  *
  * @author Chris Berryman.
  */
 public class ORentailmentLogic implements GoalSketchingLogic {
-    
+
     /**
      * The OR entailment which the logic is performed on.
      */
@@ -49,14 +49,40 @@ public class ORentailmentLogic implements GoalSketchingLogic {
     public boolean isCorrect(GSnode nodeToAdd) {
 
         boolean correct = true;
-        
-        if(goals.size() >= ORentailment.MAXIMUM_GOALS) {
+
+        if (goals.size() >= ORentailment.MAXIMUM_GOALS) {
             throw new UnsupportedOperationException("Can only add a maximum of"
                     + " two goals to an OR entailment");
         }
 
-       
         return correct;
     }
-    
+
+    /**
+     * Returns whether or not the and entailment for this and entailment
+     * graphics instance entails an assumption or not.
+     *
+     * @return true if the and entailment entails an assumption, false
+     * otherwise.
+     */
+    public boolean isAssumptionEntailment() {
+
+        boolean entailsAssumption = false;
+
+        if (this.entailment.isChild()) {
+            Goal g = (Goal) entailment.getParent();
+            if (g.hasGop()) {
+                GoalOrientedProposition gop = g.getProposition();
+                if (gop.isAssumption()) {
+                    entailsAssumption = true;
+                }
+            } else {
+                if (g.isRefinedFromAssumption()) {
+                    entailsAssumption = true;
+                }
+            }
+        }
+        return entailsAssumption;
+    }
+
 }

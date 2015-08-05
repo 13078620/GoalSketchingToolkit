@@ -144,16 +144,15 @@ public class GSnodeFactory  {
      *
      * @param x the x position of the goal sketching node.
      * @param y the y position of the goal sketching node.
-     * @param width the width of the goal sketching node.
-     * @param height the height of the goal sketching node.
      * @return a new initialised with the given arguments.
      */
     //@Override
-    public AssumptionTermination createAssumptionTermination(int x, int y, int width, int height) {
+    public AssumptionTermination createAssumptionTermination(int x, int y) {
         
-        GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);
+        GSnodeGraphics g = new GSnodeGraphics(x, y, GSnodeGraphics.TERMINATION_WIDTH, GSnodeGraphics.TERMINATION_WIDTH);
         AssumptionTermination at = new AssumptionTermination();
         at.setGraphicalProperties(g);
+        g.setGSnode(at);
         return at;
         
     }

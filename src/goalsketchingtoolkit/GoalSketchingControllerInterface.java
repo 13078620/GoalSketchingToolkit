@@ -89,24 +89,26 @@ public interface GoalSketchingControllerInterface {
     /**
      * Adds an Product to a given Operationalizing Products.
      *
-     * @param ops the Operationalizing Products to add the product to.
      * @param product the product to add.
      */
-    void addProduct(OperationalizingProducts ops, String product);
+    void addProduct(String product);
+
+    /**
+     * Adds an assumption termination to a given leaf goal.
+     */
+    void addAssumptionTermination();
+
+    /**
+     * Removes a goal.
+     */
+    void deleteGoal();
 
     /**
      * Removes a goal.
      *
-     * @param child the goal to remove.
+     * @param g the goal to remove.
      */
-    void removeGoal(Goal child);
-
-    /**
-     * Removes an Operationalizing Products.
-     *
-     * @param ops the Operationalizing Products to remove.
-     */
-    void removeOperationalisingProducts(OperationalizingProducts ops);
+    void deleteGoal(Goal g);
 
     /**
      * Deletes a given goal's ID.
@@ -127,6 +129,16 @@ public interface GoalSketchingControllerInterface {
      * Deletes a GOP from a given goal.
      */
     void deleteGoalOrientedProposition();
+
+    /**
+     * Deletes operationalizing products from a given goal.
+     */
+    void deleteOperationalizingProducts();
+
+    /**
+     * Deletes an assumption termination products from a given goal.
+     */
+    void deleteAssumptionTermination();
 
     /**
      * Adds annotation to the GOP of a goal.
@@ -231,7 +243,7 @@ public interface GoalSketchingControllerInterface {
     void setGoalID(String ID);
 
     /**
-     * Handles events for setting the GOP of the currently selected goal.
+     * Handles events for editing the GOP of the currently selected goal.
      */
     void editGOP();
 
@@ -242,5 +254,11 @@ public interface GoalSketchingControllerInterface {
      * @param statement th statement of the GOP.
      */
     void setGOP(String prefix, String statement);
+
+    /**
+     * Handles events for editing the products of the currently selected
+     * operationalizing products.
+     */
+    void editProducts();
 
 }

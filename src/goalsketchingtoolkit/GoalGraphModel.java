@@ -58,7 +58,7 @@ public class GoalGraphModel extends Observable implements GoalGraphModelInterfac
      * @param n the goal sketching node to remove.
      */
     @Override
-    public void removeFromGSnodes(GSnode n) {
+    public void removeFromGSnodes(GSnode n) {        
         this.goalSketchingNodes.remove(n);
         notifyView();
     }

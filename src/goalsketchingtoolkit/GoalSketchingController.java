@@ -102,10 +102,12 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             if (d.contains(eventX, eventY)) {
                 mouseListener.setMousePressed(true);
                 currentSelection = d.getGSnode();
-                d.setSelected(true);
+                //d.setSelected(true);
                 model.notifyView();
                 break;
-            }
+            } //else {
+               // d.setSelected(false);
+           // }
         }
     }
 
@@ -114,6 +116,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
      *
      * @param file the file path.
      */
+    @Override
     public void loadGraph(String file) {
 
         try {
@@ -345,31 +348,143 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     /**
      * Adds an Product to a given Operationalizing Products.
      *
-     * @param ops the Operationalizing Products to add the product to.
      * @param product the product to add.
      */
     @Override
-    public void addProduct(OperationalizingProducts ops, String product) {
+    public void addProduct(String product) {
+        OperationalizingProducts ops = (OperationalizingProducts) currentSelection;
+        ops.addProduct(product);
+        model.notifyView();
+    }
+
+    /**
+     * Adds an assumption termination to a given leaf goal.
+     */
+    @Override
+    public void addAssumptionTermination() {
+
+        try {
+            Goal goal = (Goal) currentSelection;
+            GSnodeGraphics g = goal.getGraphicalProperties();
+            int x = g.getX() + g.getWidth() / 2 - GSnodeGraphics.TERMINATION_WIDTH / 2;
+            int y = g.getY() + g.getHeight() + 35;
+            AssumptionTermination ats = factory.createAssumptionTermination(x, y);
+            currentSelection.addChild(ats);
+            view.addDrawable(ats.getGraphicalProperties());
+            model.addToGSnodes(ats);
+        } catch (UnsupportedOperationException e) {
+            view.displayErrorMessage(e.getMessage());
+        }
 
     }
 
     /**
      * Removes a goal.
-     *
-     * @param child the goal to remove.
      */
     @Override
-    public void removeGoal(Goal child) {
-
+    public void deleteGoal() {
+        Goal goal = (Goal) currentSelection;
+        if(goal.hasParent) {
+            GSnode entailment = goal.getParent();
+            String entailmnetType = entailment.getClass().toString();
+            if (entailmnetType.contains("ANDentailment")) {
+                ANDentailment ae = (ANDentailment) entailment;
+                ae.removeChild(goal);                
+            } else if (entailmnetType.contains("ORentailment")) {
+                ORentailment oe = (ORentailment) entailment;
+                oe.removeChild(goal);
+            }
+        }
+        deleteGoal(goal);
     }
 
     /**
-     * Removes an Operationalizing Products.
+     * Removes a goal.
      *
-     * @param ops the Operationalizing Products to remove.
+     * @param goal the goal to remove.
      */
     @Override
-    public void removeOperationalisingProducts(OperationalizingProducts ops) {
+    public void deleteGoal(Goal goal) {       
+        
+
+        if (goal.hasGop()) {
+            GoalOrientedProposition gop = goal.getProposition();
+            goal.removeChild(gop);
+            model.removeFromGSnodes(gop);
+        }
+
+        if (goal.isOperationalized()) {
+            OperationalizingProducts ops = goal.getOperationalizingProducts();
+            goal.removeChild(ops);
+            view.removeDrawable(ops.getGraphicalProperties());
+            model.removeFromGSnodes(ops);
+        }
+
+        if (goal.isTerminated()) {
+            AssumptionTermination ats = goal.getAssumptionTermination();
+            goal.removeChild(ats);
+            view.removeDrawable(ats.getGraphicalProperties());
+            model.removeFromGSnodes(ats);
+        }
+
+        if (goal.isEntailed()) {
+            GSnode entailment = goal.getEntailment();
+            String entailmnetType = entailment.getClass().toString();
+            if (entailmnetType.contains("ANDentailment")) {
+                ANDentailment ae = (ANDentailment) entailment;
+                if (ae.hasChildren) {
+                    ArrayList<GSnode> children = ae.getChildren();
+                    for (GSnode n : children) {
+                        String nodeType = n.getClass().toString();
+                        if (nodeType.contains("Goal")) {
+                            Goal g = (Goal) n;
+                            deleteGoal(g);
+                        }
+                    }
+
+                }
+
+                goal.removeChild(ae);
+                view.removeDrawable(ae.getGraphicalProperties());
+                model.removeFromGSnodes(ae);
+
+            } else if (entailmnetType.contains("ORentailment")) {
+                ORentailment oe = (ORentailment) entailment;
+                if (oe.hasChildren) {
+                    ArrayList<GSnode> children = oe.getChildren();
+                    for (GSnode n : children) {
+                        String nodeType = n.getClass().toString();
+                        if (nodeType.contains("Goal")) {
+                            Goal g = (Goal) n;
+                            deleteGoal(g);
+                        }
+                    }
+                }
+
+                goal.removeChild(oe);
+                view.removeDrawable(oe.getGraphicalProperties());
+                model.removeFromGSnodes(oe);
+
+            }
+        }
+        
+        /*if(goal.hasParent) {
+            GSnode entailment = goal.getParent();
+            String entailmnetType = entailment.getClass().toString();
+            if (entailmnetType.contains("ANDentailment")) {
+                ANDentailment ae = (ANDentailment) entailment;
+                ae.removeChild(goal);                
+            } else if (entailmnetType.contains("ORentailment")) {
+                ORentailment oe = (ORentailment) entailment;
+                oe.removeChild(goal);
+            }
+                
+            
+        }*/
+
+        view.removeDrawable(goal.getGraphicalProperties());
+        model.removeFromGSnodes(goal);
+        currentSelection = null;
 
     }
 
@@ -423,6 +538,36 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             }
         }
         model.removeFromGSnodes(gop);
+
+    }
+
+    /**
+     * Deletes operationalizing products from a given goal.
+     */
+    @Override
+    public void deleteOperationalizingProducts() {
+
+        Goal goal = (Goal) currentSelection.getParent();
+        OperationalizingProducts ops = (OperationalizingProducts) currentSelection;
+        goal.removeChild(ops);
+        view.removeDrawable(ops.getGraphicalProperties());
+        model.removeFromGSnodes(ops);
+        currentSelection = null;
+
+    }
+
+    /**
+     * Deletes an assumption termination products from a given goal.
+     */
+    @Override
+    public void deleteAssumptionTermination() {
+
+        Goal goal = (Goal) currentSelection.getParent();
+        AssumptionTermination ats = (AssumptionTermination) currentSelection;
+        goal.removeChild(ats);
+        view.removeDrawable(ats.getGraphicalProperties());
+        model.removeFromGSnodes(ats);
+        currentSelection = null;
 
     }
 
@@ -515,31 +660,38 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                     view.enableAddOREntailmentMenuItem();
                     view.disableAddProductsMenuItem();
                     view.disableAddAssumpTerminationMenuItem();
+                    view.enableDeleteGoalMenuItem();
                 } else if (g.isRootGoal() && g.isEntailed()) {
                     view.disableAddANDEntailmentMenuItem();
                     view.disableAddOREntailmentMenuItem();
                     view.disableAddProductsMenuItem();
                     view.disableAddAssumpTerminationMenuItem();
+                    view.enableDeleteGoalMenuItem();
                 } else if (!g.isEntailed() && !g.isOperationalized() && !g.isTerminated()) {
                     view.enableAddANDEntailmentMenuItem();
                     view.enableAddOREntailmentMenuItem();
                     view.enableAddProductsMenuItem();
                     view.enableAddAssumpTerminationMenuItem();
+                    view.enableDeleteGoalMenuItem();
                 } else if (g.isEntailed()) {
                     view.disableAddProductsMenuItem();
                     view.disableAddANDEntailmentMenuItem();
                     view.disableAddOREntailmentMenuItem();
                     view.disableAddAssumpTerminationMenuItem();
+                    view.enableDeleteGoalMenuItem();
                 } else if (g.isOperationalized()) {
                     view.disableAddProductsMenuItem();
                     view.disableAddANDEntailmentMenuItem();
                     view.disableAddOREntailmentMenuItem();
+                    view.enableDeleteGoalMenuItem();
                 } else if (g.isTerminated()) {
                     view.disableAddAssumpTerminationMenuItem();
                     view.disableAddProductsMenuItem();
                     view.disableAddANDEntailmentMenuItem();
                     view.disableAddOREntailmentMenuItem();
+                    view.enableDeleteGoalMenuItem();
                 }
+
                 view.showGoalPopUpMenu(e, x, y);
 
             } else if (currentSelectionType.contains("ANDentailment")) {
@@ -676,92 +828,98 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         if (mouseListener.isDragging()) {
 
             mouseListener.setMousePressed(false);
+            if (currentSelection != null) {
 
-            Point p = e.getPoint();
-            GSnode gsn = currentSelection;
-            String currentSelectionType = gsn.getClass().toString();
-            if (currentSelectionType.contains("Goal")
-                    || currentSelectionType.contains("OperationalizingProducts")
-                    || currentSelectionType.contains("Annotation")) {
-                GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
+                Point p = e.getPoint();
+                GSnode gsn = currentSelection;
+                String currentSelectionType = gsn.getClass().toString();
+                if (currentSelectionType.contains("Goal")
+                        || currentSelectionType.contains("OperationalizingProducts")
+                        || currentSelectionType.contains("Annotation")) {
+                    GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
 
-                GoalSketchingPanel panel = view.getPanel();
-                int type = panel.getCursor().getType();
-                int dx = p.x - g.getX();
-                int dy = p.y - g.getY();
-                switch (type) {
-                    case Cursor.N_RESIZE_CURSOR:
-                        int height = g.getHeight() - (int) dy;
-                        g.setY(g.getY() + dy);
-                        g.setHeight(height);
-                        break;
-                    case Cursor.NW_RESIZE_CURSOR:
-                        int width = g.getWidth() - dx;
-                        height = g.getHeight() - dy;
-                        g.setX(g.getX() + dx);
-                        g.setY(g.getY() + dy);
-                        g.setWidth(width);
-                        g.setHeight(height);
-                        //r.setRect(r.x + dx, r.y + dy, width, height);
-                        break;
-                    case Cursor.W_RESIZE_CURSOR:
-                        width = g.getWidth() - dx;
-                        g.setX(g.getX() + dx);
-                        g.setWidth(width);
-                        //r.setRect(r.x + dx, r.y, width, r.height);
-                        break;
-                    case Cursor.SW_RESIZE_CURSOR:
-                        width = g.getWidth() - dx;
-                        height = (int) dy;
-                        g.setX(g.getX() + dx);
-                        g.setWidth(width);
-                        g.setHeight(height);
-                        break;
-                    case Cursor.S_RESIZE_CURSOR:
-                        height = (int) dy;
-                        g.setHeight(height);
-                        //r.setRect(r.x, r.y, r.width, height);
-                        break;
-                    case Cursor.SE_RESIZE_CURSOR:
-                        width = dx;
-                        height = dy;
-                        g.setWidth(width);
-                        g.setHeight(height);
-                        break;
-                    case Cursor.E_RESIZE_CURSOR:
-                        width = (int) dx;
-                        g.setWidth(width);
-                        break;
-                    case Cursor.NE_RESIZE_CURSOR:
-                        width = (int) dx;
-                        height = g.getHeight() - dy;
-                        g.setY(g.getY() + dy);
-                        g.setWidth(width);
-                        g.setHeight(height);
-                        break;
-                    default:
-                    //System.out.println("unexpected type: " + type);
+                    GoalSketchingPanel panel = view.getPanel();
+                    int type = panel.getCursor().getType();
+                    int dx = p.x - g.getX();
+                    int dy = p.y - g.getY();
+                    switch (type) {
+                        case Cursor.N_RESIZE_CURSOR:
+                            int height = g.getHeight() - (int) dy;
+                            g.setY(g.getY() + dy);
+                            g.setHeight(height);
+                            break;
+                        case Cursor.NW_RESIZE_CURSOR:
+                            int width = g.getWidth() - dx;
+                            height = g.getHeight() - dy;
+                            g.setX(g.getX() + dx);
+                            g.setY(g.getY() + dy);
+                            g.setWidth(width);
+                            g.setHeight(height);
+                            //r.setRect(r.x + dx, r.y + dy, width, height);
+                            break;
+                        case Cursor.W_RESIZE_CURSOR:
+                            width = g.getWidth() - dx;
+                            g.setX(g.getX() + dx);
+                            g.setWidth(width);
+                            //r.setRect(r.x + dx, r.y, width, r.height);
+                            break;
+                        case Cursor.SW_RESIZE_CURSOR:
+                            width = g.getWidth() - dx;
+                            height = (int) dy;
+                            g.setX(g.getX() + dx);
+                            g.setWidth(width);
+                            g.setHeight(height);
+                            break;
+                        case Cursor.S_RESIZE_CURSOR:
+                            height = (int) dy;
+                            g.setHeight(height);
+                            //r.setRect(r.x, r.y, r.width, height);
+                            break;
+                        case Cursor.SE_RESIZE_CURSOR:
+                            width = dx;
+                            height = dy;
+                            g.setWidth(width);
+                            g.setHeight(height);
+                            break;
+                        case Cursor.E_RESIZE_CURSOR:
+                            width = (int) dx;
+                            g.setWidth(width);
+                            break;
+                        case Cursor.NE_RESIZE_CURSOR:
+                            width = (int) dx;
+                            height = g.getHeight() - dy;
+                            g.setY(g.getY() + dy);
+                            g.setWidth(width);
+                            g.setHeight(height);
+                            break;
+                        default:
+                        //System.out.println("unexpected type: " + type);
+                    }
+                    model.notifyView();
                 }
-                model.notifyView();
             }
         }
 
         if (mouseListener.isMousePressed()) {
-            GSgraphics g = currentSelection.getGraphicalProperties();
-            g.setLocation(eventX, eventY);
-            model.notifyView();
 
-            if (currentSelection.getClass().toString().contains("ANDentailment")) {
-                GSentailmentGraphics g2 = (GSentailmentGraphics) currentSelection.getGraphicalProperties();
-                g2.setCircleLocation(eventX, eventY);
+            if (currentSelection != null) {
+
+                GSgraphics g = currentSelection.getGraphicalProperties();
+                g.setLocation(eventX, eventY);
                 model.notifyView();
-            }
 
-            if (currentSelection.getClass().toString().contains("ORentailment")) {
-                GSorEntailmentGraphics g2 = (GSorEntailmentGraphics) currentSelection.getGraphicalProperties();
+                if (currentSelection.getClass().toString().contains("ANDentailment")) {
+                    GSentailmentGraphics g2 = (GSentailmentGraphics) currentSelection.getGraphicalProperties();
+                    g2.setCircleLocation(eventX, eventY);
+                    model.notifyView();
+                }
 
-                g2.setCircleLocation(eventX, eventY);
-                model.notifyView();
+                if (currentSelection.getClass().toString().contains("ORentailment")) {
+                    GSorEntailmentGraphics g2 = (GSorEntailmentGraphics) currentSelection.getGraphicalProperties();
+
+                    g2.setCircleLocation(eventX, eventY);
+                    model.notifyView();
+                }
             }
         }
     }
@@ -1000,6 +1158,22 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         }
 
         addGOP(gt, statement);
+    }
+
+    /**
+     * Handles events for editing the products of the currently selected
+     * operationalizing products.
+     */
+    @Override
+    public void editProducts() {
+
+        String currentSelectionType = currentSelection.getClass().toString();
+        if (currentSelectionType.contains("OperationalizingProducts")) {
+
+            JDialog dialog = view.getAddProductsDialog();
+            dialog.setVisible(true);
+
+        }
     }
 
 }

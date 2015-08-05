@@ -49,7 +49,7 @@ public class GoalSketchingToolkitTester {
         //ae.removeChild(g2);
         //System.out.println(ae.getChildren().size());
 
-        try {
+        /*try {
 
             //String file = "compositeTestXMLOutput.xml";
             Document xmlDoc = parser.getDocument(file);
@@ -85,7 +85,9 @@ public class GoalSketchingToolkitTester {
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
-        }
+        }*/
+        GoalGraphModelInterface model = new GoalGraphModel();
+        GoalSketchingController controller = new GoalSketchingController(model);
 
     }
 

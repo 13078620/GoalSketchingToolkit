@@ -41,9 +41,16 @@ public class GoalSketchingPanel extends JPanel {
      * @param drawable the drawable object to add.
      */
     public void addDrawable(Drawable drawable) {
-
         this.drawables.add(drawable);
-
+    }
+    
+    /**
+     * Removes a a drawable object from the list of drawable objects.
+     *
+     * @param d the drawable to remove.
+     */
+    public void removeDrawable(Drawable d) {
+        this.drawables.remove(d);
     }
 
     /**

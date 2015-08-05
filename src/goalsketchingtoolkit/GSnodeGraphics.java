@@ -31,6 +31,11 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
      * The height of the goal sketching node.
      */
     private int height;
+    
+     /**
+     * The width of the circular section of an assumption termination.
+     */
+    public final static int TERMINATION_WIDTH = 30;
 
     /**
      * Constructs a goal sketching node graphics object without initialising
