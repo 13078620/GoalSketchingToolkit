@@ -219,6 +219,9 @@ public class ANDentailment extends GSnode {
                     if (entailmentType.contains("ANDentailment")) {
                         ANDentailment ae = (ANDentailment) g.getEntailment();
                         ae.setEntailsAssumption(entailsAssumption);
+                    } else if (entailmentType.contains("ORentailment")) {
+                        ORentailment oe = (ORentailment) g.getEntailment();
+                        oe.setEntailsAssumption(entailsAssumption);
                     }
                 }
             }
