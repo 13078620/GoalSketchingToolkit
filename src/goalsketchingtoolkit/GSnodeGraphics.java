@@ -31,11 +31,21 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
      * The height of the goal sketching node.
      */
     private int height;
-    
-     /**
+
+    /**
      * The width of the circular section of an assumption termination.
      */
     public final static int TERMINATION_WIDTH = 30;
+
+    /**
+     * The start width of an annotation.
+     */
+    public final static int ANNOTATION_START_WIDTH = 100;
+
+    /**
+     * The start height of an annotation.
+     */
+    public final static int ANNOTATION_START_HEIGHT = 50;
 
     /**
      * Constructs a goal sketching node graphics object without initialising
@@ -206,7 +216,90 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
             Goal goal = (Goal) node;
 
-            if (goal.hasGop()) {
+           
+
+            if (goal.isChild()) {
+
+                GSnode parent = goal.getParent();
+                String entailmentType = parent.getClass().toString();
+
+                if (entailmentType.contains("ANDentailment")) {
+
+                    ANDentailment parentEntailment = (ANDentailment) parent;
+                    GSentailmentGraphics egs = parentEntailment.getGraphicalProperties();
+
+                    int lineStartX = x + width / 2;
+                    int lineStartY = y + height / 2;
+                    int lineToX = (int) egs.getCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+                    int lineToY = (int) egs.getCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+
+                    double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
+
+                    lineToX = (int) refinementIntersection[0];
+                    lineToY = (int) refinementIntersection[1];
+
+                    g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+
+                    g2.drawRect(x, y, width, height);
+                    g2.setColor(Color.WHITE);
+                    g2.fillRect(x, y, width, height);
+                    g2.setColor(Color.BLACK);
+
+                } else if (entailmentType.contains("ORentailment")) {
+
+                    ORentailment parentEntailment = (ORentailment) parent;
+                    GSorEntailmentGraphics egs = parentEntailment.getGraphicalProperties();
+                    ArrayList orEntailmentChildren = parentEntailment.getChildren();
+
+                    if (goal.equals(orEntailmentChildren.get(0))) {
+
+                        int lineStartX = x + width / 2;
+                        int lineStartY = y + height / 2;
+                        int lineToX = (int) egs.getCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+                        int lineToY = (int) egs.getCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+
+                        double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
+
+                        lineToX = (int) refinementIntersection[0];
+                        lineToY = (int) refinementIntersection[1];
+
+                        g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+
+                        g2.drawRect(x, y, width, height);
+                        g2.setColor(Color.WHITE);
+                        g2.fillRect(x, y, width, height);
+                        g2.setColor(Color.BLACK);
+
+                    } else if (goal.equals(orEntailmentChildren.get(1))) {
+
+                        int lineStartX = x + width / 2;
+                        int lineStartY = y + height / 2;
+                        int lineToX = (int) egs.getSecondCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+                        int lineToY = (int) egs.getSecondCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+
+                        double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
+
+                        lineToX = (int) refinementIntersection[0];
+                        lineToY = (int) refinementIntersection[1];
+
+                        g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+
+                        g2.drawRect(x, y, width, height);
+                        g2.setColor(Color.WHITE);
+                        g2.fillRect(x, y, width, height);
+                        g2.setColor(Color.BLACK);
+                    }
+
+                }
+
+            } else {
+                g2.drawRect(x, y, width, height);
+                g2.setColor(Color.WHITE);
+                g2.fillRect(x, y, width, height);
+                g2.setColor(Color.BLACK);
+            }
+            
+             if (goal.hasGop()) {
                 GoalOrientedProposition gop = goal.getProposition();
                 text += gop.getStatement() + "    " + gop.getPrefix();
 
@@ -244,71 +337,8 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
             } else if (goal.getId() != null) {
                 text += "   (" + goal.getId() + ")";
-                g2.drawString(text, x, y +  fm.getHeight());
+                g2.drawString(text, x, y + fm.getHeight());
             }
-
-            if (goal.isChild()) {
-
-                GSnode parent = goal.getParent();
-                String entailmentType = parent.getClass().toString();
-
-                if (entailmentType.contains("ANDentailment")) {
-
-                    ANDentailment parentEntailment = (ANDentailment) parent;
-                    GSentailmentGraphics egs = parentEntailment.getGraphicalProperties();
-
-                    int lineStartX = x + width / 2;
-                    int lineStartY = y;
-                    int lineToX = (int) egs.getCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
-                    int lineToY = (int) egs.getCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
-
-                    double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
-
-                    lineToX = (int) refinementIntersection[0];
-                    lineToY = (int) refinementIntersection[1];
-
-                    g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
-
-                } else if (entailmentType.contains("ORentailment")) {
-
-                    ORentailment parentEntailment = (ORentailment) parent;
-                    GSorEntailmentGraphics egs = parentEntailment.getGraphicalProperties();
-                    ArrayList orEntailmentChildren = parentEntailment.getChildren();
-
-                    if (goal.equals(orEntailmentChildren.get(0))) {
-
-                        int lineStartX = x + width / 2;
-                        int lineStartY = y;
-                        int lineToX = (int) egs.getCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
-                        int lineToY = (int) egs.getCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
-
-                        double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
-
-                        lineToX = (int) refinementIntersection[0];
-                        lineToY = (int) refinementIntersection[1];
-
-                        g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
-
-                    } else if (goal.equals(orEntailmentChildren.get(1))) {
-
-                        int lineStartX = x + width / 2;
-                        int lineStartY = y;
-                        int lineToX = (int) egs.getSecondCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
-                        int lineToY = (int) egs.getSecondCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
-
-                        double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
-
-                        lineToX = (int) refinementIntersection[0];
-                        lineToY = (int) refinementIntersection[1];
-
-                        g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
-                    }
-
-                }
-
-            }
-
-            g2.drawRect(x, y, width, height);
 
         } else if (nodeType.contains("OperationalizingProducts")) {
 
@@ -386,53 +416,61 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
             GoalOrientedProposition gop = (GoalOrientedProposition) a.getParent();
             Goal parentGoal = (Goal) gop.getParent();
             GSnodeGraphics g = parentGoal.getGraphicalProperties();
-            String judgementType = a.getJudgement().getClass().toString();
+            String judgementType = "";
 
             float dash1[] = {10.0f};
             BasicStroke dashed = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
             g2.setStroke(dashed);
 
-            if (judgementType.contains("GoalJudgement")) {
+            if (a.getJudgement() != null) {
 
-                GoalJudgement j = (GoalJudgement) a.getJudgement();
-                ConfidenceFactorRating cfr1 = j.getRefineConfidenceFactorRating();
-                ConfidenceFactorRating cfr2 = j.getRefineConfidenceFactorRating();
-                SignificanceFactorRating sfr = j.getSignificanceFactorRating();
-                String text1 = cfr1.getKey() + ": " + cfr1.getValue();
-                String text2 = cfr2.getKey() + ": " + cfr1.getValue();;
-                String text3 = sfr.getKey() + ": " + sfr.getValue();;
-                int strHeight = fm.getHeight();
-                g2.drawString(" " + text1, x, y + 10);
-                g2.drawString(" " + text2, x, y + strHeight);
-                g2.drawString(" " + text3, x, y + strHeight);
+                judgementType = a.getJudgement().getClass().toString();
+
+                if (judgementType.contains("GoalJudgement")) {
+
+                    GoalJudgement j = (GoalJudgement) a.getJudgement();
+                    ConfidenceFactorRating cfr1 = j.getRefineConfidenceFactorRating();
+                    ConfidenceFactorRating cfr2 = j.getRefineConfidenceFactorRating();
+                    SignificanceFactorRating sfr = j.getSignificanceFactorRating();
+                    String text1 = cfr1.getKey() + ": " + cfr1.getValue();
+                    String text2 = cfr2.getKey() + ": " + cfr1.getValue();;
+                    String text3 = sfr.getKey() + ": " + sfr.getValue();;
+                    int strHeight = fm.getHeight();
+                    g2.drawString(" " + text1, x, y + 10);
+                    g2.drawString(" " + text2, x, y + strHeight);
+                    g2.drawString(" " + text3, x, y + strHeight);
+                    g2.drawLine(g.getX() + g.getWidth() / 2, g.getY(), x + width / 2, y + height);
+                    //drawline
+                } else if (judgementType.contains("LeafJudgement")) {
+
+                    LeafJudgement j = (LeafJudgement) a.getJudgement();
+                    ConfidenceFactorRating cfr1 = j.getConfidenceFactorRating();
+                    SignificanceFactorRating sfr = j.getSignificanceFactorRating();
+                    String text1 = cfr1.getKey() + ": " + cfr1.getValue();
+                    String text2 = sfr.getKey() + ": " + sfr.getValue();
+                    int strHeight = fm.getHeight();
+                    g2.drawString(" " + text1, x, y + 10);
+                    g2.drawString(" " + text2, x, y + strHeight);
+                    g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight(), x + width / 2, y);
+
+                } else if (judgementType.contains("AssumptionJudgement")) {
+
+                    AssumptionJudgement j = (AssumptionJudgement) a.getJudgement();
+                    ConfidenceFactorRating cfr1 = j.getConfidenceFactorRating();
+                    String text1 = cfr1.getKey() + ": " + cfr1.getValue();
+                    g2.drawString(" " + text1, x, y + 10);
+                    g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight(), x + width / 2, y);
+
+                }
+
+            } else {
                 g2.drawLine(g.getX() + g.getWidth() / 2, g.getY(), x + width / 2, y + height);
-                //drawline
-            } else if (judgementType.contains("LeafJudgement")) {
-
-                LeafJudgement j = (LeafJudgement) a.getJudgement();
-                ConfidenceFactorRating cfr1 = j.getConfidenceFactorRating();
-                SignificanceFactorRating sfr = j.getSignificanceFactorRating();
-                String text1 = cfr1.getKey() + ": " + cfr1.getValue();
-                String text2 = sfr.getKey() + ": " + sfr.getValue();
-                int strHeight = fm.getHeight();
-                g2.drawString(" " + text1, x, y + 10);
-                g2.drawString(" " + text2, x, y + strHeight);
-                g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight(), x + width / 2, y);
-
-            } else if (judgementType.contains("AssumptionJudgement")) {
-
-                AssumptionJudgement j = (AssumptionJudgement) a.getJudgement();
-                ConfidenceFactorRating cfr1 = j.getConfidenceFactorRating();
-                String text1 = cfr1.getKey() + ": " + cfr1.getValue();
-                g2.drawString(" " + text1, x, y + 10);
-                g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight(), x + width / 2, y);
-
             }
 
             g2.setStroke(super.getStroke());
 
             g2.drawLine(x, y, x, y + height);
-            g2.drawLine(x + width, y, x, y + height);
+            g2.drawLine(x + width, y, x + width, y + height);
         }
 
     }

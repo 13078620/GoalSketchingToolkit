@@ -56,6 +56,8 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     public static final int GOAL_START_HEIGHT = 60;
     public static final int PRODUCTS_START_WIDTH = 80;
     public static final int PRODUCTS_START_HEIGHT = 40;
+    
+    private int goalInsertShift = 5;
 
     public GoalSketchingController(GoalGraphModelInterface model) {
 
@@ -290,10 +292,13 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
             if (childNodes != null && !childNodes.isEmpty()) {
                 GSnodeGraphics gs = (GSnodeGraphics) childNodes.get(childNodes.size() - 1).getGraphicalProperties();
-                x = gs.getX() + gs.getWidth() + 10;
+                x = gs.getX() + 15;
+                y = gs.getY() + 15;
+            } else {
+                y += g.getLength();
             }
 
-            y += g.getLength();
+            
             Goal goal = factory.createGoal(x, y, GOAL_START_WIDTH, GOAL_START_HEIGHT);
             ae.addChild(goal);
             view.addDrawable(goal.getGraphicalProperties());
@@ -573,12 +578,23 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
     /**
      * Adds annotation to the GOP of a goal.
-     *
-     * @param goal the goal which has the GOP.
-     * @param annotation the annotation to add.
      */
     @Override
-    public void addAnnotation(Goal goal, Annotation annotation) {
+    public void addAnnotation() {
+        
+        try {
+            Goal goal = (Goal) currentSelection;
+            GSnodeGraphics g = goal.getGraphicalProperties();
+            GoalOrientedProposition gop = goal.getProposition();
+            int x = g.getX() - g.getWidth();
+            int y = g.getY() - g.getHeight();
+            Annotation a = factory.createAnnotation(x, y, GSnodeGraphics.ANNOTATION_START_WIDTH, GSnodeGraphics.ANNOTATION_START_HEIGHT);
+            gop.addChild(a);
+            view.addDrawable(a.getGraphicalProperties());
+            model.addToGSnodes(a);
+        } catch (UnsupportedOperationException e) {
+            view.displayErrorMessage(e.getMessage());
+        }
 
     }
 
@@ -1174,6 +1190,22 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             dialog.setVisible(true);
 
         }
+    }
+    
+    /**
+     * Handles events for editing the goal judgement from an annotation.
+     */
+    @Override
+    public void editGoalJudgement() {
+        
+        String currentSelectionType = currentSelection.getClass().toString();
+        if (currentSelectionType.contains("Annotation")) {
+
+            JDialog dialog = view.getAddGoalJudgementDialog();
+            dialog.setVisible(true);
+
+        }
+        
     }
 
 }

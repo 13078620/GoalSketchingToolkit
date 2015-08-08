@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 
 import java.awt.Container;
 import java.awt.BorderLayout;
+import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 
 import javax.swing.JScrollPane;
@@ -34,8 +35,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 import javax.swing.AbstractAction;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
 
 import javax.swing.JOptionPane;
 
@@ -83,17 +82,34 @@ public class GoalSketchingView implements Observer {
     private EditGoalListener editGoalListener;
     private EditGOPListener editGOPListener;
     private EditProductsListener editProductsListener;
+    private AddAnnotationListener addAnnotationListener;
+    private EditGoalJudgementListener editGoalJudgementListener;
 
-    private JTextField propText;
-    private JTextField idText;
-    private JTextField productText;
     private JLabel enterGoalIdLabel;
     private JLabel addPropositionLabel;
     private JLabel selectPrefixLabel;
     private JLabel addProductLabel;
 
+    private JLabel refineLabel;
+    private JLabel engageLabel;
+    private JLabel valueLabel;
+
+    private JLabel achieveLabel;
+    private JLabel costLabel;
+
+    private JLabel assumeLabel;
+
+    private JTextField propText;
+    private JTextField idText;
+    private JTextField productText;
+    private JTextField scaleText;
+
     private JComboBox combobox;
+    private JComboBox combobox2;
+
     private String prefix = "";
+    private String rating = "";
+    private String rating2 = "";
 
     JMenuItem addRootMenuItem = new JMenuItem(new AbstractAction("Add root goal") {
 
@@ -146,12 +162,7 @@ public class GoalSketchingView implements Observer {
         }
     });
 
-    JMenuItem addAnnotationMenuItem = new JMenuItem(new AbstractAction("Add annotation") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-        }
-    });
+    JMenuItem addAnnotationMenuItem;
 
     JMenuItem addGOPMenuItem;
 
@@ -189,6 +200,12 @@ public class GoalSketchingView implements Observer {
             controller.deleteAssumptionTermination();
         }
     });
+
+    JMenuItem addGoalJudgementMenuItem;
+
+    JMenuItem addLeafJudgementMenuItem;
+
+    JMenuItem addAssumptionJudgementMenuItem;
 
     JMenuItem deleteAnnotationMenuItem = new JMenuItem(new AbstractAction("Delete annotation") {
         @Override
@@ -371,8 +388,8 @@ public class GoalSketchingView implements Observer {
             dialog.setVisible(false);
 
         }
-    } 
-    
+    }
+
     class AddProductButtonListener implements ActionListener {
 
         @Override
@@ -382,7 +399,7 @@ public class GoalSketchingView implements Observer {
             product += productText.getText();
             controller.addProduct(product);
             productText.setText("");
-            
+
         }
     }
 
@@ -390,7 +407,7 @@ public class GoalSketchingView implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
             dialog.setVisible(false);
         }
     }
@@ -411,7 +428,6 @@ public class GoalSketchingView implements Observer {
                     case "Behaviour":
                         prefix = "";
                         prefix += GoalType.BEHAVIOUR;
-                        System.out.println(prefix);
                         break;
                     case "Constraint":
                         prefix = "";
@@ -431,6 +447,98 @@ public class GoalSketchingView implements Observer {
                 }
 
             }
+        }
+    }
+
+    class AddAnnotationListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            controller.addAnnotation();
+        }
+    }
+
+    class EditGoalJudgementListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            controller.editGoalJudgement();
+        }
+    }
+
+    class AddGoalJudgementListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    class OrdinalScaleComboBoxListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if (e.getSource() == combobox) {
+                JComboBox cb = (JComboBox) e.getSource();
+                String selection = (String) cb.getSelectedItem();
+                switch (selection) {
+                    case "None":
+                        rating = "";
+                        rating += GSordinalScale.NONE;
+                        break;
+                    case "Low":
+                        rating = "";
+                        rating += GSordinalScale.LOW;
+                        break;
+                    case "Medium":
+                        rating = "";
+                        rating += GSordinalScale.MEDIUM;
+                        break;
+                    case "High":
+                        rating = "";
+                        rating += GSordinalScale.HIGH;
+                        break;
+                    default:
+                        rating = "No rating given.";
+                }
+
+            }
+
+        }
+    }
+
+    class OrdinalScaleComboBoxListener2 implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if (e.getSource() == combobox) {
+                JComboBox cb = (JComboBox) e.getSource();
+                String selection = (String) cb.getSelectedItem();
+                switch (selection) {
+                    case "None":
+                        rating2 = "";
+                        rating2 += GSordinalScale.NONE;
+                        break;
+                    case "Low":
+                        rating2 = "";
+                        rating2 += GSordinalScale.LOW;
+                        break;
+                    case "Medium":
+                        rating2 = "";
+                        rating2 += GSordinalScale.MEDIUM;
+                        break;
+                    case "High":
+                        rating2 = "";
+                        rating2 += GSordinalScale.HIGH;
+                        break;
+                    default:
+                        rating2 = "No rating given.";
+                }
+
+            }
+
         }
     }
 
@@ -468,6 +576,8 @@ public class GoalSketchingView implements Observer {
         editGoalListener = new EditGoalListener();
         editGOPListener = new EditGOPListener();
         editProductsListener = new EditProductsListener();
+        addAnnotationListener = new AddAnnotationListener();
+        editGoalJudgementListener = new EditGoalJudgementListener();
 
         panel.addMouseListener(mouseListener);
         panel.addMouseMotionListener(mouseListener);
@@ -504,6 +614,8 @@ public class GoalSketchingView implements Observer {
         goalPopUpMenu.add(addOREntailmentMenuItem);
         goalPopUpMenu.add(addProductsMenuItem);
         goalPopUpMenu.add(addAssumpTerminationMenuItem);
+        addAnnotationMenuItem = new JMenuItem("Add annotation");
+        addAnnotationMenuItem.addActionListener(addAnnotationListener);
         goalPopUpMenu.add(addAnnotationMenuItem);
         goalPopUpMenu.add(deleteGOPMenuItem);
         goalPopUpMenu.add(deleteGoalMenuItem);
@@ -534,6 +646,15 @@ public class GoalSketchingView implements Observer {
 
         annotationPopUpMenu = new JPopupMenu();
         annotationPopUpMenu.add(deleteAnnotationMenuItem);
+        addGoalJudgementMenuItem = new JMenuItem("Add goal judgement");
+        addGoalJudgementMenuItem.addActionListener(editGoalJudgementListener);
+        //----------------------------------------------------------//
+        addLeafJudgementMenuItem = new JMenuItem("Add leaf judgement");
+        addAssumptionJudgementMenuItem = new JMenuItem("Add assumption judgement");
+
+        annotationPopUpMenu.add(addGoalJudgementMenuItem);
+        annotationPopUpMenu.add(addLeafJudgementMenuItem);
+        annotationPopUpMenu.add(addAssumptionJudgementMenuItem);
         annotationPopUpMenu.setLightWeightPopupEnabled(false);
 
     }
@@ -588,7 +709,7 @@ public class GoalSketchingView implements Observer {
     public void addDrawable(Drawable d) {
         panel.addDrawable(d);
     }
-    
+
     /**
      * Removes a an object of the drawable type from the list of this views goal
      * sketching panel.
@@ -834,14 +955,88 @@ public class GoalSketchingView implements Observer {
         p.add(addProductLabel, BorderLayout.PAGE_START);
         p.add(productText, BorderLayout.PAGE_START);
         p.add(button, BorderLayout.PAGE_END);
-        
+
         JButton button2 = new JButton("Ok");
         ActionListener editProductButtonListener = new EditProductButtonListener();
         button2.addActionListener(editProductButtonListener);
         p.add(button2, BorderLayout.PAGE_END);
-        
 
         dialog.add(p);
+        dialog.pack();
+        dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+
+        return dialog;
+    }
+
+    public JDialog getAddGoalJudgementDialog() {
+
+        dialog = new JDialog(frame);
+        dialog.setTitle("Add goal judgement");
+        JPanel p = new JPanel();
+        JPanel p2 = new JPanel();
+        JPanel p3 = new JPanel();
+        JPanel p4 = new JPanel();
+        JPanel p5 = new JPanel();
+        
+        refineLabel = new JLabel("Refine: ");
+        engageLabel = new JLabel("Engage: ");
+        valueLabel = new JLabel("Value: ");
+
+        String[] ordinalScale = {"", "None", "Low", "Medium", "High"};
+        combobox = new JComboBox(ordinalScale);
+        combobox2 = new JComboBox(ordinalScale);
+        scaleText = new JTextField(3);
+
+        ActionListener ordinalScaleComboBoxListener = new OrdinalScaleComboBoxListener();
+        combobox.addActionListener(ordinalScaleComboBoxListener);
+        ActionListener ordinalScaleComboBoxListener2 = new OrdinalScaleComboBoxListener2();
+        combobox2.addActionListener(ordinalScaleComboBoxListener2);
+
+        JButton button = new JButton("Ok");
+        ActionListener addGoalJudgementListener = new AddGoalJudgementListener();
+        button.addActionListener(addGoalJudgementListener);
+        
+        
+        //p5.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
+        
+        //dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
+        
+        p.add(refineLabel);
+        p.add(combobox);        
+        p2.add(engageLabel);
+        p2.add(combobox2);        
+        p3.add(valueLabel);
+        p3.add(scaleText);        
+        p4.add(button);
+        
+        //p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+        //p2.setLayout(new BoxLayout(p2, BoxLayout.Y_AXIS));
+        
+        //p.add(refineLabel);
+       // p.add(engageLabel);
+       // p.add(valueLabel);
+       // p2.add(combobox);
+       // p2.add(combobox2);
+       // p2.add(scaleText);
+       // p3.add(button);
+
+        /*Container contentPane = dialog.getContentPane();
+        SpringLayout layout = new SpringLayout();
+        contentPane.setLayout(layout);
+
+        layout.putConstraint(SpringLayout.WEST, refineLabel, 5, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.WEST, combobox, 5, SpringLayout.EAST, refineLabel);
+        layout.putConstraint(SpringLayout.NORTH, combobox, 5, SpringLayout.NORTH, contentPane);
+
+        layout.putConstraint(SpringLayout.EAST, contentPane, 100, SpringLayout.EAST, combobox);
+        layout.putConstraint(SpringLayout.SOUTH, contentPane, 5, SpringLayout.SOUTH, combobox);*/
+
+        
+        p5.add(p);
+        p5.add(p2);        
+        p5.add(p3);
+        p5.add(p4);
+        dialog.add(p5);
         dialog.pack();
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 

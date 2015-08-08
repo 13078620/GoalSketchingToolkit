@@ -142,11 +142,8 @@ public interface GoalSketchingControllerInterface {
 
     /**
      * Adds annotation to the GOP of a goal.
-     *
-     * @param goal the goal which has the GOP.
-     * @param annotation the annotation to add.
      */
-    void addAnnotation(Goal goal, Annotation annotation);
+    void addAnnotation();
 
     /**
      * Denotes whether or not the goal to add is the root node.
@@ -260,5 +257,10 @@ public interface GoalSketchingControllerInterface {
      * operationalizing products.
      */
     void editProducts();
+    
+    /**
+     * Handles events for editing the goal judgement from an annotation.
+     */
+    void editGoalJudgement();
 
 }

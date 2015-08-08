@@ -278,6 +278,8 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
         int ovalY = (int) this.getCircle().y;
 
         g2.drawOval(ovalX, ovalY, ovalDiameter, ovalDiameter);
+        g2.setColor(Color.WHITE);
+        g2.fillOval(ovalX, ovalY, ovalDiameter, ovalDiameter);
 
     }
 

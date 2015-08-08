@@ -164,16 +164,15 @@ public class GSnodeFactory  {
      * @param y the y position of the goal sketching node.
      * @param width the width of the goal sketching node.
      * @param height the height of the goal sketching node.
-     * @param judgement the judgement for the proposition the annotation is
-     * associated with.
      * @return a new initialised with the given arguments.
      */
     //@Override
-    public Annotation createAnnotation(int x, int y, int width, int height, Judgement judgement) {
+    public Annotation createAnnotation(int x, int y, int width, int height) {
         
         GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);
-        Annotation a = new Annotation(judgement);
+        Annotation a = new Annotation();
         a.setGraphicalProperties(g);
+        g.setGSnode(a);
         return a;           
         
     }
