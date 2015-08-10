@@ -175,7 +175,7 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
      * entailment, false otherwise.
      */
     @Override
-    public boolean contains(int x, int y) {        
+    public boolean contains(int x, int y) {
         return this.circle.contains(x, y);
     }
 
@@ -280,6 +280,22 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
         g2.drawOval(ovalX, ovalY, ovalDiameter, ovalDiameter);
         g2.setColor(Color.WHITE);
         g2.fillOval(ovalX, ovalY, ovalDiameter, ovalDiameter);
+
+    }
+
+    /**
+     * Fills the oval section of an AND entailment.
+     *
+     * @param g2 the graphics instance.
+     */
+    public void fillOval(Graphics2D g2) {
+
+        int ovalX = (int) this.getCircle().x;
+        int ovalY = (int) this.getCircle().y;
+
+        g2.setColor(Color.WHITE);
+        g2.fillOval(ovalX, ovalY, CIRCLE_WIDTH, CIRCLE_WIDTH);
+        g2.setColor(Color.BLACK);
 
     }
 

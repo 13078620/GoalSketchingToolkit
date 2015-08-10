@@ -56,8 +56,6 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     public static final int GOAL_START_HEIGHT = 60;
     public static final int PRODUCTS_START_WIDTH = 80;
     public static final int PRODUCTS_START_HEIGHT = 40;
-    
-    private int goalInsertShift = 5;
 
     public GoalSketchingController(GoalGraphModelInterface model) {
 
@@ -588,6 +586,14 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             GoalOrientedProposition gop = goal.getProposition();
             int x = g.getX() - g.getWidth();
             int y = g.getY() - g.getHeight();
+            ArrayList<GSnode> childNodes = gop.getChildren();
+            
+            if (childNodes != null && !childNodes.isEmpty()) {
+                GSnodeGraphics gs = (GSnodeGraphics) childNodes.get(childNodes.size() - 1).getGraphicalProperties();
+                x = gs.getX() + 15;
+                y = gs.getY() + 15;
+            }         
+            
             Annotation a = factory.createAnnotation(x, y, GSnodeGraphics.ANNOTATION_START_WIDTH, GSnodeGraphics.ANNOTATION_START_HEIGHT);
             gop.addChild(a);
             view.addDrawable(a.getGraphicalProperties());
@@ -851,7 +857,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 String currentSelectionType = gsn.getClass().toString();
                 if (currentSelectionType.contains("Goal")
                         || currentSelectionType.contains("OperationalizingProducts")
-                        || currentSelectionType.contains("Annotation")) {
+                        /*|| currentSelectionType.contains("Annotation")*/) {
                     GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
 
                     GoalSketchingPanel panel = view.getPanel();
@@ -964,7 +970,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             String currentSelectionType = gsn.getClass().toString();
             if (currentSelectionType.contains("Goal")
                     || currentSelectionType.contains("OperationalizingProducts")
-                    || currentSelectionType.contains("Annotation")) {
+                    /*|| currentSelectionType.contains("Annotation")*/) {
                 GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
 
                 double y = g.getY();
@@ -1043,7 +1049,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         Rectangle r = new Rectangle();
         if (currentSelectionType.contains("Goal")
                 || currentSelectionType.contains("OperationalizingProducts")
-                || currentSelectionType.contains("Annotation")) {
+                /*|| currentSelectionType.contains("Annotation")*/) {
 
             GSnodeGraphics g = (GSnodeGraphics) currentSelection.getGraphicalProperties();
             r = new Rectangle((int) g.getX(), (int) g.getY(), g.getWidth(), g.getHeight());
@@ -1206,6 +1212,34 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
         }
         
+    }
+    
+    /**
+     * Adds an Product to a given Operationalizing Products.
+     *
+     * @param cfr1 the rating for the refine confidence factor rating.
+     * @param scale the rating for the value significance factor rating.
+     * @param cfr2 the rating for the engage confidence factor rating.
+     */
+    @Override
+    public void addGoalJudgement(String cfr1, String cfr2, int scale) {
+        
+        Annotation a = (Annotation) currentSelection;
+        GoalJudgement gj = factory.createGoalJudgement(cfr1, cfr2, scale);
+        a.setJudgement(gj);        
+        model.notifyView();
+    }
+    
+    /**
+     * Removes an annotation.
+     */
+    @Override
+    public void deleteAnnotation() {
+        Annotation a = (Annotation) currentSelection;
+        GoalOrientedProposition gop = (GoalOrientedProposition) a.getParent();
+        gop.removeChild(a);
+        view.removeDrawable(a.getGraphicalProperties());
+        model.removeFromGSnodes(a);    
     }
 
 }

@@ -262,5 +262,19 @@ public interface GoalSketchingControllerInterface {
      * Handles events for editing the goal judgement from an annotation.
      */
     void editGoalJudgement();
+    
+    /**
+     * Adds an Product to a given Operationalizing Products.
+     *
+     * @param cf1 the rating for the refine confidence factor rating.
+     * @param scale the rating for the value significance factor rating.
+     * @param cfr2 the rating for the engage confidence factor rating.
+     */
+    void addGoalJudgement(String cf1, String cfr2, int scale);
+    
+    /**
+     * Removes an annotation.
+     */
+    void deleteAnnotation();
 
 }

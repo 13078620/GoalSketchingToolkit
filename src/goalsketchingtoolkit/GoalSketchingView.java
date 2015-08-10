@@ -210,7 +210,7 @@ public class GoalSketchingView implements Observer {
     JMenuItem deleteAnnotationMenuItem = new JMenuItem(new AbstractAction("Delete annotation") {
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            controller.deleteAnnotation();
         }
     });
 
@@ -470,6 +470,15 @@ public class GoalSketchingView implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+
+            int scale = 0;
+
+            if (!scaleText.getText().isEmpty()) {
+                scale = Integer.parseInt(scaleText.getText());
+            }
+
+            controller.addGoalJudgement(rating, rating2, scale);
+            dialog.setVisible(false);
 
         }
     }
@@ -977,7 +986,7 @@ public class GoalSketchingView implements Observer {
         JPanel p3 = new JPanel();
         JPanel p4 = new JPanel();
         JPanel p5 = new JPanel();
-        
+
         refineLabel = new JLabel("Refine: ");
         engageLabel = new JLabel("Engage: ");
         valueLabel = new JLabel("Value: ");
@@ -995,45 +1004,39 @@ public class GoalSketchingView implements Observer {
         JButton button = new JButton("Ok");
         ActionListener addGoalJudgementListener = new AddGoalJudgementListener();
         button.addActionListener(addGoalJudgementListener);
-        
-        
+
         //p5.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
-        
         //dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
-        
         p.add(refineLabel);
-        p.add(combobox);        
+        p.add(combobox);
         p2.add(engageLabel);
-        p2.add(combobox2);        
+        p2.add(combobox2);
         p3.add(valueLabel);
-        p3.add(scaleText);        
+        p3.add(scaleText);
         p4.add(button);
-        
+
         //p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         //p2.setLayout(new BoxLayout(p2, BoxLayout.Y_AXIS));
-        
         //p.add(refineLabel);
-       // p.add(engageLabel);
-       // p.add(valueLabel);
-       // p2.add(combobox);
-       // p2.add(combobox2);
-       // p2.add(scaleText);
-       // p3.add(button);
+        // p.add(engageLabel);
+        // p.add(valueLabel);
+        // p2.add(combobox);
+        // p2.add(combobox2);
+        // p2.add(scaleText);
+        // p3.add(button);
 
         /*Container contentPane = dialog.getContentPane();
-        SpringLayout layout = new SpringLayout();
-        contentPane.setLayout(layout);
+         SpringLayout layout = new SpringLayout();
+         contentPane.setLayout(layout);
 
-        layout.putConstraint(SpringLayout.WEST, refineLabel, 5, SpringLayout.WEST, contentPane);
-        layout.putConstraint(SpringLayout.WEST, combobox, 5, SpringLayout.EAST, refineLabel);
-        layout.putConstraint(SpringLayout.NORTH, combobox, 5, SpringLayout.NORTH, contentPane);
+         layout.putConstraint(SpringLayout.WEST, refineLabel, 5, SpringLayout.WEST, contentPane);
+         layout.putConstraint(SpringLayout.WEST, combobox, 5, SpringLayout.EAST, refineLabel);
+         layout.putConstraint(SpringLayout.NORTH, combobox, 5, SpringLayout.NORTH, contentPane);
 
-        layout.putConstraint(SpringLayout.EAST, contentPane, 100, SpringLayout.EAST, combobox);
-        layout.putConstraint(SpringLayout.SOUTH, contentPane, 5, SpringLayout.SOUTH, combobox);*/
-
-        
+         layout.putConstraint(SpringLayout.EAST, contentPane, 100, SpringLayout.EAST, combobox);
+         layout.putConstraint(SpringLayout.SOUTH, contentPane, 5, SpringLayout.SOUTH, combobox);*/
         p5.add(p);
-        p5.add(p2);        
+        p5.add(p2);
         p5.add(p3);
         p5.add(p4);
         dialog.add(p5);

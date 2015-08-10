@@ -216,8 +216,6 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
             Goal goal = (Goal) node;
 
-           
-
             if (goal.isChild()) {
 
                 GSnode parent = goal.getParent();
@@ -292,14 +290,54 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
                 }
 
+                String parentEntailmentType = goal.getParent().getClass().toString();
+
+                if (parentEntailmentType.contains("ANDentailment")) {
+                    ANDentailment ae = (ANDentailment) goal.getParent();
+                    GSentailmentGraphics g = ae.getGraphicalProperties();
+                    ArrayList<GSnode> childNodes = ae.getChildren();
+
+                    if (childNodes != null && !childNodes.isEmpty()) {
+                        GSnodeGraphics gs = (GSnodeGraphics) childNodes.get(childNodes.size() - 1).getGraphicalProperties();
+                        if (gs == this) {
+                            g.fillOval(g2);
+                        }
+                    }
+
+                } else if (parentEntailmentType.contains("ORentailment")) {
+                    ORentailment oe = (ORentailment) goal.getParent();
+                    GSorEntailmentGraphics g = oe.getGraphicalProperties();
+                    ArrayList<GSnode> childNodes = oe.getChildren();
+
+                    if (childNodes != null && !childNodes.isEmpty()) {
+
+                        if (childNodes.size() == 2) {
+
+                            GSnodeGraphics gs1 = (GSnodeGraphics) childNodes.get(0).getGraphicalProperties();
+                            GSnodeGraphics gs2 = (GSnodeGraphics) childNodes.get(childNodes.size() - 1).getGraphicalProperties();
+                            if (gs1 == this) {
+                                g.fillFirstOval(g2);
+                            } else if (gs2 == this) {
+                                g.fillSecondOval(g2);
+                            }
+
+                        } else if (childNodes.size() == 1) {
+                            GSnodeGraphics gs1 = (GSnodeGraphics) childNodes.get(0).getGraphicalProperties();
+                            if (gs1 == this) {
+                                g.fillFirstOval(g2);
+                            }
+                        }
+                    }
+                }
+
             } else {
                 g2.drawRect(x, y, width, height);
                 g2.setColor(Color.WHITE);
                 g2.fillRect(x, y, width, height);
                 g2.setColor(Color.BLACK);
             }
-            
-             if (goal.hasGop()) {
+
+            if (goal.hasGop()) {
                 GoalOrientedProposition gop = goal.getProposition();
                 text += gop.getStatement() + "    " + gop.getPrefix();
 
@@ -343,6 +381,22 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
         } else if (nodeType.contains("OperationalizingProducts")) {
 
             OperationalizingProducts ops = (OperationalizingProducts) node;
+            
+            g2.drawOval(x, y, width, height);
+            Goal parentGoal = (Goal) ops.getParent();
+            GSnodeGraphics g = parentGoal.getGraphicalProperties();
+
+            int lineStartX = x + width / 2;
+            int lineStartY = y + height / 2;
+            int lineToX = (int) g.getX() + g.getWidth() / 2;
+            int lineToY = (int) g.getY() + g.getHeight() / 2;
+
+            g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+            
+            g2.setColor(Color.WHITE);
+            g2.fillOval(x, y, width, height);
+            
+            g.draw(g2);
 
             if (ops.getProducts().size() >= 1) {
                 ArrayList<String> ps = ops.getProducts();
@@ -382,17 +436,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                     g2.drawString(" " + text.substring(skip, strLength).trim() + " ", x + 10, y + (lines + 1) * strHeight + (lines) * lineSep + 10);
 
                 }
-            }
-            g2.drawOval(x, y, width, height);
-            Goal parentGoal = (Goal) ops.getParent();
-            GSnodeGraphics g = parentGoal.getGraphicalProperties();
-
-            int lineStartX = x + width / 2;
-            int lineStartY = y;
-            int lineToX = (int) g.getX() + g.getWidth() / 2;
-            int lineToY = (int) g.getY() + g.getHeight();
-
-            g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+            }            
 
         } else if (nodeType.contains("AssumptionTermination")) {
 
@@ -401,14 +445,25 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
             GSnodeGraphics g = parentGoal.getGraphicalProperties();
 
             Ellipse2D.Double circle = new Ellipse2D.Double(x, y, width, height);
-            g2.draw(circle);
+            g2.draw(circle);           
 
             int lineStartX = x + width / 2;
-            int lineStartY = y;
+            int lineStartY = y + height / 2;
             int lineToX = (int) g.getX() + g.getWidth() / 2;
-            int lineToY = (int) g.getY() + g.getHeight();
+            int lineToY = (int) g.getY() + g.getHeight() / 2;
 
             g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+            
+            g2.setColor(Color.WHITE);
+            g2.fillOval(x, y, width, height);
+            
+            g2.setColor(Color.RED); 
+            g2.setStroke(new BasicStroke(4));
+            g2.drawLine(lineStartX, y + 5, lineStartX, y + 17);
+            g2.drawLine(lineStartX, y + 23, lineStartX, y + 25);
+            
+            g.draw(g2);
+            
 
         } else if (nodeType.contains("Annotation")) {
 
@@ -424,6 +479,15 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
             if (a.getJudgement() != null) {
 
+                g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight() / 2, x + width / 2, y + height / 2);
+
+                g2.setColor(Color.WHITE);
+                g2.fillRect(x, y, width, height);
+                g2.setColor(Color.BLACK);
+                g2.setStroke(super.getStroke());
+                g2.drawLine(x, y, x, y + height);
+                g2.drawLine(x + width, y, x + width, y + height);
+
                 judgementType = a.getJudgement().getClass().toString();
 
                 if (judgementType.contains("GoalJudgement")) {
@@ -433,14 +497,12 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                     ConfidenceFactorRating cfr2 = j.getRefineConfidenceFactorRating();
                     SignificanceFactorRating sfr = j.getSignificanceFactorRating();
                     String text1 = cfr1.getKey() + ": " + cfr1.getValue();
-                    String text2 = cfr2.getKey() + ": " + cfr1.getValue();;
-                    String text3 = sfr.getKey() + ": " + sfr.getValue();;
-                    int strHeight = fm.getHeight();
-                    g2.drawString(" " + text1, x, y + 10);
-                    g2.drawString(" " + text2, x, y + strHeight);
-                    g2.drawString(" " + text3, x, y + strHeight);
-                    g2.drawLine(g.getX() + g.getWidth() / 2, g.getY(), x + width / 2, y + height);
-                    //drawline
+                    String text2 = cfr2.getKey() + ": " + cfr1.getValue();
+                    String text3 = sfr.getKey() + ": " + sfr.getValue();
+                    g2.drawString(" " + text1, x, y + 15);
+                    g2.drawString(" " + text2, x, y + 30);
+                    g2.drawString(" " + text3, x, y + 45);
+
                 } else if (judgementType.contains("LeafJudgement")) {
 
                     LeafJudgement j = (LeafJudgement) a.getJudgement();
@@ -451,7 +513,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                     int strHeight = fm.getHeight();
                     g2.drawString(" " + text1, x, y + 10);
                     g2.drawString(" " + text2, x, y + strHeight);
-                    g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight(), x + width / 2, y);
+                    //g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight() / 2, x + width / 2, y + height / 2);
 
                 } else if (judgementType.contains("AssumptionJudgement")) {
 
@@ -459,18 +521,28 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                     ConfidenceFactorRating cfr1 = j.getConfidenceFactorRating();
                     String text1 = cfr1.getKey() + ": " + cfr1.getValue();
                     g2.drawString(" " + text1, x, y + 10);
-                    g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight(), x + width / 2, y);
+                    //g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight() / 2, x + width / 2, y + height / 2);
 
                 }
 
             } else {
-                g2.drawLine(g.getX() + g.getWidth() / 2, g.getY(), x + width / 2, y + height);
+                g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight() / 2, x + width / 2, y + height / 2);
+                g2.setColor(Color.WHITE);
+                g2.fillRect(x, y, width, height);
+                g2.setColor(Color.BLACK);
+                g2.setStroke(super.getStroke());
+                g2.drawLine(x, y, x, y + height);
+                g2.drawLine(x + width, y, x + width, y + height);
             }
 
-            g2.setStroke(super.getStroke());
+            ArrayList<GSnode> childNodes = gop.getChildren();
 
-            g2.drawLine(x, y, x, y + height);
-            g2.drawLine(x + width, y, x + width, y + height);
+            if (childNodes != null && !childNodes.isEmpty()) {
+                GSnodeGraphics gs = (GSnodeGraphics) childNodes.get(childNodes.size() - 1).getGraphicalProperties();
+                if (gs == this) {
+                    g.draw(g2);
+                }
+            }
         }
 
     }
