@@ -132,6 +132,10 @@ public class Goal extends GSnode {
             node.hasParent = true;
             node.setParent(this);
         }
+        
+        if(this.hasTwin) {
+            updateTwinGop();
+        }
 
     }
 
@@ -572,5 +576,17 @@ public class Goal extends GSnode {
      */
     public void setRefinedFromAssumption(boolean refinedFromAssumption) {
         this.refinedFromAssumption = refinedFromAssumption;
+    }
+
+    /**
+     * Updates the goal oriented proposition for twins of this goal if it has
+     * any.
+     */
+    public void updateTwinGop() {
+
+        for (GSnode n : getTwins()) {
+            Twin t = (Twin) n;
+            t.updateGOP();
+        }
     }
 }

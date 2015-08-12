@@ -137,7 +137,9 @@ public class ANDentailment extends GSnode {
         boolean parentIsAssumption = false;
         if (isChild()) {
             Goal g = (Goal) getParent();
-            parentIsAssumption = g.getProposition().isAssumption();
+            if (g.getProposition() != null) {
+                parentIsAssumption = g.getProposition().isAssumption();
+            }
         }
 
         return parentIsAssumption;
@@ -210,18 +212,21 @@ public class ANDentailment extends GSnode {
 
         if (super.isParent()) {
             for (GSnode n : goals) {
-                Goal g = (Goal) n;
-                g.setRefinedFromAssumption(entailsAssumption);
-                
-                if (g.getEntailment() != null) {
-                    
-                    String entailmentType = g.getEntailment().getClass().toString();
-                    if (entailmentType.contains("ANDentailment")) {
-                        ANDentailment ae = (ANDentailment) g.getEntailment();
-                        ae.setEntailsAssumption(entailsAssumption);
-                    } else if (entailmentType.contains("ORentailment")) {
-                        ORentailment oe = (ORentailment) g.getEntailment();
-                        oe.setEntailsAssumption(entailsAssumption);
+                String type = n.getClass().toString();
+                if (type.contains("Goal")) {
+                    Goal g = (Goal) n;
+                    g.setRefinedFromAssumption(entailsAssumption);
+
+                    if (g.getEntailment() != null) {
+
+                        String entailmentType = g.getEntailment().getClass().toString();
+                        if (entailmentType.contains("ANDentailment")) {
+                            ANDentailment ae = (ANDentailment) g.getEntailment();
+                            ae.setEntailsAssumption(entailsAssumption);
+                        } else if (entailmentType.contains("ORentailment")) {
+                            ORentailment oe = (ORentailment) g.getEntailment();
+                            oe.setEntailsAssumption(entailsAssumption);
+                        }
                     }
                 }
             }

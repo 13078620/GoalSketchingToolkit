@@ -58,7 +58,7 @@ public class GoalGraphModel extends Observable implements GoalGraphModelInterfac
      * @param n the goal sketching node to remove.
      */
     @Override
-    public void removeFromGSnodes(GSnode n) {        
+    public void removeFromGSnodes(GSnode n) {
         this.goalSketchingNodes.remove(n);
         notifyView();
     }
@@ -81,7 +81,7 @@ public class GoalGraphModel extends Observable implements GoalGraphModelInterfac
         setChanged();
         notifyObservers();
     }
-    
+
     /**
      * Resets the list of goal sketching nodes.
      */
@@ -93,4 +93,30 @@ public class GoalGraphModel extends Observable implements GoalGraphModelInterfac
         }
     }
 
+    /**
+     * Returns a goal with a given ID.
+     *
+     * @param ID the ID of the goal to get.
+     * @return the goal which matches the ID.
+     */
+    @Override
+    public Goal getGoal(String ID) {
+        
+        Goal g = null;
+        
+        for (GSnode n : goalSketchingNodes) {
+            String nodeType = n.getClass().toString();
+            if (nodeType.contains("Goal") && !nodeType.contains("OrientedProposition")) {                
+                Goal goal = (Goal) n;
+                if (goal.getId() != null) {  
+                    
+                    if(goal.getId().equalsIgnoreCase(ID)) {
+                        
+                        g = goal;
+                    }
+                }
+            }
+        }
+        return g;
+    }
 }

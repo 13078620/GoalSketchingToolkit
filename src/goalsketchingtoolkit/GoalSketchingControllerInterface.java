@@ -8,6 +8,7 @@ package goalsketchingtoolkit;
 import java.awt.Point;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.event.MouseEvent;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -257,24 +258,67 @@ public interface GoalSketchingControllerInterface {
      * operationalizing products.
      */
     void editProducts();
-    
+
     /**
      * Handles events for editing the goal judgement from an annotation.
      */
     void editGoalJudgement();
-    
+
     /**
-     * Adds an Product to a given Operationalizing Products.
+     * Adds a goal judgement to the currently selected annotation.
      *
-     * @param cf1 the rating for the refine confidence factor rating.
+     * @param cfr1 the rating for the refine confidence factor rating.
      * @param scale the rating for the value significance factor rating.
      * @param cfr2 the rating for the engage confidence factor rating.
      */
-    void addGoalJudgement(String cf1, String cfr2, int scale);
-    
+    void addGoalJudgement(String cfr1, String cfr2, int scale);
+
     /**
      * Removes an annotation.
      */
     void deleteAnnotation();
+
+    /**
+     * Handles events for editing the leaf judgement from an annotation.
+     */
+    void editLeafJudgement();
+
+    /**
+     * Adds a leaf judgement to the currently selected annotation.
+     *
+     * @param cfr the rating for the refine confidence factor rating.
+     * @param scale the rating for the value significance factor rating.
+     */
+    void addLeafJudgement(String cfr, int scale);
+
+    /**
+     * Handles events for editing the assumption judgement from an annotation.
+     */
+    void editAssumptionJudgement();
+
+    /**
+     * Adds an assumption judgement to the currently selected annotation.
+     *
+     * @param cf the rating for the refine confidence factor rating.
+     */
+    void addAssumptionJudgement(String cf);
+
+    /**
+     * Handles events for editing a twin goal of an entailment.
+     */
+    void editTwinGoal();
+    /**
+     * Returns a combo box with the IDs of the current goals if they have one.
+     *
+     * @return a combo box containing the IDs of the goals which have an ID.
+     */
+    JComboBox getGoalsCombobox();
+
+    /**
+     * Creates a twin goal of the goal with the given ID.
+     *
+     * @param goalID the ID of the goal to twin.
+     */
+    void addTwin(String goalID);
 
 }

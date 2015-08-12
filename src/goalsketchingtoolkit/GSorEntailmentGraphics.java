@@ -324,7 +324,7 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
         g2.drawOval(ovalX2, ovalY2, ovalDiameter, ovalDiameter);
         g2.setColor(Color.WHITE);
         g2.fillOval(ovalX2, ovalY2, ovalDiameter, ovalDiameter);
-
+        g2.setColor(Color.BLACK);
     }
     
     /**

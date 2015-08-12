@@ -280,6 +280,7 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
         g2.drawOval(ovalX, ovalY, ovalDiameter, ovalDiameter);
         g2.setColor(Color.WHITE);
         g2.fillOval(ovalX, ovalY, ovalDiameter, ovalDiameter);
+        g2.setColor(Color.BLACK);
 
     }
 

@@ -47,8 +47,20 @@ public class GSnodeFactory {
         GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);
         Goal goal = new Goal();
         goal.setGraphicalProperties(g);
+        g.setGSnode(goal);
         return goal;
 
+    }
+    
+    public Twin createTwin(int x, int y, int width, int height, Goal goal) {
+        
+        GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);
+        Twin twin = new Twin(goal);
+        goal.addChild(twin);
+        twin.setGraphicalProperties(g);
+        g.setGSnode(twin);
+        return twin;
+        
     }
 
     /**
@@ -233,6 +245,52 @@ public class GSnodeFactory {
         SignificanceFactorRating valueSfr = new SignificanceFactorRating(sfr, scale);
 
         return new GoalJudgement(refineCfr, engageCfr, valueSfr);
+
+    }
+
+    public LeafJudgement createLeafJudgement(String cfr, int scale) {
+
+        ConfidenceFactor cf = ConfidenceFactor.Achieve;
+        SignificanceFactor sf = SignificanceFactor.Cost;
+
+        GSordinalScale os = GSordinalScale.NONE;
+
+        if (cfr.equalsIgnoreCase("none")) {
+            os = GSordinalScale.NONE;
+        } else if (cfr.equalsIgnoreCase("low")) {
+            os = GSordinalScale.LOW;
+        } else if (cfr.equalsIgnoreCase("medium")) {
+            os = GSordinalScale.MEDIUM;
+        } else if (cfr.equalsIgnoreCase("high")) {
+            os = GSordinalScale.HIGH;
+        }
+
+        ConfidenceFactorRating achieveCfr = new ConfidenceFactorRating(cf, os);
+        SignificanceFactorRating costSfr = new SignificanceFactorRating(sf, scale);
+
+        return new LeafJudgement(achieveCfr, costSfr);
+
+    }
+
+    public AssumptionJudgement createAssumptionJudgement(String cfr) {
+
+        ConfidenceFactor cf = ConfidenceFactor.Assume;
+
+        GSordinalScale os = GSordinalScale.NONE;
+
+        if (cfr.equalsIgnoreCase("none")) {
+            os = GSordinalScale.NONE;
+        } else if (cfr.equalsIgnoreCase("low")) {
+            os = GSordinalScale.LOW;
+        } else if (cfr.equalsIgnoreCase("medium")) {
+            os = GSordinalScale.MEDIUM;
+        } else if (cfr.equalsIgnoreCase("high")) {
+            os = GSordinalScale.HIGH;
+        }
+
+        ConfidenceFactorRating assumeCfr = new ConfidenceFactorRating(cf, os);
+
+        return new AssumptionJudgement(assumeCfr);
 
     }
 

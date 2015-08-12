@@ -87,7 +87,7 @@ public class Twin extends GSnode {
      * @return the graphical properties of this twin goal.
      */
     @Override
-    public GSgraphics getGraphicalProperties() {
+    public GSnodeGraphics getGraphicalProperties() {
         return graphicalProperties;
     }
 
@@ -117,10 +117,13 @@ public class Twin extends GSnode {
      * Updates a twin's GOP based on changes to the original goal.
      */
     public void updateGOP() {
-        GoalType gt = original.getProposition().getGoalType();
-        String statement = original.getProposition().getStatement();
-        gop.setPrefix(gt);
-        gop.setStatement(statement);
+        if (original.hasGop()) {
+            GoalType gt = original.getProposition().getGoalType();
+            String statement = original.getProposition().getStatement();
+            gop.setPrefix(gt);
+            gop.setStatement(statement);
+        }
+
     }
 
 }

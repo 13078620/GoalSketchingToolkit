@@ -44,13 +44,13 @@ public class GoalLogic implements GoalSketchingLogic {
      */
     @Override
     public boolean isCorrect(GSnode nodeToAdd) {
-        
+
         boolean correct = false;
         String nodeToAddClassString = nodeToAdd.getClass().toString();
 
         for (Object o : children) {
 
-            correct = o.getClass() != nodeToAdd.getClass();
+            correct = o.getClass() != nodeToAdd.getClass() || nodeToAdd.getClass().toString().contains("Twin");
 
             if (!correct) {
                 throw new UnsupportedOperationException("This goal already has"
@@ -103,7 +103,6 @@ public class GoalLogic implements GoalSketchingLogic {
                     correct = true;
                 }
             } else if (goal.isRefinedFromAssumption()) {
-                System.out.println("got here");
                 throw new UnsupportedOperationException("Parent goal decends"
                         + "from an assumption, cannot add"
                         + "operationalizing products to assumptions.");
@@ -113,12 +112,12 @@ public class GoalLogic implements GoalSketchingLogic {
                 correct = true;
             }
         } else if (nodeToAddClassString.contains("AssumptionTermination")) {
-            
+
             ArrayList<GSnode> children = goal.getChildren();
-            
-            for(GSnode n : children) {
+
+            for (GSnode n : children) {
                 String nodeType = n.getClass().toString();
-                if(nodeType.contains("Goal")) {
+                if (nodeType.contains("Goal")) {
                     throw new UnsupportedOperationException("Cannot add assumption"
                             + " terminations to parent goals.");
                 }
@@ -180,12 +179,10 @@ public class GoalLogic implements GoalSketchingLogic {
                 goal.setHasGop(true);
                 correct = true;
             }
-        } else if (nodeToAddClassString.contains(
-                "Annotation")) {
+        } else if (nodeToAddClassString.contains("Annotation")) {
             throw new UnsupportedOperationException("Annotations can only be added"
                     + " to a goal's goal oriented proposition");
-        } else if (nodeToAddClassString.contains(
-                "Twin")) {
+        } else if (nodeToAddClassString.contains("Twin")) {
             goal.setHasTwin(true);
         } else {
             throw new UnsupportedOperationException("Cannot add goal to a goal, "
@@ -206,6 +203,8 @@ public class GoalLogic implements GoalSketchingLogic {
             ArrayList<GSnode> goals = ae.getChildren();
 
             for (GSnode n : goals) {
+                String type = n.getClass().toString();
+                if(type.contains("Goal")) {
                 Goal g = (Goal) n;
 
                 if (g.hasGop() && g.getProposition().hasPrefix()) {
@@ -229,6 +228,8 @@ public class GoalLogic implements GoalSketchingLogic {
             }
 
             ae.setEntailsAssumption(true);
+            
+        }
 
         } else if (entailmentType.contains("ORentailment")) {
             ORentailment oe = (ORentailment) goal.getEntailment();

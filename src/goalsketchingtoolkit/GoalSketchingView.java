@@ -23,7 +23,6 @@ import javax.swing.JTextField;
 
 import java.awt.Container;
 import java.awt.BorderLayout;
-import javax.swing.BoxLayout;
 import javax.swing.JMenu;
 
 import javax.swing.JScrollPane;
@@ -70,10 +69,8 @@ public class GoalSketchingView implements Observer {
     private JPopupMenu productsPopUpMenu;
     private JPopupMenu assumpTerminationPopUpMenu;
     private JPopupMenu annotationPopUpMenu;
+    private JPopupMenu twinPopUpMenu;
 
-    //private boolean rootNode;
-    private int rootStartX;
-    private int rootStartY;
     private LoadGoalGraphListener listener;
     private SaveGoalGraphListener listener2;
     private NewGoalGraphListener listener3;
@@ -84,11 +81,15 @@ public class GoalSketchingView implements Observer {
     private EditProductsListener editProductsListener;
     private AddAnnotationListener addAnnotationListener;
     private EditGoalJudgementListener editGoalJudgementListener;
+    private EditLeafJudgementListener editLeafJudgementListener;
+    private EditAssumptionJudgementListener editAssumptionJudgementListener;
+    private EditTwinGoalListener editTwinGoalListener;
 
     private JLabel enterGoalIdLabel;
     private JLabel addPropositionLabel;
     private JLabel selectPrefixLabel;
     private JLabel addProductLabel;
+    private JLabel selectTwinGoalLabel;
 
     private JLabel refineLabel;
     private JLabel engageLabel;
@@ -110,6 +111,7 @@ public class GoalSketchingView implements Observer {
     private String prefix = "";
     private String rating = "";
     private String rating2 = "";
+    private String goalID = "";
 
     JMenuItem addRootMenuItem = new JMenuItem(new AbstractAction("Add root goal") {
 
@@ -218,6 +220,15 @@ public class GoalSketchingView implements Observer {
         @Override
         public void actionPerformed(ActionEvent e) {
             controller.deleteGoalOrientedProposition();
+        }
+    });
+
+    JMenuItem addTwinMenuItem;
+    
+    JMenuItem deleteTwinMenuItem = new JMenuItem(new AbstractAction("Delete twin goal") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //controller.deleteGoalOrientedProposition();
         }
     });
 
@@ -466,6 +477,22 @@ public class GoalSketchingView implements Observer {
         }
     }
 
+    class EditLeafJudgementListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            controller.editLeafJudgement();
+        }
+    }
+
+    class EditAssumptionJudgementListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            controller.editAssumptionJudgement();
+        }
+    }
+
     class AddGoalJudgementListener implements ActionListener {
 
         @Override
@@ -479,6 +506,55 @@ public class GoalSketchingView implements Observer {
 
             controller.addGoalJudgement(rating, rating2, scale);
             dialog.setVisible(false);
+
+        }
+    }
+
+    class AddLeafJudgementListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            int scale = 0;
+
+            if (!scaleText.getText().isEmpty()) {
+                scale = Integer.parseInt(scaleText.getText());
+            }
+
+            controller.addLeafJudgement(rating, scale);
+            dialog.setVisible(false);
+
+        }
+    }
+
+    class AddAssumptionJudgementListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            controller.addAssumptionJudgement(rating);
+            dialog.setVisible(false);
+
+        }
+    }
+
+    class AddTwinListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            controller.addTwin(goalID);
+            dialog.setVisible(false);
+
+        }
+    }
+    
+    class EditTwinGoalListener implements ActionListener {
+        
+         @Override
+        public void actionPerformed(ActionEvent e) {
+
+            controller.editTwinGoal();
 
         }
     }
@@ -551,6 +627,20 @@ public class GoalSketchingView implements Observer {
         }
     }
 
+    class TwinGoalComboBoxListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if (e.getSource() == combobox) {
+                JComboBox cb = (JComboBox) e.getSource();
+                String selection = (String) cb.getSelectedItem();
+                goalID = selection;
+
+            }
+        }
+    }
+
     JMenuItem menuItem5 = new JMenuItem(new AbstractAction("Save Goal Graph") {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -587,6 +677,9 @@ public class GoalSketchingView implements Observer {
         editProductsListener = new EditProductsListener();
         addAnnotationListener = new AddAnnotationListener();
         editGoalJudgementListener = new EditGoalJudgementListener();
+        editLeafJudgementListener = new EditLeafJudgementListener();
+        editAssumptionJudgementListener = new EditAssumptionJudgementListener();
+        editTwinGoalListener = new EditTwinGoalListener();
 
         panel.addMouseListener(mouseListener);
         panel.addMouseMotionListener(mouseListener);
@@ -638,6 +731,9 @@ public class GoalSketchingView implements Observer {
 
         entailmentPopUpMenu = new JPopupMenu();
         entailmentPopUpMenu.add(addGoalMenuItem);
+        addTwinMenuItem = new JMenuItem("Add twin goal");
+        addTwinMenuItem.addActionListener(editTwinGoalListener);
+        entailmentPopUpMenu.add(addTwinMenuItem);
         entailmentPopUpMenu.add(deleteEntailmentMenuItem);
         entailmentPopUpMenu.setLightWeightPopupEnabled(false);
 
@@ -657,14 +753,19 @@ public class GoalSketchingView implements Observer {
         annotationPopUpMenu.add(deleteAnnotationMenuItem);
         addGoalJudgementMenuItem = new JMenuItem("Add goal judgement");
         addGoalJudgementMenuItem.addActionListener(editGoalJudgementListener);
-        //----------------------------------------------------------//
-        addLeafJudgementMenuItem = new JMenuItem("Add leaf judgement");
-        addAssumptionJudgementMenuItem = new JMenuItem("Add assumption judgement");
 
+        addLeafJudgementMenuItem = new JMenuItem("Add leaf judgement");
+        addLeafJudgementMenuItem.addActionListener(editLeafJudgementListener);
+
+        addAssumptionJudgementMenuItem = new JMenuItem("Add assumption judgement");
+        addAssumptionJudgementMenuItem.addActionListener(editAssumptionJudgementListener);
         annotationPopUpMenu.add(addGoalJudgementMenuItem);
         annotationPopUpMenu.add(addLeafJudgementMenuItem);
         annotationPopUpMenu.add(addAssumptionJudgementMenuItem);
         annotationPopUpMenu.setLightWeightPopupEnabled(false);
+        
+        twinPopUpMenu = new JPopupMenu();
+        twinPopUpMenu.add(deleteTwinMenuItem);
 
     }
 
@@ -763,6 +864,10 @@ public class GoalSketchingView implements Observer {
 
     public void showAnnotationPopUpMenu(MouseEvent e, int eventX, int eventY) {
         annotationPopUpMenu.show(e.getComponent(), eventX, eventY);
+    }
+    
+    public void showTwinPopUpMenu(MouseEvent e, int eventX, int eventY){
+        twinPopUpMenu.show(e.getComponent(), eventX, eventY);
     }
 
     public void hidePopUpMenu() {
@@ -887,6 +992,22 @@ public class GoalSketchingView implements Observer {
 
     public void disableDeleteGOPMenuItem() {
         deleteGOPMenuItem.setEnabled(false);
+    }
+    
+    public void enableAddTwinMenuItem() {
+        addTwinMenuItem.setEnabled(true);
+    }
+
+    public void disableAddTwinMenuItem() {
+        addTwinMenuItem.setEnabled(false);
+    }
+    
+    public void enableDeleteTwinMenuItem() {
+        deleteTwinMenuItem.setEnabled(true);
+    }
+
+    public void disableDeleteTwinMenuItem() {
+        deleteTwinMenuItem.setEnabled(false);
     }
 
     public GSmouseListener getMouseListener() {
@@ -1044,6 +1165,111 @@ public class GoalSketchingView implements Observer {
         dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 
         return dialog;
+    }
+
+    public JDialog getAddLeafJudgementDialog() {
+
+        dialog = new JDialog(frame);
+        dialog.setTitle("Add leaf judgement");
+        JPanel p = new JPanel();
+        JPanel p2 = new JPanel();
+        JPanel p3 = new JPanel();
+        JPanel p4 = new JPanel();
+
+        achieveLabel = new JLabel("Achieve: ");
+        costLabel = new JLabel("Cost: ");
+
+        String[] ordinalScale = {"", "None", "Low", "Medium", "High"};
+        combobox = new JComboBox(ordinalScale);
+        scaleText = new JTextField(3);
+
+        ActionListener ordinalScaleComboBoxListener = new OrdinalScaleComboBoxListener();
+        combobox.addActionListener(ordinalScaleComboBoxListener);
+
+        JButton button = new JButton("Ok");
+        ActionListener addLeafJudgementListener = new AddLeafJudgementListener();
+        button.addActionListener(addLeafJudgementListener);
+
+        p.add(achieveLabel);
+        p.add(combobox);
+        p2.add(costLabel);
+        p2.add(scaleText);
+        p3.add(button);
+
+        p4.add(p);
+        p4.add(p2);
+        p4.add(p3);
+        dialog.add(p4);
+        dialog.pack();
+        dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+
+        return dialog;
+    }
+
+    public JDialog getAddAssumptionJudgementDialog() {
+
+        dialog = new JDialog(frame);
+        dialog.setTitle("Add assumption judgement");
+        JPanel p = new JPanel();
+        JPanel p2 = new JPanel();
+        JPanel p3 = new JPanel();
+
+        assumeLabel = new JLabel("Assume: ");
+
+        String[] ordinalScale = {"", "None", "Low", "Medium", "High"};
+        combobox = new JComboBox(ordinalScale);
+
+        ActionListener ordinalScaleComboBoxListener = new OrdinalScaleComboBoxListener();
+        combobox.addActionListener(ordinalScaleComboBoxListener);
+
+        JButton button = new JButton("Ok");
+        ActionListener addAssumptionJudgementListener = new AddAssumptionJudgementListener();
+        button.addActionListener(addAssumptionJudgementListener);
+
+        p.add(assumeLabel);
+        p.add(combobox);
+        p2.add(button);
+
+        p3.add(p);
+        p3.add(p2);
+        dialog.add(p3);
+        dialog.pack();
+        dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+
+        return dialog;
+    }
+
+    public JDialog getAddTwinGoalDialog() {
+
+        dialog = new JDialog(frame);
+        dialog.setTitle("Add twin goal");
+        JPanel p = new JPanel();
+        JPanel p2 = new JPanel();
+        JPanel p3 = new JPanel();
+
+        combobox = controller.getGoalsCombobox();
+
+        ActionListener twinGoalComboBoxListener = new TwinGoalComboBoxListener();
+        combobox.addActionListener(twinGoalComboBoxListener);
+
+        selectTwinGoalLabel = new JLabel("Select original goal: ");
+
+        JButton button = new JButton("Ok");
+        ActionListener addTwinListener = new AddTwinListener();
+        button.addActionListener(addTwinListener);
+
+        p.add(selectTwinGoalLabel);
+        p.add(combobox);
+        p2.add(button);
+
+        p3.add(p);
+        p3.add(p2);
+        dialog.add(p3);
+        dialog.pack();
+        dialog.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+
+        return dialog;
+
     }
 
 }

@@ -337,51 +337,12 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                 g2.setColor(Color.BLACK);
             }
 
-            if (goal.hasGop()) {
-                GoalOrientedProposition gop = goal.getProposition();
-                text += gop.getStatement() + "    " + gop.getPrefix();
-
-                if (goal.getId() != null) {
-                    text += "   (" + goal.getId() + ")";
-                }
-
-                int lineSep = 3;
-                int stringWidth = fm.stringWidth(text);
-                int strHeight = fm.getHeight();
-                int strLength = text.length();
-
-                if (width > 50 && height > 25) {
-
-                    int charPerLine = (int) (strLength * width / (double) stringWidth);
-
-                    if (charPerLine >= strLength) {
-                        g2.drawString(" " + text, x, y + strHeight);
-                    } else {
-                        int lines = strLength / charPerLine;
-                        int skip = 0;
-                        for (int i = 1; i <= lines; i++) {
-                            String sTemp = text.substring(skip, skip + charPerLine - 1);
-                            if (!text.substring(skip + charPerLine - 1, skip + charPerLine).equals(" ") && !text.substring(skip + charPerLine - 2, skip + charPerLine - 1).equals(" ")) {
-
-                                sTemp += "-";
-                            }
-                            g2.drawString(" " + sTemp.trim() + " ", x, y + i * strHeight + (i - 1) * lineSep);
-                            skip += charPerLine - 1;
-                        }
-                        g2.drawString(" " + text.substring(skip, strLength).trim() + " ", x, y + (lines + 1) * strHeight + (lines) * lineSep);
-
-                    }
-                }
-
-            } else if (goal.getId() != null) {
-                text += "   (" + goal.getId() + ")";
-                g2.drawString(text, x, y + fm.getHeight());
-            }
+            drawGoal(g2);
 
         } else if (nodeType.contains("OperationalizingProducts")) {
 
             OperationalizingProducts ops = (OperationalizingProducts) node;
-            
+
             g2.drawOval(x, y, width, height);
             Goal parentGoal = (Goal) ops.getParent();
             GSnodeGraphics g = parentGoal.getGraphicalProperties();
@@ -392,10 +353,10 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
             int lineToY = (int) g.getY() + g.getHeight() / 2;
 
             g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
-            
+
             g2.setColor(Color.WHITE);
             g2.fillOval(x, y, width, height);
-            
+
             g.draw(g2);
 
             if (ops.getProducts().size() >= 1) {
@@ -436,7 +397,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                     g2.drawString(" " + text.substring(skip, strLength).trim() + " ", x + 10, y + (lines + 1) * strHeight + (lines) * lineSep + 10);
 
                 }
-            }            
+            }
 
         } else if (nodeType.contains("AssumptionTermination")) {
 
@@ -445,7 +406,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
             GSnodeGraphics g = parentGoal.getGraphicalProperties();
 
             Ellipse2D.Double circle = new Ellipse2D.Double(x, y, width, height);
-            g2.draw(circle);           
+            g2.draw(circle);
 
             int lineStartX = x + width / 2;
             int lineStartY = y + height / 2;
@@ -453,17 +414,16 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
             int lineToY = (int) g.getY() + g.getHeight() / 2;
 
             g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
-            
+
             g2.setColor(Color.WHITE);
             g2.fillOval(x, y, width, height);
-            
-            g2.setColor(Color.RED); 
+
+            g2.setColor(Color.RED);
             g2.setStroke(new BasicStroke(4));
             g2.drawLine(lineStartX, y + 5, lineStartX, y + 17);
             g2.drawLine(lineStartX, y + 23, lineStartX, y + 25);
-            
+
             g.draw(g2);
-            
 
         } else if (nodeType.contains("Annotation")) {
 
@@ -485,12 +445,13 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                 g2.fillRect(x, y, width, height);
                 g2.setColor(Color.BLACK);
                 g2.setStroke(super.getStroke());
-                g2.drawLine(x, y, x, y + height);
-                g2.drawLine(x + width, y, x + width, y + height);
 
                 judgementType = a.getJudgement().getClass().toString();
 
                 if (judgementType.contains("GoalJudgement")) {
+
+                    g2.drawLine(x, y, x, y + height);
+                    g2.drawLine(x + width, y, x + width, y + height);
 
                     GoalJudgement j = (GoalJudgement) a.getJudgement();
                     ConfidenceFactorRating cfr1 = j.getRefineConfidenceFactorRating();
@@ -505,23 +466,26 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
                 } else if (judgementType.contains("LeafJudgement")) {
 
+                    g2.drawLine(x, y, x, y + 2 * (height / 3));
+                    g2.drawLine(x + width, y, x + width, y + 2 * (height / 3));
+
                     LeafJudgement j = (LeafJudgement) a.getJudgement();
                     ConfidenceFactorRating cfr1 = j.getConfidenceFactorRating();
                     SignificanceFactorRating sfr = j.getSignificanceFactorRating();
                     String text1 = cfr1.getKey() + ": " + cfr1.getValue();
                     String text2 = sfr.getKey() + ": " + sfr.getValue();
-                    int strHeight = fm.getHeight();
-                    g2.drawString(" " + text1, x, y + 10);
-                    g2.drawString(" " + text2, x, y + strHeight);
-                    //g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight() / 2, x + width / 2, y + height / 2);
+                    g2.drawString(" " + text1, x, y + 12);
+                    g2.drawString(" " + text2, x, y + 27);
 
                 } else if (judgementType.contains("AssumptionJudgement")) {
+
+                    g2.drawLine(x, y, x, y + height / 3);
+                    g2.drawLine(x + width, y, x + width, y + height / 3);
 
                     AssumptionJudgement j = (AssumptionJudgement) a.getJudgement();
                     ConfidenceFactorRating cfr1 = j.getConfidenceFactorRating();
                     String text1 = cfr1.getKey() + ": " + cfr1.getValue();
-                    g2.drawString(" " + text1, x, y + 10);
-                    //g2.drawLine(g.getX() + g.getWidth() / 2, g.getY() + g.getHeight() / 2, x + width / 2, y + height / 2);
+                    g2.drawString(" " + text1, x, y + 12);
 
                 }
 
@@ -540,9 +504,267 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
             if (childNodes != null && !childNodes.isEmpty()) {
                 GSnodeGraphics gs = (GSnodeGraphics) childNodes.get(childNodes.size() - 1).getGraphicalProperties();
                 if (gs == this) {
-                    g.draw(g2);
+                    g.drawGoal(g2);
                 }
             }
+        } else if (nodeType.contains("Twin")) {
+
+            Twin twin = (Twin) node;
+
+            if (twin.isChild()) {
+
+                GSnode parent = twin.getParent();
+                String entailmentType = parent.getClass().toString();
+
+                if (entailmentType.contains("ANDentailment")) {
+
+                    ANDentailment parentEntailment = (ANDentailment) parent;
+                    GSentailmentGraphics egs = parentEntailment.getGraphicalProperties();
+
+                    int lineStartX = x + width / 2;
+                    int lineStartY = y + height / 2;
+                    int lineToX = (int) egs.getCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+                    int lineToY = (int) egs.getCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+
+                    double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
+
+                    lineToX = (int) refinementIntersection[0];
+                    lineToY = (int) refinementIntersection[1];
+
+                    g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+
+                    g2.drawRect(x, y, width, height);
+                    g2.setColor(Color.WHITE);
+                    g2.fillRect(x, y, width, height);
+                    g2.setColor(Color.BLACK);
+
+                } else if (entailmentType.contains("ORentailment")) {
+
+                    ORentailment parentEntailment = (ORentailment) parent;
+                    GSorEntailmentGraphics egs = parentEntailment.getGraphicalProperties();
+                    ArrayList orEntailmentChildren = parentEntailment.getChildren();
+
+                    if (twin.equals(orEntailmentChildren.get(0))) {
+
+                        int lineStartX = x + width / 2;
+                        int lineStartY = y + height / 2;
+                        int lineToX = (int) egs.getCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+                        int lineToY = (int) egs.getCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+
+                        double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
+
+                        lineToX = (int) refinementIntersection[0];
+                        lineToY = (int) refinementIntersection[1];
+
+                        g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+
+                        g2.drawRect(x, y, width, height);
+                        g2.setColor(Color.WHITE);
+                        g2.fillRect(x, y, width, height);
+                        g2.setColor(Color.BLACK);
+
+                    } else if (twin.equals(orEntailmentChildren.get(1))) {
+
+                        int lineStartX = x + width / 2;
+                        int lineStartY = y + height / 2;
+                        int lineToX = (int) egs.getSecondCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+                        int lineToY = (int) egs.getSecondCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
+
+                        double[] refinementIntersection = egs.getRefinementIntersection(lineStartX, lineStartY, lineToX, lineToY);
+
+                        lineToX = (int) refinementIntersection[0];
+                        lineToY = (int) refinementIntersection[1];
+
+                        g2.drawLine(lineStartX, lineStartY, lineToX, lineToY);
+
+                        g2.drawRect(x, y, width, height);
+                        g2.setColor(Color.WHITE);
+                        g2.fillRect(x, y, width, height);
+                        g2.setColor(Color.BLACK);
+                    }
+
+                }
+
+                String parentEntailmentType = twin.getParent().getClass().toString();
+
+                if (parentEntailmentType.contains("ANDentailment")) {
+                    ANDentailment ae = (ANDentailment) twin.getParent();
+                    GSentailmentGraphics g = ae.getGraphicalProperties();
+                    ArrayList<GSnode> childNodes = ae.getChildren();
+
+                    if (childNodes != null && !childNodes.isEmpty()) {
+                        GSnodeGraphics gs = (GSnodeGraphics) childNodes.get(childNodes.size() - 1).getGraphicalProperties();
+                        if (gs == this) {
+                            g.fillOval(g2);
+                        }
+                    }
+
+                } else if (parentEntailmentType.contains("ORentailment")) {
+                    ORentailment oe = (ORentailment) twin.getParent();
+                    GSorEntailmentGraphics g = oe.getGraphicalProperties();
+                    ArrayList<GSnode> childNodes = oe.getChildren();
+
+                    if (childNodes != null && !childNodes.isEmpty()) {
+
+                        if (childNodes.size() == 2) {
+
+                            GSnodeGraphics gs1 = (GSnodeGraphics) childNodes.get(0).getGraphicalProperties();
+                            GSnodeGraphics gs2 = (GSnodeGraphics) childNodes.get(childNodes.size() - 1).getGraphicalProperties();
+                            if (gs1 == this) {
+                                g.fillFirstOval(g2);
+                            } else if (gs2 == this) {
+                                g.fillSecondOval(g2);
+                            }
+
+                        } else if (childNodes.size() == 1) {
+                            GSnodeGraphics gs1 = (GSnodeGraphics) childNodes.get(0).getGraphicalProperties();
+                            if (gs1 == this) {
+                                g.fillFirstOval(g2);
+                            }
+                        }
+                    }
+                }
+
+            } else {
+                g2.drawRect(x, y, width, height);
+                g2.setColor(Color.WHITE);
+                g2.fillRect(x, y, width, height);
+                g2.setColor(Color.BLACK);
+            }
+
+            drawTwin(g2);
+
+        }
+
+    }
+
+    public void drawGoal(Graphics2D g2) {
+
+        GSnode node = super.getGSnode();
+        String nodeType = node.getClass().toString();
+        FontMetrics fm = g2.getFontMetrics();
+        int x = getX();
+        int y = getY();
+
+        if (nodeType.contains("Goal")) {
+
+            Goal goal = (Goal) node;
+            String text = "";
+
+            g2.drawRect(x, y, width, height);
+            g2.setColor(Color.WHITE);
+            g2.fillRect(x, y, width, height);
+            g2.setColor(Color.BLACK);
+
+            if (goal.hasGop()) {
+
+                GoalOrientedProposition gop = goal.getProposition();
+
+                text += gop.getStatement() + "    " + gop.getPrefix();
+
+                if (goal.getId() != null) {
+                    text += "   (" + goal.getId() + ")";
+                }
+
+                int lineSep = 3;
+                int stringWidth = fm.stringWidth(text);
+                int strHeight = fm.getHeight();
+                int strLength = text.length();
+
+                if (width > 50 && height > 25) {
+
+                    int charPerLine = (int) (strLength * width / (double) stringWidth);
+
+                    if (charPerLine >= strLength) {
+                        g2.drawString(" " + text, x, y + strHeight);
+                    } else {
+                        int lines = strLength / charPerLine;
+                        int skip = 0;
+                        for (int i = 1; i <= lines; i++) {
+                            String sTemp = text.substring(skip, skip + charPerLine - 1);
+                            if (!text.substring(skip + charPerLine - 1, skip + charPerLine).equals(" ") && !text.substring(skip + charPerLine - 2, skip + charPerLine - 1).equals(" ")) {
+
+                                sTemp += "-";
+                            }
+                            g2.drawString(" " + sTemp.trim() + " ", x, y + i * strHeight + (i - 1) * lineSep);
+                            skip += charPerLine - 1;
+                        }
+                        g2.drawString(" " + text.substring(skip, strLength).trim() + " ", x, y + (lines + 1) * strHeight + (lines) * lineSep);
+
+                    }
+                }
+
+            } else if (goal.getId() != null) {
+                text += "   (" + goal.getId() + ")";
+                g2.drawString(text, x, y + fm.getHeight());
+            }
+
+        }
+
+    }
+
+    public void drawTwin(Graphics2D g2) {
+
+        GSnode node = super.getGSnode();
+        String nodeType = node.getClass().toString();
+        FontMetrics fm = g2.getFontMetrics();
+        int x = getX();
+        int y = getY();
+
+        if (nodeType.contains("Twin")) {
+
+            Twin twin = (Twin) node;
+            Goal original = twin.getOriginal();
+            String text = "";
+
+            g2.drawRect(x, y, width, height);
+            g2.setColor(Color.WHITE);
+            g2.fillRect(x, y, width, height);
+            g2.setColor(Color.BLACK);
+
+            if (original.hasGop()) {
+
+                GoalOrientedProposition gop = twin.getProposition();
+
+                text += gop.getStatement() + "    " + gop.getPrefix();
+
+                if (twin.getID() != null) {
+                    text += "   (twin " + twin.getID() + ")";
+                }
+
+                int lineSep = 3;
+                int stringWidth = fm.stringWidth(text);
+                int strHeight = fm.getHeight();
+                int strLength = text.length();
+
+                if (width > 50 && height > 25) {
+
+                    int charPerLine = (int) (strLength * width / (double) stringWidth);
+
+                    if (charPerLine >= strLength) {
+                        g2.drawString(" " + text, x, y + strHeight);
+                    } else {
+                        int lines = strLength / charPerLine;
+                        int skip = 0;
+                        for (int i = 1; i <= lines; i++) {
+                            String sTemp = text.substring(skip, skip + charPerLine - 1);
+                            if (!text.substring(skip + charPerLine - 1, skip + charPerLine).equals(" ") && !text.substring(skip + charPerLine - 2, skip + charPerLine - 1).equals(" ")) {
+
+                                sTemp += "-";
+                            }
+                            g2.drawString(" " + sTemp.trim() + " ", x, y + i * strHeight + (i - 1) * lineSep);
+                            skip += charPerLine - 1;
+                        }
+                        g2.drawString(" " + text.substring(skip, strLength).trim() + " ", x, y + (lines + 1) * strHeight + (lines) * lineSep);
+
+                    }
+                }
+
+            } else if (twin.getID() != null) {
+                text += "   (twin " + twin.getID() + ")";
+                g2.drawString(text, x, y + fm.getHeight());
+            }
+
         }
 
     }
