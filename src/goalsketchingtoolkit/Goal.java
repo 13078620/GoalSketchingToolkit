@@ -410,9 +410,8 @@ public class Goal extends GSnode {
     public AssumptionTermination getAssumptionTermination() {
 
         AssumptionTermination at = null;
-
         Iterator iterator = createIterator();
-        while (iterator.hasNext()) {
+        while (iterator.hasNext()) {            
             GSnode n = (GSnode) iterator.next();
             if (n instanceof AssumptionTermination) {
                 at = (AssumptionTermination) n;
@@ -546,11 +545,12 @@ public class Goal extends GSnode {
     public ArrayList<GSnode> getTwins() {
 
         ArrayList<GSnode> twins = new ArrayList();
-
         Iterator iterator = createIterator();
         while (iterator.hasNext()) {
+            
             GSnode n = (GSnode) iterator.next();
             if (n instanceof Twin) {
+                
                 twins.add(n);
             }
         }

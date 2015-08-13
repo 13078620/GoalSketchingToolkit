@@ -228,7 +228,7 @@ public class GoalSketchingView implements Observer {
     JMenuItem deleteTwinMenuItem = new JMenuItem(new AbstractAction("Delete twin goal") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            //controller.deleteGoalOrientedProposition();
+            controller.deleteTwin();
         }
     });
 

@@ -69,7 +69,7 @@ public class GoalGraphModel extends Observable implements GoalGraphModelInterfac
      * @return the goal sketching nodes.
      */
     @Override
-    public ArrayList getGSnodes() {
+    public ArrayList<GSnode> getGSnodes() {
         return goalSketchingNodes;
     }
 

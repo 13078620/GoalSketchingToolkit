@@ -468,19 +468,19 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             }
         }
 
-        /*if(goal.hasParent) {
-         GSnode entailment = goal.getParent();
-         String entailmnetType = entailment.getClass().toString();
-         if (entailmnetType.contains("ANDentailment")) {
-         ANDentailment ae = (ANDentailment) entailment;
-         ae.removeChild(goal);                
-         } else if (entailmnetType.contains("ORentailment")) {
-         ORentailment oe = (ORentailment) entailment;
-         oe.removeChild(goal);
-         }
-                
-            
-         }*/
+        if (goal.hasTwin()) {
+            ArrayList<GSnode> twins = goal.getTwins();
+            for (GSnode n : twins) {
+                Twin t = (Twin) n;
+                goal.removeChild(t);
+                GSnode entailment = t.getParent();
+                entailment.removeChild(t);
+                view.removeDrawable(t.getGraphicalProperties());
+                model.removeFromGSnodes(t);
+            }
+
+        }
+
         view.removeDrawable(goal.getGraphicalProperties());
         model.removeFromGSnodes(goal);
         currentSelection = null;
@@ -778,7 +778,8 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
             if (currentSelectionType.contains("Goal")
                     || currentSelectionType.contains("OperationalizingProducts")
-                    || currentSelectionType.contains("Annotation")) {
+                    || currentSelectionType.contains("Annotation")
+                    || currentSelectionType.contains("Twin")) {
                 GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
 
                 int width = g.getWidth();
@@ -859,7 +860,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 GSnode gsn = currentSelection;
                 String currentSelectionType = gsn.getClass().toString();
                 if (currentSelectionType.contains("Goal")
-                        || currentSelectionType.contains("OperationalizingProducts") /*|| currentSelectionType.contains("Annotation")*/) {
+                        || currentSelectionType.contains("OperationalizingProducts") || currentSelectionType.contains("Twin")) {
                     GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
 
                     GoalSketchingPanel panel = view.getPanel();
@@ -971,7 +972,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             GSnode gsn = currentSelection;
             String currentSelectionType = gsn.getClass().toString();
             if (currentSelectionType.contains("Goal")
-                    || currentSelectionType.contains("OperationalizingProducts") /*|| currentSelectionType.contains("Annotation")*/) {
+                    || currentSelectionType.contains("OperationalizingProducts") || currentSelectionType.contains("Twin")) {
                 GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
 
                 double y = g.getY();
@@ -1049,7 +1050,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         String currentSelectionType = currentSelection.getClass().toString();
         Rectangle r = new Rectangle();
         if (currentSelectionType.contains("Goal")
-                || currentSelectionType.contains("OperationalizingProducts") /*|| currentSelectionType.contains("Annotation")*/) {
+                || currentSelectionType.contains("OperationalizingProducts") || currentSelectionType.contains("Twin")) {
 
             GSnodeGraphics g = (GSnodeGraphics) currentSelection.getGraphicalProperties();
             r = new Rectangle((int) g.getX(), (int) g.getY(), g.getWidth(), g.getHeight());
@@ -1071,7 +1072,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
         if (currentSelectionType.contains("Goal")
                 || currentSelectionType.contains("OperationalizingProducts")
-                || currentSelectionType.contains("Annotation")) {
+                || currentSelectionType.contains("Twin")) {
 
             g = (GSnodeGraphics) currentSelection.getGraphicalProperties();
 
@@ -1350,8 +1351,6 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         try {
 
             if (model.getGoal(goalID) != null) {
-                
-                
 
                 if (currentSelectionType.contains("ANDentailment")) {
                     ANDentailment ae = (ANDentailment) currentSelection;
@@ -1377,6 +1376,26 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 } else if (currentSelectionType.contains("ORentailment")) {
                     ORentailment oe = (ORentailment) currentSelection;
                     GSorEntailmentGraphics g = oe.getGraphicalProperties();
+                    
+                    int x = 0;
+                    int y = 0;
+                    ArrayList<GSnode> childNodes = oe.getChildren();
+
+                    if (childNodes.isEmpty()) {
+                        x = (int) g.getCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2 - 50;
+                        y = (int) g.getCircle().y;
+                    } else if (childNodes.size() == 1) {
+                        x = (int) g.getSecondCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2 - 50;
+                        y = (int) g.getSecondCircle().y;
+                    }
+
+                    y += g.getLength();
+
+                    Goal goal = model.getGoal(goalID);
+                    Twin t = factory.createTwin(x, y, GOAL_START_WIDTH, GOAL_START_HEIGHT, goal);
+                    oe.addChild(t);
+                    view.addDrawable(t.getGraphicalProperties());
+                    model.addToGSnodes(t);
 
                 }
             }
@@ -1384,5 +1403,17 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         } catch (UnsupportedOperationException e) {
             view.displayErrorMessage(e.getMessage());
         }
+    }
+
+    /**
+     * Removes a twin goal.
+     */
+    @Override
+    public void deleteTwin() {
+        Twin t = (Twin) currentSelection;
+        Goal g = t.getOriginal();
+        g.removeChild(t);
+        view.removeDrawable(t.getGraphicalProperties());
+        model.removeFromGSnodes(t);
     }
 }

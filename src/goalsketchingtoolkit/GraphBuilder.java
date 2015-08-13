@@ -68,16 +68,16 @@ public class GraphBuilder {
 
         Element e = doc.createElement("Goal");
         
-        if (goal.hasGraphics()) {
-            GSnodeGraphics graphics = goal.getGraphicalProperties();
-            e.setAttributeNode(createAttribute("height", "" + graphics.getHeight()));
-            e.setAttributeNode(createAttribute("width", "" + graphics.getWidth()));
-            e.setAttributeNode(createAttribute("y", "" + graphics.getY()));
-            e.setAttributeNode(createAttribute("x", "" + graphics.getX()));
+        if (goal.isRootGoal()) {
+            e.appendChild(createTextElement("root", "true"));
         }
 
-        if (goal.isRootGoal()) {
-            e.setAttributeNode(createAttribute("root", "true"));
+        if (goal.hasGraphics()) {
+            GSnodeGraphics graphics = goal.getGraphicalProperties();
+            e.appendChild(createTextElement("height", "" + graphics.getHeight()));
+            e.appendChild(createTextElement("width", "" + graphics.getWidth()));
+            e.appendChild(createTextElement("y", "" + graphics.getY()));
+            e.appendChild(createTextElement("x", "" + graphics.getX()));
         }
 
         if (goal.getId() != null) {
@@ -123,11 +123,11 @@ public class GraphBuilder {
 
                 if (aent.hasGraphics()) {
                     GSentailmentGraphics graphics = aent.getGraphicalProperties();
-                    ee.setAttributeNode(createAttribute("length", "" + graphics.getLength()));
-                    ee.setAttributeNode(createAttribute("toY", "" + graphics.getToY()));
-                    ee.setAttributeNode(createAttribute("toX", "" + graphics.getToX()));
-                    ee.setAttributeNode(createAttribute("y", "" + graphics.getY()));
-                    ee.setAttributeNode(createAttribute("x", "" + graphics.getX()));
+                    ee.appendChild(createTextElement("length", "" + graphics.getLength()));
+                    ee.appendChild(createTextElement("toY", "" + graphics.getToY()));
+                    ee.appendChild(createTextElement("toX", "" + graphics.getToX()));
+                    ee.appendChild(createTextElement("y", "" + graphics.getY()));
+                    ee.appendChild(createTextElement("x", "" + graphics.getX()));
                 }
 
                 if (aent.isParent()) {
@@ -154,14 +154,14 @@ public class GraphBuilder {
 
                 if (oent.hasGraphics()) {
                     GSorEntailmentGraphics graphics = oent.getGraphicalProperties();
-                    ee.setAttributeNode(createAttribute("length2", "" + graphics.getLength2()));
-                    ee.setAttributeNode(createAttribute("toY2", "" + graphics.getToY2()));
-                    ee.setAttributeNode(createAttribute("toX2", "" + graphics.getToX2()));
-                    ee.setAttributeNode(createAttribute("length", "" + graphics.getLength()));
-                    ee.setAttributeNode(createAttribute("toY", "" + graphics.getToY()));
-                    ee.setAttributeNode(createAttribute("toX", "" + graphics.getToX()));
-                    ee.setAttributeNode(createAttribute("y", "" + graphics.getY()));
-                    ee.setAttributeNode(createAttribute("x", "" + graphics.getX()));
+                    ee.appendChild(createTextElement("length2", "" + graphics.getLength2()));
+                    ee.appendChild(createTextElement("toY2", "" + graphics.getToY2()));
+                    ee.appendChild(createTextElement("toX2", "" + graphics.getToX2()));
+                    ee.appendChild(createTextElement("length", "" + graphics.getLength()));
+                    ee.appendChild(createTextElement("toY", "" + graphics.getToY()));
+                    ee.appendChild(createTextElement("toX", "" + graphics.getToX()));
+                    ee.appendChild(createTextElement("y", "" + graphics.getY()));
+                    ee.appendChild(createTextElement("x", "" + graphics.getX()));
                 }
 
                 if (oent.isParent()) {
@@ -186,10 +186,10 @@ public class GraphBuilder {
 
             if (ops.hasGraphics()) {
                 GSnodeGraphics graphics = ops.getGraphicalProperties();
-                ope.setAttributeNode(createAttribute("height", "" + graphics.getHeight()));
-                ope.setAttributeNode(createAttribute("width", "" + graphics.getWidth()));
-                ope.setAttributeNode(createAttribute("y", "" + graphics.getY()));
-                ope.setAttributeNode(createAttribute("x", "" + graphics.getX()));
+                ope.appendChild(createTextElement("height", "" + graphics.getHeight()));
+                ope.appendChild(createTextElement("width", "" + graphics.getWidth()));
+                ope.appendChild(createTextElement("y", "" + graphics.getY()));
+                ope.appendChild(createTextElement("x", "" + graphics.getX()));
             }
 
             for (String s : products) {
@@ -205,65 +205,16 @@ public class GraphBuilder {
 
             if (at.hasGraphics()) {
                 GSnodeGraphics graphics = at.getGraphicalProperties();
-                ate.setAttributeNode(createAttribute("height", "" + graphics.getHeight()));
-                ate.setAttributeNode(createAttribute("width", "" + graphics.getWidth()));
-                ate.setAttributeNode(createAttribute("y", "" + graphics.getY()));
-                ate.setAttributeNode(createAttribute("x", "" + graphics.getX()));
+                ate.appendChild(createTextElement("height", "" + graphics.getHeight()));
+                ate.appendChild(createTextElement("width", "" + graphics.getWidth()));
+                ate.appendChild(createTextElement("y", "" + graphics.getY()));
+                ate.appendChild(createTextElement("x", "" + graphics.getX()));
             }
 
             e.appendChild(ate);
         }
 
-        /*if (gn.isParent()) {
-         ArrayList<GraphNode> children = gn.getChildNodes();
-         Element ce = doc.createElement("children");
-         e.appendChild(ce);
-         for (GraphNode n : children) {
-         ce.appendChild(createNode(n));
-         }
-         } else {
-         if (gn.getOperationalizerNode() != null) {
-
-         Element oze = doc.createElement("operationalizernode");
-         OperationalizerNode opNode = gn.getOperationalizerNode();
-         oze.appendChild(createTextElement("x", "" + opNode.getX()));
-         oze.appendChild(createTextElement("y", "" + opNode.getY()));
-         oze.appendChild(createTextElement("width", "" + opNode.getWidth()));
-         oze.appendChild(createTextElement("height", "" + opNode.getHeight()));
-         Element oe = doc.createElement("operationalizers");
-         oze.appendChild(oe);
-         ArrayList<Operationalizer> operationalizers = opNode.getOperationalizers();
-         for (Operationalizer op : operationalizers) {
-         Element operationalizer = doc.createElement("operationalizer");
-         oe.appendChild(operationalizer);
-         String agentName = op.getAgentName();
-         operationalizer.appendChild(createTextElement("agentname", agentName));
-
-         /*ArrayList<String> subDomains = op.getSubDomains();
-         if (subDomains != null) {
-         Element sds = doc.createElement("subdomains");
-         operationalizer.appendChild(sds);
-
-         for (String s : subDomains) {
-         sds.appendChild(createTextElement("subdomain", s));
-         }
-         }////
-         }
-
-         e.appendChild(oze);
-         } else if (gn.getAssumptionTerminationNode() != null) {
-         Element aste = doc.createElement("assumptionterminationnode");
-         AssumptionTerminationNode astNode = gn.getAssumptionTerminationNode();
-         aste.appendChild(createTextElement("x", "" + astNode.getX()));
-         aste.appendChild(createTextElement("y", "" + astNode.getY()));
-         aste.appendChild(createTextElement("width", "" + astNode.getWidth()));
-         aste.appendChild(createTextElement("height", "" + astNode.getHeight()));
-         e.appendChild(aste);
-         } else {
-         //System.out.println("Not operationalized or terminated ");
-         errorCount++;
-         }
-         } */
+        
         return e;
     }
 
@@ -302,13 +253,13 @@ public class GraphBuilder {
     public Element createTwinGoalElement(Twin tg) {
 
         Element twinGoalElement = doc.createElement("Twin");
-        
+
         if (tg.hasGraphics()) {
             GSnodeGraphics g = (GSnodeGraphics) tg.getGraphicalProperties();
-            twinGoalElement.appendChild(createAttribute("x",""+g.getX()));
-            twinGoalElement.appendChild(createAttribute("y",""+g.getY()));
-            twinGoalElement.appendChild(createAttribute("width",""+g.getWidth()));
-            twinGoalElement.appendChild(createAttribute("height",""+g.getHeight()));
+            twinGoalElement.appendChild(createTextElement("x", "" + g.getX()));
+            twinGoalElement.appendChild(createTextElement("y", "" + g.getY()));
+            twinGoalElement.appendChild(createTextElement("width", "" + g.getWidth()));
+            twinGoalElement.appendChild(createTextElement("height", "" + g.getHeight()));
         }
         twinGoalElement.appendChild(createTextElement("ID", tg.getID()));
         twinGoalElement.appendChild(createPropositionElement(tg.getProposition()));
@@ -346,10 +297,10 @@ public class GraphBuilder {
 
                 if (a.hasGraphics()) {
                     GSnodeGraphics graphics = a.getGraphicalProperties();
-                    ae.setAttributeNode(createAttribute("height", "" + graphics.getHeight()));
-                    ae.setAttributeNode(createAttribute("width", "" + graphics.getWidth()));
-                    ae.setAttributeNode(createAttribute("y", "" + graphics.getY()));
-                    ae.setAttributeNode(createAttribute("x", "" + graphics.getX()));
+                    ae.appendChild(createTextElement("height", "" + graphics.getHeight()));
+                    ae.appendChild(createTextElement("width", "" + graphics.getWidth()));
+                    ae.appendChild(createTextElement("y", "" + graphics.getY()));
+                    ae.appendChild(createTextElement("x", "" + graphics.getX()));
                 }
 
                 Judgement j = a.getJudgement();

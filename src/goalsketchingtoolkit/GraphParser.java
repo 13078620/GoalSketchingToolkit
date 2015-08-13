@@ -71,72 +71,47 @@ public class GraphParser {
         Goal goal = new Goal();
         Element theRoot = gsnode;
         NodeList nodes = theRoot.getChildNodes();
- 
+
         /*for (int i = 0; i < nodes.getLength(); i++) {
             
-            if (nodes.item(i).getNodeType() == Node.ATTRIBUTE_NODE) {
+         if (nodes.item(i).getNodeType() == Node.ATTRIBUTE_NODE) {
                
-                Attr attribute = (Attr) nodes.item(i);
-                NodeList textNodes = attribute.getChildNodes();
-                String value = attribute.getNodeName();
-                String textValue = "";
-                GSnodeGraphics graphics = new GSnodeGraphics();
+         Attr attribute = (Attr) nodes.item(i);
+         NodeList textNodes = attribute.getChildNodes();
+         String value = attribute.getNodeName();
+         String textValue = "";
+         GSnodeGraphics graphics = new GSnodeGraphics();
 
-                for (int j = 0; j < textNodes.getLength(); j++) {
-                    if (textNodes.item(j).getNodeType() == Node.TEXT_NODE) {
-                        textValue = textNodes.item(0).getTextContent().trim();
-                    }
-                }
-                if (value.equalsIgnoreCase("height")) {
-                    int height = Integer.parseInt(textValue);
-                    graphics.setHeight(height);                    
-                }
-                if (value.equalsIgnoreCase("width")) {
-                    int width = Integer.parseInt(textValue);
-                    graphics.setWidth(width);
-                }
-                if (value.equalsIgnoreCase("x")) {
-                    int x = Integer.parseInt(textValue);
-                    graphics.setX(x);
-                }
-                if (value.equalsIgnoreCase("y")) {
-                    int y = Integer.parseInt(textValue);
-                    graphics.setY(y);
-                }
-                goal.setGraphicalProperties(graphics);
-            }
-        } */
-
+         for (int j = 0; j < textNodes.getLength(); j++) {
+         if (textNodes.item(j).getNodeType() == Node.TEXT_NODE) {
+         textValue = textNodes.item(0).getTextContent().trim();
+         }
+         }
+         if (value.equalsIgnoreCase("height")) {
+         int height = Integer.parseInt(textValue);
+         graphics.setHeight(height);                    
+         }
+         if (value.equalsIgnoreCase("width")) {
+         int width = Integer.parseInt(textValue);
+         graphics.setWidth(width);
+         }
+         if (value.equalsIgnoreCase("x")) {
+         int x = Integer.parseInt(textValue);
+         graphics.setX(x);
+         }
+         if (value.equalsIgnoreCase("y")) {
+         int y = Integer.parseInt(textValue);
+         graphics.setY(y);
+         }
+         goal.setGraphicalProperties(graphics);
+         }
+         } */
         for (int i = 0; i < nodes.getLength(); i++) {
             if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
 
-                GSnodeGraphics gs = new GSnodeGraphics();               
-                
+                GSnodeGraphics gs = new GSnodeGraphics();
+
                 Element element = (Element) nodes.item(i);
-                
-                //System.out.println("got here " +element.getAttribute("height"));
-                //System.out.println("got here " +element.getAttribute("width"));
-                //System.out.println("got here " +element.getAttribute("x"));
-                //System.out.println("got here " +element.getAttribute("y"));
-                
-                if(!element.getAttribute("height").isEmpty()) {
-                    System.out.println("height " +element.getAttribute("height"));
-                }
-                if(!element.getAttribute("width").isEmpty()) {
-                    System.out.println("width " +element.getAttribute("width"));
-                }
-                if(!element.getAttribute("x").isEmpty()) {
-                    System.out.println("x " +element.getAttribute("x"));
-                }
-                if(!element.getAttribute("y").isEmpty()) {
-                    System.out.println("y " +element.getAttribute("y"));
-                }
-                
-                //gs.setHeight(Integer.parseInt(element.getAttribute("x")));
-                //goal.setGraphicalProperties(gs);
-                
-                
-                
                 NodeList textNodes = element.getChildNodes();
                 String value = element.getNodeName();
                 String textValue = "";
@@ -146,7 +121,22 @@ public class GraphParser {
                     }
                 }
 
-                if (value.equalsIgnoreCase("id")) {
+                if (value.equalsIgnoreCase("root")) {
+                    //System.out.println(textValue);
+                    goal.setIsRootGoal(true);
+                } else if (value.equalsIgnoreCase("x")) {
+                    int x = Integer.parseInt(textValue);
+                    gs.setX(x);
+                } else if (value.equalsIgnoreCase("y")) {
+                    int y = Integer.parseInt(textValue);
+                    gs.setY(y);
+                } else if (value.equalsIgnoreCase("width")) {
+                    int width = Integer.parseInt(textValue);
+                    gs.setWidth(width);
+                } else if (value.equalsIgnoreCase("height")) {
+                    int height = Integer.parseInt(textValue);
+                    gs.setHeight(height);
+                } else if (value.equalsIgnoreCase("id")) {
                     goal.setID(textValue);
                 } else if (value.equalsIgnoreCase("proposition")) {
 
@@ -201,6 +191,7 @@ public class GraphParser {
                                     if (annotationsNodes.item(l).getNodeType() == Node.ELEMENT_NODE) {
 
                                         Annotation annotation = new Annotation();
+                                        GSnodeGraphics gs2 = new GSnodeGraphics();
 
                                         Element annotationElement = (Element) annotationsNodes.item(l);
                                         NodeList annotationNodes = annotationElement.getChildNodes();
@@ -211,8 +202,28 @@ public class GraphParser {
                                             if (annotationNodes.item(m).getNodeType() == Node.ELEMENT_NODE) {
                                                 annoElementValue = annotationNodes.item(m).getNodeName();
                                             }
-
-                                            if (annoElementValue.equalsIgnoreCase("goaljudgement")) {
+                                            //-------------------------------------------------//
+                                            for (int r = 0; r < textNodes.getLength(); r++) {
+                                                if (textNodes.item(r).getNodeType() == Node.TEXT_NODE) {
+                                                    textValue = textNodes.item(0).getTextContent().trim();
+                                                }
+                                            }
+                                            
+                                            if (value.equalsIgnoreCase("x")) {
+                                                int x = Integer.parseInt(textValue);
+                                                gs2.setX(x);
+                                            } else if (value.equalsIgnoreCase("y")) {
+                                                int y = Integer.parseInt(textValue);
+                                                gs2.setY(y);
+                                            } else if (value.equalsIgnoreCase("width")) {
+                                                int width = Integer.parseInt(textValue);
+                                                gs2.setWidth(width);
+                                            } else if (value.equalsIgnoreCase("height")) {
+                                                int height = Integer.parseInt(textValue);
+                                                gs2.setHeight(height);
+                                            } else 
+                                                //-------------------------------------------------//
+                                                if (annoElementValue.equalsIgnoreCase("goaljudgement")) {
 
                                                 GoalJudgement gj = new GoalJudgement();
 
@@ -434,90 +445,88 @@ public class GraphParser {
                         }
                     }
 
-                        for (int a = 0; a < nodesOfAndEntailment.getLength(); a++) {
+                    for (int a = 0; a < nodesOfAndEntailment.getLength(); a++) {
 
-                            if (nodesOfAndEntailment.item(a).getNodeType() == Node.ELEMENT_NODE) {
+                        if (nodesOfAndEntailment.item(a).getNodeType() == Node.ELEMENT_NODE) {
 
-                                Element elementOfEntailment = (Element) nodesOfAndEntailment.item(a);
-                                NodeList entailmentNodes = nodesOfAndEntailment.item(a).getChildNodes();
-                                String entailmentValue = elementOfEntailment.getNodeName();
+                            Element elementOfEntailment = (Element) nodesOfAndEntailment.item(a);
+                            NodeList entailmentNodes = nodesOfAndEntailment.item(a).getChildNodes();
+                            String entailmentValue = elementOfEntailment.getNodeName();
 
-                                if (entailmentValue.equalsIgnoreCase("twin")) {
+                            if (entailmentValue.equalsIgnoreCase("twin")) {
 
-                                    GSnodeGraphics g = new GSnodeGraphics();
-                                    NodeList nodesOfTwin = elementOfEntailment.getChildNodes();
+                                GSnodeGraphics g = new GSnodeGraphics();
+                                NodeList nodesOfTwin = elementOfEntailment.getChildNodes();
 
-                                    for (int n = 0; n < nodesOfTwin.getLength(); n++) {
-                                        if (nodesOfTwin.item(n).getNodeType() == Node.ATTRIBUTE_NODE) {
+                                for (int n = 0; n < nodesOfTwin.getLength(); n++) {
+                                    if (nodesOfTwin.item(n).getNodeType() == Node.ATTRIBUTE_NODE) {
 
-                                            Attr twinAttribute = (Attr) nodesOfTwin.item(n);
-                                            NodeList twinNodes = twinAttribute.getChildNodes();
-                                            String twinValue = twinAttribute.getNodeName();
-                                            String twinTextValue = "";
+                                        Attr twinAttribute = (Attr) nodesOfTwin.item(n);
+                                        NodeList twinNodes = twinAttribute.getChildNodes();
+                                        String twinValue = twinAttribute.getNodeName();
+                                        String twinTextValue = "";
 
-                                            for (int m = 0; m < entailmentNodes.getLength(); m++) {
-                                                if (twinNodes.item(m).getNodeType() == Node.TEXT_NODE) {
-                                                    twinTextValue = entailmentNodes.item(0).getTextContent().trim();
-                                                }
-                                            }
-
-                                            if (twinValue.equalsIgnoreCase("height")) {
-                                                int height = Integer.parseInt(twinTextValue);
-                                                g.setHeight(height);
-                                            }
-                                            if (twinValue.equalsIgnoreCase("width")) {
-                                                int width = Integer.parseInt(twinTextValue);
-                                                g.setWidth(width);
-                                            }
-                                            if (twinValue.equalsIgnoreCase("x")) {
-                                                int x = Integer.parseInt(twinTextValue);
-                                                g.setX(x);
-                                            }
-                                            if (twinValue.equalsIgnoreCase("y")) {
-                                                int y = Integer.parseInt(twinTextValue);
-                                                g.setY(y);
-                                            }
-
-                                        } else if (nodesOfTwin.item(n).getNodeType() == Node.ELEMENT_NODE) {
-                                            Element twinElement = (Element) nodesOfTwin.item(n);
-                                            NodeList twinNodes = twinElement.getChildNodes();
-                                            String twinValue = twinElement.getNodeName();
-                                            String twinTextValue = "";
-
-                                            for (int m = 0; m < twinNodes.getLength(); m++) {
-                                                if (twinNodes.item(m).getNodeType() == Node.TEXT_NODE) {
-                                                    twinTextValue = twinNodes.item(0).getTextContent().trim();
-                                                }
-                                            }
-
-                                            if (twinValue.equalsIgnoreCase("id")) {
-                                                for (Goal gl : goals) {
-                                                    if (gl.getId().equalsIgnoreCase(twinTextValue)) {
-                                                        Twin tg = new Twin(gl);
-                                                        tg.setGraphicalProperties(g);
-                                                        gl.addChild(tg);
-                                                        andEntailment.addChild(tg);
-                                                    }
-                                                }
+                                        for (int m = 0; m < entailmentNodes.getLength(); m++) {
+                                            if (twinNodes.item(m).getNodeType() == Node.TEXT_NODE) {
+                                                twinTextValue = entailmentNodes.item(0).getTextContent().trim();
                                             }
                                         }
 
+                                        if (twinValue.equalsIgnoreCase("height")) {
+                                            int height = Integer.parseInt(twinTextValue);
+                                            g.setHeight(height);
+                                        }
+                                        if (twinValue.equalsIgnoreCase("width")) {
+                                            int width = Integer.parseInt(twinTextValue);
+                                            g.setWidth(width);
+                                        }
+                                        if (twinValue.equalsIgnoreCase("x")) {
+                                            int x = Integer.parseInt(twinTextValue);
+                                            g.setX(x);
+                                        }
+                                        if (twinValue.equalsIgnoreCase("y")) {
+                                            int y = Integer.parseInt(twinTextValue);
+                                            g.setY(y);
+                                        }
+
+                                    } else if (nodesOfTwin.item(n).getNodeType() == Node.ELEMENT_NODE) {
+                                        Element twinElement = (Element) nodesOfTwin.item(n);
+                                        NodeList twinNodes = twinElement.getChildNodes();
+                                        String twinValue = twinElement.getNodeName();
+                                        String twinTextValue = "";
+
+                                        for (int m = 0; m < twinNodes.getLength(); m++) {
+                                            if (twinNodes.item(m).getNodeType() == Node.TEXT_NODE) {
+                                                twinTextValue = twinNodes.item(0).getTextContent().trim();
+                                            }
+                                        }
+
+                                        if (twinValue.equalsIgnoreCase("id")) {
+                                            for (Goal gl : goals) {
+                                                if (gl.getId().equalsIgnoreCase(twinTextValue)) {
+                                                    Twin tg = new Twin(gl);
+                                                    tg.setGraphicalProperties(g);
+                                                    gl.addChild(tg);
+                                                    andEntailment.addChild(tg);
+                                                }
+                                            }
+                                        }
                                     }
 
-                                } else if (entailmentValue.equalsIgnoreCase("goal")) {
-
-                                    //Goal g = getNode(elementOfEntailment);
-                                    //andEntailment.addChild(g);
-                                    c.add(getNode(elementOfEntailment));
                                 }
 
+                            } else if (entailmentValue.equalsIgnoreCase("goal")) {
+
+                                //Goal g = getNode(elementOfEntailment);
+                                //andEntailment.addChild(g);
+                                c.add(getNode(elementOfEntailment));
                             }
-                            
-                            
+
                         }
-                        andEntailment.setChildren(c);
-                        //goal.addChild(andEntailment);
-                    
+
+                    }
+                    andEntailment.setChildren(c);
+                    //goal.addChild(andEntailment);
 
                 } else if (value.equalsIgnoreCase("orentailment")) {
 
@@ -751,9 +760,11 @@ public class GraphParser {
 
                     }
                 }
+                goal.setGraphicalProperties(gs);
             }
 
         }
+
         goals.add(goal);
         return goal;
     }

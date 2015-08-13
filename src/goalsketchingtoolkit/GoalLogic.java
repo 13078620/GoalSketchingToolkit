@@ -56,6 +56,8 @@ public class GoalLogic implements GoalSketchingLogic {
                 throw new UnsupportedOperationException("This goal already has"
                         + ": "
                         + nodeToAdd.getClass().toString());
+            } else {
+                correct = true;
             }
         }
 
@@ -117,7 +119,7 @@ public class GoalLogic implements GoalSketchingLogic {
 
             for (GSnode n : children) {
                 String nodeType = n.getClass().toString();
-                if (nodeType.contains("Goal")) {
+                if (nodeType.contains("Goal") && !nodeType.contains("OrientedProposition")) {
                     throw new UnsupportedOperationException("Cannot add assumption"
                             + " terminations to parent goals.");
                 }
@@ -184,6 +186,7 @@ public class GoalLogic implements GoalSketchingLogic {
                     + " to a goal's goal oriented proposition");
         } else if (nodeToAddClassString.contains("Twin")) {
             goal.setHasTwin(true);
+            correct = true;
         } else {
             throw new UnsupportedOperationException("Cannot add goal to a goal, "
                     + "unless it's a twin "
@@ -204,32 +207,45 @@ public class GoalLogic implements GoalSketchingLogic {
 
             for (GSnode n : goals) {
                 String type = n.getClass().toString();
-                if(type.contains("Goal")) {
-                Goal g = (Goal) n;
+                if (type.contains("Goal")) {
+                    Goal g = (Goal) n;
 
-                if (g.hasGop() && g.getProposition().hasPrefix()) {
-                    GoalOrientedProposition prop = g.getProposition();
-                    if (!prop.isAssumption()) {
+                    if (g.hasGop() && g.getProposition().hasPrefix()) {
+                        GoalOrientedProposition prop = g.getProposition();
+                        if (!prop.isAssumption()) {
+                            throw new UnsupportedOperationException("Cannot add an "
+                                    + "assumption "
+                                    + " type GOP to this goal because it's decendent(s) "
+                                    + " are not assumptions");
+                        }
+                    } else if (g.isOperationalized()) {
                         throw new UnsupportedOperationException("Cannot add an "
                                 + "assumption "
                                 + " type GOP to this goal because it's decendent(s) "
-                                + " are not assumptions");
+                                + " are operationalized");
                     }
-                } else if (g.isOperationalized()) {
-                    throw new UnsupportedOperationException("Cannot add an "
-                            + "assumption "
-                            + " type GOP to this goal because it's decendent(s) "
-                            + " are operationalized");
+
+                    if (g.getEntailment() != null) {
+                        checkDecendentNotAssumption(g);
+                    }
+                } else if (type.contains("Twin")) {
+                    Twin t = (Twin) n;
+                    Goal original = t.getOriginal();
+                    if (original.hasGop() && original.getProposition().hasPrefix()) {
+                        GoalOrientedProposition prop = original.getProposition();
+                        if (!prop.isAssumption()) {
+                            throw new UnsupportedOperationException("Cannot add an "
+                                    + "assumption "
+                                    + " type GOP to this goal because it's decendent(s) "
+                                    + " are not assumptions");
+                        }
+                    }
+
                 }
 
-                if (g.getEntailment() != null) {
-                    checkDecendentNotAssumption(g);
-                }
+                ae.setEntailsAssumption(true);
+
             }
-
-            ae.setEntailsAssumption(true);
-            
-        }
 
         } else if (entailmentType.contains("ORentailment")) {
             ORentailment oe = (ORentailment) goal.getEntailment();

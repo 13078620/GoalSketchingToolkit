@@ -320,5 +320,10 @@ public interface GoalSketchingControllerInterface {
      * @param goalID the ID of the goal to twin.
      */
     void addTwin(String goalID);
+    
+    /**
+     * Removes a twin goal.
+     */
+    void deleteTwin();
 
 }
