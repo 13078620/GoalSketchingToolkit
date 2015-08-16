@@ -207,7 +207,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
         }
 
         g2.setColor(super.getStrokeColor());
-        g2.setStroke(super.getStroke());
+        g2.setStroke(new BasicStroke(2));
 
         GSnode node = super.getGSnode();
         String nodeType = node.getClass().toString();
@@ -227,7 +227,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                     GSentailmentGraphics egs = parentEntailment.getGraphicalProperties();
 
                     int lineStartX = x + width / 2;
-                    int lineStartY = y + height / 2;
+                    int lineStartY = y + height / 2;                   
                     int lineToX = (int) egs.getCircle().x + GSentailmentGraphics.CIRCLE_WIDTH / 2;
                     int lineToY = (int) egs.getCircle().y + GSentailmentGraphics.CIRCLE_WIDTH / 2;
 
@@ -494,7 +494,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                 g2.setColor(Color.WHITE);
                 g2.fillRect(x, y, width, height);
                 g2.setColor(Color.BLACK);
-                g2.setStroke(super.getStroke());
+                g2.setStroke(new BasicStroke(2));
                 g2.drawLine(x, y, x, y + height);
                 g2.drawLine(x + width, y, x + width, y + height);
             }

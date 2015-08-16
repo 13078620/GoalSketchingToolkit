@@ -310,7 +310,7 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
 
         g2.drawLine(lineStartX, lineStartY, lineToX2, lineToY2);
 
-        g2.setStroke(super.getStroke());
+        g2.setStroke(new BasicStroke(2));
         int ovalDiameter = CIRCLE_WIDTH;
         int ovalX = (int) circle1.x;
         int ovalY = (int) circle1.y;

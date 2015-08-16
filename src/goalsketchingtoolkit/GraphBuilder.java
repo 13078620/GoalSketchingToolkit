@@ -123,7 +123,7 @@ public class GraphBuilder {
 
                 if (aent.hasGraphics()) {
                     GSentailmentGraphics graphics = aent.getGraphicalProperties();
-                    ee.appendChild(createTextElement("length", "" + graphics.getLength()));
+                    //ee.appendChild(createTextElement("length", "" + graphics.getLength()));
                     ee.appendChild(createTextElement("toY", "" + graphics.getToY()));
                     ee.appendChild(createTextElement("toX", "" + graphics.getToX()));
                     ee.appendChild(createTextElement("y", "" + graphics.getY()));
@@ -154,10 +154,10 @@ public class GraphBuilder {
 
                 if (oent.hasGraphics()) {
                     GSorEntailmentGraphics graphics = oent.getGraphicalProperties();
-                    ee.appendChild(createTextElement("length2", "" + graphics.getLength2()));
+                    //ee.appendChild(createTextElement("length2", "" + graphics.getLength2()));
                     ee.appendChild(createTextElement("toY2", "" + graphics.getToY2()));
                     ee.appendChild(createTextElement("toX2", "" + graphics.getToX2()));
-                    ee.appendChild(createTextElement("length", "" + graphics.getLength()));
+                    //ee.appendChild(createTextElement("length", "" + graphics.getLength()));
                     ee.appendChild(createTextElement("toY", "" + graphics.getToY()));
                     ee.appendChild(createTextElement("toX", "" + graphics.getToX()));
                     ee.appendChild(createTextElement("y", "" + graphics.getY()));

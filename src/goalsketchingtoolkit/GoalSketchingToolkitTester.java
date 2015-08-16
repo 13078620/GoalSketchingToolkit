@@ -51,7 +51,7 @@ public class GoalSketchingToolkitTester {
 
         /*try {
 
-            //String file = "compositeTestXMLOutput.xml";
+            String file = "compositeTestXMLOutput.xml";
             Document xmlDoc = parser.getDocument(file);
 
             Element theRoot = xmlDoc.getDocumentElement();
@@ -86,8 +86,9 @@ public class GoalSketchingToolkitTester {
             System.out.println(ex.getMessage());
             ex.printStackTrace();
         }*/
-        GoalGraphModelInterface model = new GoalGraphModel();
-        GoalSketchingController controller = new GoalSketchingController(model);
+        //
+       GoalGraphModelInterface model = new GoalGraphModel();
+       GoalSketchingController controller = new GoalSketchingController(model);
 
     }
 

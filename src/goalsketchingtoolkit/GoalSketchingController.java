@@ -65,7 +65,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         view.createGUI();
         view.createContextualMenuControls();
         view.createFileControls();
-        parser = new GraphParser();
+        parser = new GraphParser(model, view);
         factory = new GSnodeFactory();
         mouseListener = view.getMouseListener();
 
@@ -130,7 +130,6 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
                     Goal root = parser.getNode(element);
                     model.addRootGoal(root);
-                    drawGraphFromRoot(root);
 
                 }
             }
@@ -187,8 +186,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     public void saveGraph(Goal root, String fileName) throws ParserConfigurationException {
         GraphBuilder gb = new GraphBuilder(root);
         Document doc = gb.build();
-
-        //System.out.println("file path: "+fileName);
+        
         try {
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new File(fileName));
@@ -199,7 +197,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(4));
             transformer.transform(source, result);
         } catch (Exception e) {
-            e.printStackTrace();
+            view.displayErrorMessage(e.getMessage());
         }
 
     }

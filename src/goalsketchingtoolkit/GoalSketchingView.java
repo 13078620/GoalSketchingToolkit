@@ -71,9 +71,9 @@ public class GoalSketchingView implements Observer {
     private JPopupMenu annotationPopUpMenu;
     private JPopupMenu twinPopUpMenu;
 
-    private LoadGoalGraphListener listener;
-    private SaveGoalGraphListener listener2;
-    private NewGoalGraphListener listener3;
+    private LoadGoalGraphListener loadGoalGraphListener;
+    private SaveGoalGraphListener saveGoalGraphListener;
+    private NewGoalGraphListener newGoalGraphListener;
 
     private GSmouseListener mouseListener;
     private EditGoalListener editGoalListener;
@@ -224,7 +224,7 @@ public class GoalSketchingView implements Observer {
     });
 
     JMenuItem addTwinMenuItem;
-    
+
     JMenuItem deleteTwinMenuItem = new JMenuItem(new AbstractAction("Delete twin goal") {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -322,16 +322,16 @@ public class GoalSketchingView implements Observer {
             fileDialog.setMode(FileDialog.SAVE);
             fileDialog.setVisible(true);
 
-            /*GraphNode root = model.getRootGraphNode();
-             String file = fileDialog.getDirectory() + fileDialog.getFile();
-             //System.out.println(file);
-             if (file != null) {
-             try {
-             controller.saveGraph(root, file);
-             } catch (Exception ex) {
-             ex.printStackTrace();
-             }
-             }*/
+            Goal root = model.getRootGoal();
+            String file = fileDialog.getDirectory() + fileDialog.getFile();
+            
+            if (file != null) {
+                try {
+                    controller.saveGraph(root, file);
+                } catch (Exception ex) {
+                    displayErrorMessage(ex.getMessage());
+                }
+            }
         }
     }
 
@@ -548,10 +548,10 @@ public class GoalSketchingView implements Observer {
 
         }
     }
-    
+
     class EditTwinGoalListener implements ActionListener {
-        
-         @Override
+
+        @Override
         public void actionPerformed(ActionEvent e) {
 
             controller.editTwinGoal();
@@ -763,7 +763,7 @@ public class GoalSketchingView implements Observer {
         annotationPopUpMenu.add(addLeafJudgementMenuItem);
         annotationPopUpMenu.add(addAssumptionJudgementMenuItem);
         annotationPopUpMenu.setLightWeightPopupEnabled(false);
-        
+
         twinPopUpMenu = new JPopupMenu();
         twinPopUpMenu.add(deleteTwinMenuItem);
 
@@ -774,18 +774,18 @@ public class GoalSketchingView implements Observer {
         //fileDialog = new FileDialog(frame);
         //fileDialog.setMode(FileDialog.LOAD);
         menu = new JMenu("File");
-        listener = new LoadGoalGraphListener();
-        JMenuItem menuItem4 = new JMenuItem("Load Goal Graph");
-        listener2 = new SaveGoalGraphListener();
-        JMenuItem menuItem5 = new JMenuItem("Save Goal Graph");
-        listener3 = new NewGoalGraphListener();
-        JMenuItem menuItem6 = new JMenuItem("New Goal Graph");
-        menuItem4.addActionListener(listener);
-        menuItem5.addActionListener(listener2);
-        menuItem6.addActionListener(listener3);
-        menu.add(menuItem4);
-        menu.add(menuItem5);
-        menu.add(menuItem6);
+        loadGoalGraphListener = new LoadGoalGraphListener();
+        JMenuItem loadGoalGraphMenuItem = new JMenuItem("Load Goal Graph");
+        saveGoalGraphListener = new SaveGoalGraphListener();
+        JMenuItem saveGoalGraphMenuItem = new JMenuItem("Save Goal Graph");
+        newGoalGraphListener = new NewGoalGraphListener();
+        JMenuItem newGoalGraphMenuItem = new JMenuItem("New Goal Graph");
+        loadGoalGraphMenuItem.addActionListener(loadGoalGraphListener);
+        saveGoalGraphMenuItem.addActionListener(saveGoalGraphListener);
+        newGoalGraphMenuItem.addActionListener(newGoalGraphListener);
+        menu.add(loadGoalGraphMenuItem);
+        menu.add(saveGoalGraphMenuItem);
+        menu.add(newGoalGraphMenuItem);
         menu.getAccessibleContext();
         bar.add(menu);
         frame.setVisible(true);
@@ -865,8 +865,8 @@ public class GoalSketchingView implements Observer {
     public void showAnnotationPopUpMenu(MouseEvent e, int eventX, int eventY) {
         annotationPopUpMenu.show(e.getComponent(), eventX, eventY);
     }
-    
-    public void showTwinPopUpMenu(MouseEvent e, int eventX, int eventY){
+
+    public void showTwinPopUpMenu(MouseEvent e, int eventX, int eventY) {
         twinPopUpMenu.show(e.getComponent(), eventX, eventY);
     }
 
@@ -993,7 +993,7 @@ public class GoalSketchingView implements Observer {
     public void disableDeleteGOPMenuItem() {
         deleteGOPMenuItem.setEnabled(false);
     }
-    
+
     public void enableAddTwinMenuItem() {
         addTwinMenuItem.setEnabled(true);
     }
@@ -1001,7 +1001,7 @@ public class GoalSketchingView implements Observer {
     public void disableAddTwinMenuItem() {
         addTwinMenuItem.setEnabled(false);
     }
-    
+
     public void enableDeleteTwinMenuItem() {
         deleteTwinMenuItem.setEnabled(true);
     }

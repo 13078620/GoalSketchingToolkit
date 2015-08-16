@@ -205,7 +205,6 @@ public class GoalOrientedProposition extends GSnode {
      */
     public void setPrefix(GoalType goaltype) {
 
-        System.out.println(super.isChild());
         if (isChild()) {
             
             Goal g = (Goal) getParent();
