@@ -67,7 +67,7 @@ public class GraphBuilder {
     private Element createNode(Goal goal) throws ParserConfigurationException {
 
         Element e = doc.createElement("Goal");
-        
+
         if (goal.isRootGoal()) {
             e.appendChild(createTextElement("root", "true"));
         }
@@ -214,7 +214,6 @@ public class GraphBuilder {
             e.appendChild(ate);
         }
 
-        
         return e;
     }
 
@@ -305,52 +304,54 @@ public class GraphBuilder {
 
                 Judgement j = a.getJudgement();
 
-                if (a.getJudgement().getClass().toString().contains("GoalJudgement")) {
+                if (a.getJudgement() != null) {
 
-                    GoalJudgement gj = (GoalJudgement) j;
+                    if (a.getJudgement().getClass().toString().contains("GoalJudgement")) {
 
-                    Element gje = doc.createElement("GoalJudgement");
+                        GoalJudgement gj = (GoalJudgement) j;
 
-                    ConfidenceFactorRating rcfr = gj.getRefineConfidenceFactorRating();
-                    ConfidenceFactorRating ecfr = gj.getEngageConfidenceFactorRating();
-                    SignificanceFactorRating sfr = gj.getSignificanceFactorRating();
+                        Element gje = doc.createElement("GoalJudgement");
 
-                    gje.appendChild(createTextElement("" + rcfr.getKey(), "" + rcfr.getValue()));
-                    gje.appendChild(createTextElement("" + ecfr.getKey(), "" + ecfr.getValue()));
-                    gje.appendChild(createTextElement("" + sfr.getKey(), "" + sfr.getValue()));
+                        ConfidenceFactorRating rcfr = gj.getRefineConfidenceFactorRating();
+                        ConfidenceFactorRating ecfr = gj.getEngageConfidenceFactorRating();
+                        SignificanceFactorRating sfr = gj.getSignificanceFactorRating();
 
-                    ae.appendChild(gje);
-                    ase.appendChild(ae);
+                        gje.appendChild(createTextElement("" + rcfr.getKey(), "" + rcfr.getValue()));
+                        gje.appendChild(createTextElement("" + ecfr.getKey(), "" + ecfr.getValue()));
+                        gje.appendChild(createTextElement("" + sfr.getKey(), "" + sfr.getValue()));
 
-                } else if (j.getClass().toString().contains("LeafJudgement")) {
+                        ae.appendChild(gje);
+                        ase.appendChild(ae);
 
-                    LeafJudgement lj = (LeafJudgement) j;
+                    } else if (j.getClass().toString().contains("LeafJudgement")) {
 
-                    Element lje = doc.createElement("LeafJudgement");
+                        LeafJudgement lj = (LeafJudgement) j;
 
-                    ConfidenceFactorRating acfr = lj.getConfidenceFactorRating();
-                    SignificanceFactorRating sfr = lj.getSignificanceFactorRating();
+                        Element lje = doc.createElement("LeafJudgement");
 
-                    lje.appendChild(createTextElement("" + acfr.getKey(), "" + acfr.getValue()));
-                    lje.appendChild(createTextElement("" + sfr.getKey(), "" + sfr.getValue()));
+                        ConfidenceFactorRating acfr = lj.getConfidenceFactorRating();
+                        SignificanceFactorRating sfr = lj.getSignificanceFactorRating();
 
-                    ae.appendChild(lje);
-                    ase.appendChild(ae);
+                        lje.appendChild(createTextElement("" + acfr.getKey(), "" + acfr.getValue()));
+                        lje.appendChild(createTextElement("" + sfr.getKey(), "" + sfr.getValue()));
 
-                } else if (j.getClass().toString().contains("AssumptionJudgement")) {
+                        ae.appendChild(lje);
+                        ase.appendChild(ae);
 
-                    AssumptionJudgement aj = (AssumptionJudgement) j;
+                    } else if (j.getClass().toString().contains("AssumptionJudgement")) {
 
-                    Element aje = doc.createElement("AssumptionJudgement");
+                        AssumptionJudgement aj = (AssumptionJudgement) j;
 
-                    ConfidenceFactorRating ascfr = aj.getConfidenceFactorRating();
+                        Element aje = doc.createElement("AssumptionJudgement");
 
-                    aje.appendChild(createTextElement("" + ascfr.getKey(), "" + ascfr.getValue()));
+                        ConfidenceFactorRating ascfr = aj.getConfidenceFactorRating();
 
-                    ae.appendChild(aje);
-                    ase.appendChild(ae);
+                        aje.appendChild(createTextElement("" + ascfr.getKey(), "" + ascfr.getValue()));
+
+                        ae.appendChild(aje);
+                        ase.appendChild(ae);
+                    }
                 }
-
             }
             pe.appendChild(ase);
         }

@@ -9,6 +9,7 @@ import java.awt.Point;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.event.MouseEvent;
 import javax.swing.JComboBox;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -52,7 +53,7 @@ public interface GoalSketchingControllerInterface {
      * @param fileName the file path.
      * @throws javax.xml.parsers.ParserConfigurationException
      */
-    void saveGraph(Goal root, String fileName) throws ParserConfigurationException;
+    void saveGraph(Goal root, String fileName) throws ParserConfigurationException, TransformerException;
 
     /**
      * resets the model and view.

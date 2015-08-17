@@ -28,8 +28,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -134,8 +136,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 }
             }
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
         }
 
     }
@@ -181,13 +182,14 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
      *
      * @param root the root goal.
      * @param fileName the file path.
+     * @throws javax.xml.transform.TransformerException
      */
     @Override
-    public void saveGraph(Goal root, String fileName) throws ParserConfigurationException {
+    public void saveGraph(Goal root, String fileName) throws ParserConfigurationException, TransformerException {
         GraphBuilder gb = new GraphBuilder(root);
         Document doc = gb.build();
-        
-        try {
+
+        //try {
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new File(fileName));
             TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -196,9 +198,9 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(4));
             transformer.transform(source, result);
-        } catch (Exception e) {
-            view.displayErrorMessage(e.getMessage());
-        }
+       // } catch (IllegalArgumentException | TransformerException e) {
+            //view.displayErrorMessage(e.getMessage());
+       // }
 
     }
 
@@ -209,6 +211,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     public void reset() {
         view.reset();
         model.reset();
+        parser.reset();
     }
 
     /**
@@ -966,75 +969,78 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 return;
             }
             // Locate cursor relative to center of rect.
-            int outcode = getOutcode(p);
-            GSnode gsn = currentSelection;
-            String currentSelectionType = gsn.getClass().toString();
-            if (currentSelectionType.contains("Goal")
-                    || currentSelectionType.contains("OperationalizingProducts") || currentSelectionType.contains("Twin")) {
-                GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
+            if (getOutcode(p) != 0) {
+                int outcode = getOutcode(p);
+                GSnode gsn = currentSelection;
+                String currentSelectionType = gsn.getClass().toString();
+                if (currentSelectionType.contains("Goal")
+                        || currentSelectionType.contains("OperationalizingProducts")
+                        || currentSelectionType.contains("Twin")) {
+                    GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
 
-                double y = g.getY();
-                double x = g.getX();
-                int height = g.getHeight();
-                int width = g.getWidth();
+                    double y = g.getY();
+                    double x = g.getX();
+                    int height = g.getHeight();
+                    int width = g.getWidth();
 
-                switch (outcode) {
-                    case Rectangle.OUT_TOP:
-                        if (Math.abs(p.y - y) < mouseListener.PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.N_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_TOP + Rectangle.OUT_LEFT:
-                        if (Math.abs(p.y - y) < mouseListener.PROX_DIST
-                                && Math.abs(p.x - x) < mouseListener.PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.NW_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_LEFT:
-                        if (Math.abs(p.x - x) < mouseListener.PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.W_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_LEFT + Rectangle.OUT_BOTTOM:
-                        if (Math.abs(p.x - x) < mouseListener.PROX_DIST
-                                && Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.SW_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_BOTTOM:
-                        if (Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.S_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_BOTTOM + Rectangle.OUT_RIGHT:
-                        if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST
-                                && Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.SE_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_RIGHT:
-                        if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.E_RESIZE_CURSOR));
-                        }
-                        break;
-                    case Rectangle.OUT_RIGHT + Rectangle.OUT_TOP:
-                        if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST
-                                && Math.abs(p.y - y) < mouseListener.PROX_DIST) {
-                            panel.setCursor(Cursor.getPredefinedCursor(
-                                    Cursor.NE_RESIZE_CURSOR));
-                        }
-                        break;
-                    default:    // centre
-                        panel.setCursor(Cursor.getDefaultCursor());
+                    switch (outcode) {
+                        case Rectangle.OUT_TOP:
+                            if (Math.abs(p.y - y) < mouseListener.PROX_DIST) {
+                                panel.setCursor(Cursor.getPredefinedCursor(
+                                        Cursor.N_RESIZE_CURSOR));
+                            }
+                            break;
+                        case Rectangle.OUT_TOP + Rectangle.OUT_LEFT:
+                            if (Math.abs(p.y - y) < mouseListener.PROX_DIST
+                                    && Math.abs(p.x - x) < mouseListener.PROX_DIST) {
+                                panel.setCursor(Cursor.getPredefinedCursor(
+                                        Cursor.NW_RESIZE_CURSOR));
+                            }
+                            break;
+                        case Rectangle.OUT_LEFT:
+                            if (Math.abs(p.x - x) < mouseListener.PROX_DIST) {
+                                panel.setCursor(Cursor.getPredefinedCursor(
+                                        Cursor.W_RESIZE_CURSOR));
+                            }
+                            break;
+                        case Rectangle.OUT_LEFT + Rectangle.OUT_BOTTOM:
+                            if (Math.abs(p.x - x) < mouseListener.PROX_DIST
+                                    && Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
+                                panel.setCursor(Cursor.getPredefinedCursor(
+                                        Cursor.SW_RESIZE_CURSOR));
+                            }
+                            break;
+                        case Rectangle.OUT_BOTTOM:
+                            if (Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
+                                panel.setCursor(Cursor.getPredefinedCursor(
+                                        Cursor.S_RESIZE_CURSOR));
+                            }
+                            break;
+                        case Rectangle.OUT_BOTTOM + Rectangle.OUT_RIGHT:
+                            if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST
+                                    && Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
+                                panel.setCursor(Cursor.getPredefinedCursor(
+                                        Cursor.SE_RESIZE_CURSOR));
+                            }
+                            break;
+                        case Rectangle.OUT_RIGHT:
+                            if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST) {
+                                panel.setCursor(Cursor.getPredefinedCursor(
+                                        Cursor.E_RESIZE_CURSOR));
+                            }
+                            break;
+                        case Rectangle.OUT_RIGHT + Rectangle.OUT_TOP:
+                            if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST
+                                    && Math.abs(p.y - y) < mouseListener.PROX_DIST) {
+                                panel.setCursor(Cursor.getPredefinedCursor(
+                                        Cursor.NE_RESIZE_CURSOR));
+                            }
+                            break;
+                        default:    // centre
+                            panel.setCursor(Cursor.getDefaultCursor());
+                    }
+
                 }
-
             }
         }
     }
@@ -1066,19 +1072,21 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     public int getOutcode(Point p) {
 
         String currentSelectionType = currentSelection.getClass().toString();
-        GSnodeGraphics g = null;
+        int outcode = 0;
 
         if (currentSelectionType.contains("Goal")
                 || currentSelectionType.contains("OperationalizingProducts")
                 || currentSelectionType.contains("Twin")) {
 
-            g = (GSnodeGraphics) currentSelection.getGraphicalProperties();
+            GSnodeGraphics g = (GSnodeGraphics) currentSelection.getGraphicalProperties();
+
+            Rectangle r = new Rectangle((int) g.getX(), (int) g.getY(), g.getWidth(), g.getHeight());
+            r.grow(-mouseListener.PROX_DIST, -mouseListener.PROX_DIST);
+            outcode = r.outcode(p.x, p.y);
 
         }
 
-        Rectangle r = new Rectangle((int) g.getX(), (int) g.getY(), g.getWidth(), g.getHeight());
-        r.grow(-mouseListener.PROX_DIST, -mouseListener.PROX_DIST);
-        return r.outcode(p.x, p.y);
+        return outcode;
     }
 
     /**
@@ -1374,7 +1382,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 } else if (currentSelectionType.contains("ORentailment")) {
                     ORentailment oe = (ORentailment) currentSelection;
                     GSorEntailmentGraphics g = oe.getGraphicalProperties();
-                    
+
                     int x = 0;
                     int y = 0;
                     ArrayList<GSnode> childNodes = oe.getChildren();

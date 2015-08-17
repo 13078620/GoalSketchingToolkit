@@ -42,6 +42,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 /**
  *
@@ -328,7 +333,7 @@ public class GoalSketchingView implements Observer {
             if (file != null) {
                 try {
                     controller.saveGraph(root, file);
-                } catch (Exception ex) {
+                } catch (ParserConfigurationException | TransformerException ex) {
                     displayErrorMessage(ex.getMessage());
                 }
             }

@@ -444,7 +444,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
                 g2.setColor(Color.WHITE);
                 g2.fillRect(x, y, width, height);
                 g2.setColor(Color.BLACK);
-                g2.setStroke(super.getStroke());
+                g2.setStroke(new BasicStroke(2));
 
                 judgementType = a.getJudgement().getClass().toString();
 
