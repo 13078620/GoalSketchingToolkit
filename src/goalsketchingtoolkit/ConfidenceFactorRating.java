@@ -1,11 +1,8 @@
 /* 
- * Copyright (C) Christopher Berryman, Oxford Brookes University 
- * - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly 
- * prohibited
+ * Copyright (C) Christopher Berryman, Oxford Brookes University - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
- *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
- * September 2015
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, September 2015
  */
 package goalsketchingtoolkit;
 

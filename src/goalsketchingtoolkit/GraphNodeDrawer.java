@@ -1,7 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, September 2015
  */
 package goalsketchingtoolkit;
 
@@ -30,19 +31,19 @@ import java.awt.Color;
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
-public class GraphNodeDrawer implements Drawable {
+public class GraphNodeDrawer  {
 
-    private GraphNode graphNode;
+   /* private GraphNode graphNode;
 
     /**
      * Constructs a graph node drawer.
      *
      * @param graphNode the graph node to be drawn.
-     */
+     
     public GraphNodeDrawer(GoalSketchingNode graphNode) {
 
         
-        if(graphNode.getClass().toString().contains("GraphNode")) {
+        /*if(graphNode.getClass().toString().contains("GraphNode")) {
             System.out.println("your hypothesis was correct");
         } else {
             System.out.println(graphNode.getClass().toString());
@@ -55,7 +56,7 @@ public class GraphNodeDrawer implements Drawable {
      * Draws a graph node.
      *
      * @param g2 the graphics context.
-     */
+     
     @Override
     public void draw(Graphics2D g2) {
 
@@ -101,7 +102,7 @@ public class GraphNodeDrawer implements Drawable {
              g2.drawString(text, fontX, fontY);*/
             //String prefix = graphNode.getProposition().getPrefix();
             //System.out.println(prefix);
-            int lineSep = 3;
+          /*  int lineSep = 3;
             int stringWidth = fm.stringWidth(text);
             int strHeight = fm.getHeight();
             int strLength = text.length();
@@ -162,7 +163,7 @@ public class GraphNodeDrawer implements Drawable {
 
              }
              } */
-            g2.drawRect(x, y, width, height);
+          /*  g2.drawRect(x, y, width, height);
             float dash1[] = {10.0f};
             BasicStroke dashed = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f);
             g2.setStroke(dashed);
@@ -190,7 +191,7 @@ public class GraphNodeDrawer implements Drawable {
              int y = (int) graphNode.getY();
              int width = graphNode.getWidth();
              int height = graphNode.getHeight();*/
-            g2.drawRect(x, y, width, height);
+            /*g2.drawRect(x, y, width, height);
 
             int lineStartX = x + width / 2;
             int lineStartY = y;
@@ -246,4 +247,4 @@ public class GraphNodeDrawer implements Drawable {
 
     }
 
-}
+
