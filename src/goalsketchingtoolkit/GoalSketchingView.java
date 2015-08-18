@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -42,8 +46,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -934,6 +936,30 @@ public class GoalSketchingView implements Observer {
     public void disableAddAnnotationMenuItem() {
         addAnnotationMenuItem.setEnabled(false);
     }
+    
+    public void enableAddGoalJudgementMenuItem() {
+        addGoalJudgementMenuItem.setEnabled(true);
+    }
+
+    public void disableAddGoalJudgementMenuItem() {
+        addGoalJudgementMenuItem.setEnabled(false);
+    }
+    
+    public void enableAddLeafJudgementMenuItem() {
+        addLeafJudgementMenuItem.setEnabled(true);
+    }
+
+    public void disableAddLeafJudgementMenuItem() {
+        addLeafJudgementMenuItem.setEnabled(false);
+    }
+    
+    public void enableAddAssumptionJudgementMenuItem() {
+        addAssumptionJudgementMenuItem.setEnabled(true);
+    }
+
+    public void disableAddAssumptionJudgementMenuItem() {
+        addAssumptionJudgementMenuItem.setEnabled(false);
+    }
 
     public void enableAddGOPMenuItem() {
         addGOPMenuItem.setEnabled(true);
@@ -1060,12 +1086,16 @@ public class GoalSketchingView implements Observer {
         button.addActionListener(editGOPButtonListener);
         p.add(addPropositionLabel, BorderLayout.PAGE_START);
         p.add(propText, BorderLayout.PAGE_START);
+        
+        selectPrefixLabel = new JLabel("Select goal type: ");
 
         String[] prefixOptions = {"", "Motivation", "Behaviour", "Constraint", "Assumption", "Obstacle"};
         combobox = new JComboBox(prefixOptions);
 
         ActionListener editGoalComboBoxListener = new EditGoalComboBoxListener();
         combobox.addActionListener(editGoalComboBoxListener);
+        
+        p.add(selectPrefixLabel);
         p.add(combobox);
 
         p.add(button, BorderLayout.PAGE_END);

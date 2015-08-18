@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -14,7 +18,7 @@ import java.util.ArrayList;
  * entailment has an assumption goal oriented proposition and the goal to be
  * added to the OR entailment has a goal type other than an assumption.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class ORentailmentLogic implements GoalSketchingLogic {
 

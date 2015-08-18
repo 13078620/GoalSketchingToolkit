@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -21,6 +25,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
+ * Tester class for this implementation of the goal sketching toolkit. This
+ * class contains the main method where a goal graph model interface
+ * implementation is passed as an argument to the constructor of a new goal
+ * sketching controller.
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
@@ -35,6 +43,10 @@ public class GoalSketchingToolkitTester {
     //static GoalSketchingToolkit tk = new GoalSketchingToolkit(1000, 800);
     /**
      * @param args the command line arguments
+     * @throws javax.xml.parsers.ParserConfigurationException in the event of a
+     * serious configuration error.
+     * @throws javax.xml.transform.TransformerConfigurationException if an
+     * exceptional condition occured during the transformation process.
      */
     public static void main(String[] args) throws ParserConfigurationException, TransformerConfigurationException, TransformerException, Exception {
         // TODO code application logic here
@@ -51,44 +63,44 @@ public class GoalSketchingToolkitTester {
 
         /*try {
 
-            String file = "compositeTestXMLOutput.xml";
-            Document xmlDoc = parser.getDocument(file);
+         String file = "compositeTestXMLOutput.xml";
+         Document xmlDoc = parser.getDocument(file);
 
-            Element theRoot = xmlDoc.getDocumentElement();
-            NodeList nodes = theRoot.getChildNodes();
+         Element theRoot = xmlDoc.getDocumentElement();
+         NodeList nodes = theRoot.getChildNodes();
 
-            for (int i = 0; i < nodes.getLength(); i++) {
-                if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                    Element element = (Element) nodes.item(i);
+         for (int i = 0; i < nodes.getLength(); i++) {
+         if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+         Element element = (Element) nodes.item(i);
 
-                    Goal root = parser.getNode(element);
-                    //drawGraphFromRoot(root);
-                    GraphBuilder gb = new GraphBuilder(root);
-                    Document doc = gb.build();
-                    String fileName = "compositeTestXMLOutput2.xml";
+         Goal root = parser.getGoal(element);
+         //drawGraphFromRoot(root);
+         GraphBuilder gb = new GraphBuilder(root);
+         Document doc = gb.build();
+         String fileName = "compositeTestXMLOutput2.xml";
 
-                    DOMSource source = new DOMSource(doc);
-                    StreamResult result = new StreamResult(new File(fileName));
-                    TransformerFactory tFactory = TransformerFactory.newInstance();
-                    Transformer transformer = tFactory.newTransformer();
-                    transformer.setOutputProperty("encoding", "UTF-8");
-                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(4));
-                    transformer.transform(source, result);
+         DOMSource source = new DOMSource(doc);
+         StreamResult result = new StreamResult(new File(fileName));
+         TransformerFactory tFactory = TransformerFactory.newInstance();
+         Transformer transformer = tFactory.newTransformer();
+         transformer.setOutputProperty("encoding", "UTF-8");
+         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(4));
+         transformer.transform(source, result);
 
-                }
-            }
-            //for (GSnode n : gsNodes) {
-            //System.out.println(n.getGraphicalProperties().getX());
-            //}
+         }
+         }
+         //for (GSnode n : gsNodes) {
+         //System.out.println(n.getGraphicalProperties().getX());
+         //}
 
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
-        }*/
+         } catch (Exception ex) {
+         System.out.println(ex.getMessage());
+         ex.printStackTrace();
+         }*/
         //
-       GoalGraphModelInterface model = new GoalGraphModel();
-       GoalSketchingController controller = new GoalSketchingController(model);
+        GoalGraphModelInterface model = new GoalGraphModel();
+        GoalSketchingControllerInterface controller = new GoalSketchingController(model);
 
     }
 
@@ -119,7 +131,7 @@ public class GoalSketchingToolkitTester {
 
             ArrayList<GSnode> children = ae.getChildren();
 
-           // gsNodes.add(g);
+            // gsNodes.add(g);
             for (int i = 0; i < children.size(); i++) {
 
                 // System.out.println(children.get(i).getClass().toString());

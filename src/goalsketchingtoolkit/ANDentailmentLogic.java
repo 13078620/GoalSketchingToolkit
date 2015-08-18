@@ -1,11 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
-
-import java.util.ArrayList;
 
 /**
  * This class checks if the goal sketching node added to an entailment is
@@ -14,7 +16,7 @@ import java.util.ArrayList;
  * has an assumption goal oriented proposition and the goal to be added to the
  * entailment has a goal type other than an assumption.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class ANDentailmentLogic implements GoalSketchingLogic {
 
@@ -22,11 +24,7 @@ public class ANDentailmentLogic implements GoalSketchingLogic {
      * The AND entailment which the logic is performed on.
      */
     private final ANDentailment entailment;
-
-    /**
-     * The current list of children of the AND entailment of interest.
-     */
-    //private final ArrayList<GSnode> goals;
+    
     /**
      * Constructs an AND entailment logic object initialised with the entailment
      * in question.
@@ -35,7 +33,6 @@ public class ANDentailmentLogic implements GoalSketchingLogic {
      */
     public ANDentailmentLogic(ANDentailment entailment) {
         this.entailment = entailment;
-        //goals = entailment.getChildren();
     }
 
     /**

@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -11,7 +15,7 @@ import java.util.ArrayList;
  * This class checks if the goal sketching node added to a goal is supported by
  * the rules of goal sketching, depending on the current state of the goal.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class GoalLogic implements GoalSketchingLogic {
 
@@ -197,6 +201,14 @@ public class GoalLogic implements GoalSketchingLogic {
 
     }
 
+    /**
+     * Checks whether the goal in question is the ancestor of goals which are
+     * not assumptions or are operationalised to guard against applying an
+     * assumption GOP to the said goal if that is the case.
+     *
+     * @param goal the goal to check the descendents of to ensure they are
+     * assumptions if the GOP to add is an assumption.
+     */
     public void checkDecendentNotAssumption(Goal goal) {
 
         String entailmentType = goal.getEntailment().getClass().toString();
@@ -215,19 +227,20 @@ public class GoalLogic implements GoalSketchingLogic {
                         if (!prop.isAssumption()) {
                             throw new UnsupportedOperationException("Cannot add an "
                                     + "assumption "
-                                    + " type GOP to this goal because it's decendent(s) "
+                                    + " type GOP to this goal because it's descendent(s) "
                                     + " are not assumptions");
                         }
                     } else if (g.isOperationalized()) {
                         throw new UnsupportedOperationException("Cannot add an "
                                 + "assumption "
-                                + " type GOP to this goal because it's decendent(s) "
+                                + " type GOP to this goal because it's descendent(s) "
                                 + " are operationalized");
                     }
 
                     if (g.getEntailment() != null) {
                         checkDecendentNotAssumption(g);
                     }
+
                 } else if (type.contains("Twin")) {
                     Twin t = (Twin) n;
                     Goal original = t.getOriginal();
@@ -236,7 +249,7 @@ public class GoalLogic implements GoalSketchingLogic {
                         if (!prop.isAssumption()) {
                             throw new UnsupportedOperationException("Cannot add an "
                                     + "assumption "
-                                    + " type GOP to this goal because it's decendent(s) "
+                                    + " type GOP to this goal because it's descendent(s) "
                                     + " are not assumptions");
                         }
                     }
@@ -248,6 +261,7 @@ public class GoalLogic implements GoalSketchingLogic {
             }
 
         } else if (entailmentType.contains("ORentailment")) {
+
             ORentailment oe = (ORentailment) goal.getEntailment();
             oe.setEntailsAssumption(true);
 
@@ -261,13 +275,13 @@ public class GoalLogic implements GoalSketchingLogic {
                     if (!prop.isAssumption()) {
                         throw new UnsupportedOperationException("Cannot add an "
                                 + "assumption "
-                                + " type GOP to this goal because it's decendent(s) "
+                                + " type GOP to this goal because it's descendent(s) "
                                 + " are not assumptions");
                     }
                 } else if (g.isOperationalized()) {
                     throw new UnsupportedOperationException("Cannot add an "
                             + "assumption "
-                            + " type GOP to this goal because it's decendent(s) "
+                            + " type GOP to this goal because it's descendent(s) "
                             + " are operationalized");
                 }
 

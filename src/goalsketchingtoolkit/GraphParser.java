@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -19,6 +23,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
+ * A graph parser is used for parsing XML documents which contain data
+ * pertaining to a goal refinement diagram which may or may not be structurally
+ * complete.
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
@@ -38,6 +45,7 @@ public class GraphParser {
      * Constructs a graph parser and initialises the model.
      *
      * @param model the model to add parsed nodes to.
+     * @param view the view to add parsed graphics objects to.
      */
     public GraphParser(GoalGraphModelInterface model, GoalSketchingView view) {
         this.model = model;
@@ -49,9 +57,12 @@ public class GraphParser {
      *
      * @param fileName the name of the file to parse.
      * @return the XML document to parse.
-     * @throws javax.xml.parsers.ParserConfigurationException
-     * @throws org.xml.sax.SAXException
-     * @throws java.io.IOException
+     * @throws javax.xml.parsers.ParserConfigurationException in the event of a
+     * a serious configuration error.
+     * @throws org.xml.sax.SAXException if there is an XML parse error or
+     * warning.
+     * @throws java.io.IOException if an I/O operation has failed or been
+     * interrupted.
      */
     public Document getDocument(String fileName) throws ParserConfigurationException, SAXException, IOException {
 
@@ -73,11 +84,12 @@ public class GraphParser {
      * @param gsnode a DOM element node describing a goal.
      * @return a graph node object with instance variable set as described by
      * the element.
-     * @throws ParserConfigurationException
-     * @throws SAXException
-     * @throws IOException
+     * @throws ParserConfigurationException in the event of a serious
+     * configuration error.
+     * @throws SAXException to indicate an XML parse error or warning.
+     * @throws IOException if an I/O operation has failed or been interrupted.
      */
-    public Goal getNode(Element gsnode) throws ParserConfigurationException, SAXException, IOException {
+    public Goal getGoal(Element gsnode) throws ParserConfigurationException, SAXException, IOException {
 
         Goal goal = new Goal();
         GSnodeGraphics gs = new GSnodeGraphics();
@@ -103,6 +115,7 @@ public class GraphParser {
                 } else if (value.equalsIgnoreCase("x")) {
                     int x = Integer.parseInt(textValue);
                     gs.setX(x);
+                    //System.out.println("goal x from parser: "+gs.getX());
                 } else if (value.equalsIgnoreCase("y")) {
                     int y = Integer.parseInt(textValue);
                     gs.setY(y);
@@ -384,7 +397,7 @@ public class GraphParser {
 
                     ANDentailment andEntailment = new ANDentailment();
                     GSentailmentGraphics gs3 = new GSentailmentGraphics();
-                    goal.addChild(andEntailment);
+                    //goal.addChild(andEntailment);
                     NodeList nodesOfAndEntailment = element.getChildNodes();
                     ArrayList<GSnode> c = new ArrayList<>();
 
@@ -393,26 +406,22 @@ public class GraphParser {
                         if (nodesOfAndEntailment.item(a).getNodeType() == Node.ELEMENT_NODE) {
 
                             Element elementOfEntailment = (Element) nodesOfAndEntailment.item(a);
-                            NodeList entailmentNodes = nodesOfAndEntailment.item(a).getChildNodes();
+                            NodeList entailmentNodes = elementOfEntailment.getChildNodes();
                             String entailmentValue = elementOfEntailment.getNodeName();
                             String entailmentTextValue = "";
                             for (int z = 0; z < entailmentNodes.getLength(); z++) {
                                 if (entailmentNodes.item(z).getNodeType() == Node.TEXT_NODE) {
-                                    entailmentTextValue = elementOfEntailment.getChildNodes().item(0).getTextContent().trim();
+                                    entailmentTextValue = entailmentNodes.item(0).getTextContent().trim();
                                 }
                             }
-
-                           
 
                             if (entailmentValue.equalsIgnoreCase("toY")) {
                                 int toy = Integer.parseInt(entailmentTextValue);
                                 gs3.setToY(toy);
                             }
-                             int tox = 0;
-                            
+
                             if (entailmentValue.equalsIgnoreCase("toX")) {
-                                tox += Integer.parseInt(entailmentTextValue);
-                                 System.out.println(tox);
+                                int tox = Integer.parseInt(entailmentTextValue);
                                 gs3.setToX(tox);
                             }
                             if (entailmentValue.equalsIgnoreCase("y")) {
@@ -421,9 +430,9 @@ public class GraphParser {
                             }
                             if (entailmentValue.equalsIgnoreCase("x")) {
                                 int x = Integer.parseInt(entailmentTextValue);
-                                gs3.setX(x);                               
-                                gs3.setCircle(tox);
+                                gs3.setX(x);
                             }
+
                             if (entailmentValue.equalsIgnoreCase("twin")) {
 
                                 GSnodeGraphics g = new GSnodeGraphics();
@@ -478,15 +487,15 @@ public class GraphParser {
                                 }
 
                             } else if (entailmentValue.equalsIgnoreCase("goal")) {
-                                c.add(getNode(elementOfEntailment));
+                                c.add(getGoal(elementOfEntailment));
                             }
-
                         }
-
                     }
                     andEntailment.setChildren(c);
+                    gs3.setCircle(gs3.getToX());
                     andEntailment.setGraphicalProperties(gs3);
-                    gs3.setGSnode(andEntailment);
+                    gs3.setGSnode(andEntailment);                    
+                    goal.addChild(andEntailment);
                     view.addDrawable(andEntailment.getGraphicalProperties());
                     model.addToGSnodes(andEntailment);
 
@@ -526,9 +535,7 @@ public class GraphParser {
                                 gs4.setToY2(toy2);
                             }
                             if (entailmentValue.equalsIgnoreCase("x")) {
-                                int x = Integer.parseInt(entailmentTextValue);
-                                gs4.setCircle(x);
-                                gs4.setSecondCircle(x);
+                                int x = Integer.parseInt(entailmentTextValue);                                
                                 gs4.setX(x);
                             }
                             if (entailmentValue.equalsIgnoreCase("y")) {
@@ -585,10 +592,12 @@ public class GraphParser {
                                     }
                                 }
                             } else if (entailmentValue.equalsIgnoreCase("goal")) {
-                                orEntailment.addChild(getNode(elementOfEntailment));
+                                orEntailment.addChild(getGoal(elementOfEntailment));
                             }
                         }
                     }
+                    gs4.setCircle(gs4.getToX());
+                    gs4.setSecondCircle(gs4.getToX2());
                     orEntailment.setGraphicalProperties(gs4);
                     gs4.setGSnode(orEntailment);
                     goal.addChild(orEntailment);

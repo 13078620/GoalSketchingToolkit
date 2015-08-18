@@ -1,17 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
 import java.util.ArrayList;
-
 import java.util.Observer;
 
 /**
+ * Describes any class that maintains the data associated with the production of
+ * goal refinement diagrams.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public interface GoalGraphModelInterface {
 
@@ -29,20 +34,11 @@ public interface GoalGraphModelInterface {
      */
     public Goal getRootGoal();
 
-    //void addAndEntailment(Goal parent, ANDentailment entailment);
-    //void addOrEntailment(Goal parent, ORentailment entailment);
-    //void addLeafGoal(Goal parent, Goal leaf);
-    //void addLeafToANDentailment(ANDentailment parent, Goal leaf);
-    //void addLeafToORentailment(ORentailment parent, Goal leaf);
-    // void addOperationalizingProducts(Goal parent, OperationalizingProducts ops);
-   // void addProduct(OperationalizingProducts ops, String product);
-    //void removeGoal(Goal child);
-    //void removeLeafGoal(Goal child);
-    //void removeParentGoal(GSnode parent);
-    // void removeOperationalisingProducts(Goal parent);
-   // void deleteGoalID(Goal goal);
-   // void deleteGoalOrientedProposition(Goal goal);
-    //void addAnnotation(Goal goal, Annotation annotation);
+    /**
+     * Adds a goal sketching node to the list.
+     *
+     * @param n the goal sketching node to add.
+     */
     void addToGSnodes(GSnode n);
 
     /**
@@ -52,6 +48,11 @@ public interface GoalGraphModelInterface {
      */
     void removeFromGSnodes(GSnode n);
 
+    /**
+     * Returns the list of goal sketching nodes.
+     *
+     * @return the goal sketching nodes.
+     */
     ArrayList getGSnodes();
 
     /**

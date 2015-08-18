@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -9,8 +13,10 @@ import java.util.Observable;
 import java.util.ArrayList;
 
 /**
+ * A goal graph model maintains data produced by goal sketching and enables the
+ * registration of observer objects.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class GoalGraphModel extends Observable implements GoalGraphModelInterface {
 
@@ -101,17 +107,17 @@ public class GoalGraphModel extends Observable implements GoalGraphModelInterfac
      */
     @Override
     public Goal getGoal(String ID) {
-        
+
         Goal g = null;
-        
+
         for (GSnode n : goalSketchingNodes) {
             String nodeType = n.getClass().toString();
-            if (nodeType.contains("Goal") && !nodeType.contains("OrientedProposition")) {                
+            if (nodeType.contains("Goal") && !nodeType.contains("OrientedProposition")) {
                 Goal goal = (Goal) n;
-                if (goal.getId() != null) {  
-                    
-                    if(goal.getId().equalsIgnoreCase(ID)) {
-                        
+                if (goal.getId() != null) {
+
+                    if (goal.getId().equalsIgnoreCase(ID)) {
+
                         g = goal;
                     }
                 }

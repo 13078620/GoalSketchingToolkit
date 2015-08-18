@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -9,7 +13,7 @@ package goalsketchingtoolkit;
  * This class checks if the goal sketching node added to a GOP is supported by
  * the rules of goal sketching.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class GoalOrientedPropositionLogic implements GoalSketchingLogic {
 
@@ -52,52 +56,6 @@ public class GoalOrientedPropositionLogic implements GoalSketchingLogic {
                 }
             }
         }
-
         return correct;
-
     }
-
-    /**
-     *
-     * @param goaltype
-     * @return
-     */
-    /*public boolean prefixIsCorrect(GoalType goaltype) {
-        
-     boolean correctPrefix = false;
-        
-     if (gop.isChild()) {
-     Goal g = (Goal) gop.getParent();
-     if (g.isOperationalized() && goaltype.prefix.equalsIgnoreCase("/a/")) {
-     throw new UnsupportedOperationException("The goal this proposition belongs to is "
-     + "operationalized, cannot set goal type as assumption");
-     } else if (g.isRootGoal()&& !goaltype.prefix.equalsIgnoreCase("/m/")) {
-     throw new UnsupportedOperationException("The goal this proposition belongs to is "
-     + "the root goal, cannot set goal type as anything other than motivation");
-     } else if (g.hasParent) {
-     Goal parentGoal = (Goal) g.getParent().getParent();
-     if (parentGoal.hasGop()) {
-     GoalOrientedProposition parentGoalGOP = parentGoal.getProposition();
-     if (parentGoalGOP.hasPrefix()) {
-     if (parentGoalGOP.isAssumption() && !goaltype.prefix.equalsIgnoreCase("/a/")) {
-     throw new UnsupportedOperationException("The goal this proposition belongs "
-     + "to's parent goal's proposition is an assumption, this"
-     + "proposition cannot have a goal type other than assumption");
-     } else {
-     correctPrefix = true;
-     }
-     } else {
-     correctPrefix = true;
-     }
-     } else {
-     correctPrefix = true;
-     }
-     } else {
-     correctPrefix = true;
-     }
-     } else {
-     correctPrefix = true;
-     }
-     return correctPrefix;
-     } */
 }

@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -9,7 +13,7 @@ package goalsketchingtoolkit;
  * This class assists with instantiating objects used in goal sketching by
  * creating their associated graphics objects as well as the object in question.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman  - Oxford Brookes University - 2015.
  */
 public class GSnodeFactory {
 
@@ -51,16 +55,16 @@ public class GSnodeFactory {
         return goal;
 
     }
-    
+
     public Twin createTwin(int x, int y, int width, int height, Goal goal) {
-        
+
         GSnodeGraphics g = new GSnodeGraphics(x, y, width, height);
         Twin twin = new Twin(goal);
         goal.addChild(twin);
         twin.setGraphicalProperties(g);
         g.setGSnode(twin);
         return twin;
-        
+
     }
 
     /**
@@ -209,7 +213,8 @@ public class GSnodeFactory {
      * @param cfr1 the refine confidence factor rating.
      * @param cfr2 the engage confidence factor rating.
      * @param scale the value significance factor rating.
-     * @return
+     * @return a new goal judgement initialised with the given confidence and
+     * significance factor ratings.
      */
     public GoalJudgement createGoalJudgement(String cfr1, String cfr2, int scale) {
 

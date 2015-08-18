@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -13,7 +17,7 @@ import java.util.Iterator;
  * A goal can have a semantic entailment or operationalizing products or an
  * assumption termination and a goal oriented proposition as it's children.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class Goal extends GSnode {
 
@@ -21,48 +25,59 @@ public class Goal extends GSnode {
      * Denotes whether this goal is the root goal or not.
      */
     private boolean isRoot;
+
     /**
      * Denotes whether this goal is entailed or not.
      */
     private boolean entailed;
+
     /**
      * Denotes whether this goal is operationalized or not.
      */
     private boolean operationalized;
+
     /**
      * Denotes whether this goal has an assumption termination or not.
      */
     private boolean terminated;
+
     /**
      * Denotes whether this goal has a goal oriented proposition or not.
      */
     private boolean hasGop;
+
     /**
      * Denotes whether this goal has a twin or not.
      */
     private boolean hasTwin;
+
     /**
      * The ID of this Goal.
      */
     private String id;
+
     /**
      * The fit acceptance test of this goal if it has one.
      */
     private String fit;
+
     /**
-     * The children of this goal which can contain either an and entailment/an
-     * or entailment/operationalizing products/an assumption termination and a
-     * goal oriented proposition.
+     * The children of this goal which can contain either an and entailment | an
+     * or entailment | operationalizing products | an assumption termination and
+     * a goal oriented proposition.
      */
     private ArrayList<GSnode> children;
+
     /**
      * The logic for this goal.
      */
     private GoalSketchingLogic logic;
+    
     /**
      * The graphical properties of this goal.
      */
     private GSnodeGraphics graphicalProperties;
+    
     /**
      * Flags whether this goal was refined from an assumption
      */
@@ -119,8 +134,6 @@ public class Goal extends GSnode {
      * Adds a child node to this goal which can be a goal oriented proposition,
      * semantic entailment, operationalizing products or assumption termination.
      *
-     * @throws UnsupportedOperationException()if this goal is already has a goal
-     * oriented proposition, is semantically entailed or operationalized.
      * @param node the node to add.
      */
     @Override
@@ -132,8 +145,8 @@ public class Goal extends GSnode {
             node.hasParent = true;
             node.setParent(this);
         }
-        
-        if(this.hasTwin) {
+
+        if (this.hasTwin) {
             updateTwinGop();
         }
 
@@ -182,8 +195,6 @@ public class Goal extends GSnode {
     /**
      * Sets this goal's parent.
      *
-     * @throws UnsupportedOperationException() if this goal sketching node is
-     * the root node.
      * @param node the parent Goal Sketching Node of this goal.
      */
     @Override
@@ -208,8 +219,6 @@ public class Goal extends GSnode {
     /**
      * Sets this goal's children.
      *
-     * @throws UnsupportedOperationException() see the add child method in this
-     * class for more details.
      * @param children the children of this goal.
      */
     @Override
@@ -341,8 +350,6 @@ public class Goal extends GSnode {
     /**
      * Returns this goal's goal oriented proposition.
      *
-     * @throws NullPointerException() if the goal does not have a goal oriented
-     * proposition.
      * @return this goal's goal oriented proposition.
      */
     public GoalOrientedProposition getProposition() {
@@ -360,9 +367,8 @@ public class Goal extends GSnode {
     }
 
     /**
-     * Returns this goal's entailment as a goal sketching node if it has one.
+     * Returns this goal's entailment as a goal sketching node if it has one. .
      *
-     * @throws NullPointerException() if the goal does not have an entailment.
      * @return this goal's entailment.
      */
     public GSnode getEntailment() {
@@ -382,8 +388,6 @@ public class Goal extends GSnode {
     /**
      * Returns this goal's operationalizing products if it has one.
      *
-     * @throws NullPointerException() if the goal does not have an
-     * operationalizing products.
      * @return this goal's operationalizing products.
      */
     public OperationalizingProducts getOperationalizingProducts() {
@@ -403,15 +407,13 @@ public class Goal extends GSnode {
     /**
      * Returns this goal's assumption termination if it has one.
      *
-     * @throws NullPointerException() if the goal does not have an assumption
-     * termination.
      * @return this goal's assumption termination.
      */
     public AssumptionTermination getAssumptionTermination() {
 
         AssumptionTermination at = null;
         Iterator iterator = createIterator();
-        while (iterator.hasNext()) {            
+        while (iterator.hasNext()) {
             GSnode n = (GSnode) iterator.next();
             if (n instanceof AssumptionTermination) {
                 at = (AssumptionTermination) n;
@@ -456,27 +458,6 @@ public class Goal extends GSnode {
         return fit;
     }
 
-    /**
-     * Checks whether two goals are equal.
-     *
-     * The result is true if and only if the argument is not null and is a goal
-     * object that has the same ID as this goal.
-     *
-     * @param otherObject the Object to compare with this goal.
-     * @return true if the objects are equal; false otherwise.
-     */
-    /* @Override
-     public boolean equals(Object otherObject) {
-
-     if (otherObject == null) {
-     return false;
-     }
-     if (getClass() != otherObject.getClass()) {
-     return false;
-     }
-     Goal other = (Goal) otherObject;
-     return getId().equals(other.getId());
-     }*/
     /**
      * Sets the logic for this goal.
      *
@@ -547,10 +528,10 @@ public class Goal extends GSnode {
         ArrayList<GSnode> twins = new ArrayList();
         Iterator iterator = createIterator();
         while (iterator.hasNext()) {
-            
+
             GSnode n = (GSnode) iterator.next();
             if (n instanceof Twin) {
-                
+
                 twins.add(n);
             }
         }

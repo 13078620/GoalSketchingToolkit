@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -13,7 +17,7 @@ import java.util.Iterator;
  * uses conjunction. an AND entailment can have zero to many goals as it's
  * children.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class ANDentailment extends GSnode {
 
@@ -70,10 +74,9 @@ public class ANDentailment extends GSnode {
     }
 
     /**
-     * Adds a child node to this AND entailment which can be of the goal type.
+     * Adds a child node to this AND entailment which can be of the goal or twin
+     * type.
      *
-     * @throws UnsupportedOperationException() if the node added is anything
-     * other than a Goal.
      * @param node the goal to add.
      */
     @Override
@@ -113,8 +116,6 @@ public class ANDentailment extends GSnode {
     /**
      * Sets this AND entailment's children.
      *
-     * @throws UnsupportedOperationException() if the size of the list of goals
-     * contains a goal sketching node other than a goal.
      * @param children the goals of this AND entailment.
      */
     @Override

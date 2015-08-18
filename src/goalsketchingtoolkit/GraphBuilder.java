@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -15,17 +19,28 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Text;
 
 /**
+ * A graph builder builds XML documents from the root node of a goal refinement
+ * diagram.
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
 public class GraphBuilder {
 
-    private DocumentBuilder builder;
-    private Document doc;
-    private Goal root;
+    /**
+     * The document builder instance.
+     */
+    private final DocumentBuilder builder;
 
-    //private boolean complete;
-    private int errorCount;
+    /**
+     * The document root.
+     */
+    private Document doc;
+
+    /**
+     * The root goal.
+     */
+    private final Goal root;
+    
 
     /**
      * Constructs a graph builder.
@@ -45,7 +60,8 @@ public class GraphBuilder {
      * Builds a DOM document for a goal graph.
      *
      * @return a DOM document describing the goal graph.
-     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws javax.xml.parsers.ParserConfigurationException in the event of a
+     * serious configuration error.
      */
     public Document build() throws ParserConfigurationException {
 
@@ -128,6 +144,7 @@ public class GraphBuilder {
                     ee.appendChild(createTextElement("toX", "" + graphics.getToX()));
                     ee.appendChild(createTextElement("y", "" + graphics.getY()));
                     ee.appendChild(createTextElement("x", "" + graphics.getX()));
+                    System.out.println("circle x from builder: " + graphics.getCircle().getX());
                 }
 
                 if (aent.isParent()) {
@@ -356,10 +373,6 @@ public class GraphBuilder {
             pe.appendChild(ase);
         }
         return pe;
-    }
-
-    public boolean isComplete() {
-        return errorCount == 0;
     }
 
 }

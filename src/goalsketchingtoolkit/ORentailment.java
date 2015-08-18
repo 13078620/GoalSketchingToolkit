@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -12,21 +16,24 @@ import java.util.ArrayList;
  * uses disjunction. an OR entailment can have zero to two goals as it's
  * children.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class ORentailment extends ANDentailment {
 
     /**
      * The maximum goals an OR entailment can have.
      */
+    
     public final static int MAXIMUM_GOALS = 2;
     /**
      * The logic for this AND entailment.
      */
+    
     private GoalSketchingLogic logic;
     /**
      * The graphical properties object for this OR entailment.
      */
+    
     private GSorEntailmentGraphics graphicalProperties;
 
     /**
@@ -50,36 +57,22 @@ public class ORentailment extends ANDentailment {
     }
 
     /**
-     * Adds a child node to this OR entailment which can be of the goal type.
+     * Adds a child node to this OR entailment which can be of the goal or twin
+     * type.
      *
-     * @throws UnsupportedOperationException() if the node added is anything
-     * other than a Goal or if the goal list is already equal to the maximum
-     * number of goals.
-     * @see ANDentailment#addChild() addChild.
      * @param node the goal to add.
      */
     @Override
     public void addChild(GSnode node) {
 
         if (logic.isCorrect(node)) {
-            //goals.add(node);
-            //hasChildren = true;
             super.addChild(node);
         }
-
-        /*if(goals.size() >= MAXIMUM_GOALS) {
-         throw new UnsupportedOperationException("Can only add a maximum of"
-         + " two goals to an OR entailment");
-         } else {
-         super.addChild(node);
-         }*/
     }
 
     /**
-     * Sets this OR entailment's children.
+     * Sets the children for this OR entailment.
      *
-     * @throws UnsupportedOperationException() if the size of the list of goals
-     * exceeds two.
      * @param children the goals of this AND entailment.
      */
     @Override

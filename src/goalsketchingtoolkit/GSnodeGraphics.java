@@ -1,14 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
 import java.awt.Graphics2D;
 import java.awt.FontMetrics;
-import java.awt.Font;
-import java.awt.geom.Rectangle2D;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.awt.geom.Ellipse2D;
  * This class contains information about the graphical location and proportions
  * of a goal sketching node.
  *
- * @author Chris Berryman
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class GSnodeGraphics extends GSgraphics implements Drawable {
 
@@ -130,7 +132,7 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
     /**
      * Checks if a point is within the bounds of this goal sketching node
-     * graphics instance.
+     * graphics instance obtained from java.awt.Rectangle.
      *
      * @param X the x position of the point.
      * @param Y the y position of the point.

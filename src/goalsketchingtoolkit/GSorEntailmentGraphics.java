@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -15,7 +19,7 @@ import java.awt.geom.Ellipse2D;
  * This class contains information about the graphical location and proportions
  * of an OR goal sketching entailment.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class GSorEntailmentGraphics extends GSentailmentGraphics implements Drawable {
 
@@ -23,25 +27,33 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
      * The second to x coordinate of the goal sketching entailment.
      */
     private int toX2;
+
     /**
      * The second to y coordinate of the goal sketching entailment.
      */
     private int toY2;
+
     /**
      * The second length of the goal sketching entailment.
      */
     private int length2;
+
     /**
      * The Ellipse 2D object which describes the first circular section of the
      * entailment.
      */
     private Ellipse2D.Double circle1;
+
     /**
      * The Ellipse 2D object which describes the first circular section of the
      * entailment.
      */
     private Ellipse2D.Double circle2;
 
+    /**
+     * The Ellipse 2D object which describes the selected circular section of
+     * the entailment.
+     */
     private Ellipse2D.Double selectedCircle;
 
     /**
@@ -158,7 +170,7 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
      */
     @Override
     public void setCircle(int x) {
-        this.circle1 = new Ellipse2D.Double(x - 100, super.getToY(), CIRCLE_WIDTH, CIRCLE_HEIGHT);
+        this.circle1 = new Ellipse2D.Double(x - CIRCLE_WIDTH / 2, super.getToY() - CIRCLE_HEIGHT / 2, CIRCLE_WIDTH, CIRCLE_HEIGHT);
     }
 
     /**
@@ -167,7 +179,7 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
      * @param x the x position of the circular section.
      */
     public void setSecondCircle(int x) {
-        this.circle2 = new Ellipse2D.Double(x + 100, toY2, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+        this.circle2 = new Ellipse2D.Double(x - CIRCLE_WIDTH / 2, toY2 - CIRCLE_HEIGHT / 2, CIRCLE_WIDTH, CIRCLE_HEIGHT);
     }
 
     /**
@@ -180,19 +192,16 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
     public void setCircleLocation(int x, int y) {
         this.selectedCircle.x = x;
         this.selectedCircle.y = y;
+        
+        if(selectedCircle == circle1) {
+            super.setToX(x + CIRCLE_WIDTH / 2);
+            super.setToY(y + CIRCLE_HEIGHT / 2);
+        } else if(selectedCircle == circle2){
+            this.toX2 = x + CIRCLE_WIDTH / 2;
+            this.toY2 = y + CIRCLE_HEIGHT / 2;
+        }
     }
-
-    /**
-     * Sets the location of the second circular section of the entailment.
-     *
-     * @param x the x coordinate.
-     * @param y the y coordinate.
-     */
-    /*public void setSecondCircleLocation(int x, int y) {
-        this.circle2.x = x;
-        this.circle2.y = y;
-    }*/
-
+    
     /**
      * Returns the goal sketching node of this goal sketching graphics.
      *
@@ -214,7 +223,7 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
      */
     @Override
     public boolean contains(int x, int y) {
-        if(this.circle1.contains(x, y)) {
+        if (this.circle1.contains(x, y)) {
             selectedCircle = circle1;
         }
         if (this.circle2.contains(x, y)) {
@@ -286,10 +295,7 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
                 lineStartY = super.getY();
             }
         }
-
-        //int lineLength = getLength();
-        //int lineStartX = super.getX();
-        //int lineStartY = super.getY();
+        
         int lineToX = (int) circle1.x + CIRCLE_WIDTH / 2;
         int lineToY = (int) circle1.y + CIRCLE_WIDTH / 2;
 
@@ -326,7 +332,7 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
         g2.fillOval(ovalX2, ovalY2, ovalDiameter, ovalDiameter);
         g2.setColor(Color.BLACK);
     }
-    
+
     /**
      * Fills the oval section of an AND entailment.
      *
@@ -342,7 +348,7 @@ public class GSorEntailmentGraphics extends GSentailmentGraphics implements Draw
         g2.setColor(Color.BLACK);
 
     }
-    
+
     /**
      * Fills the oval section of an AND entailment.
      *

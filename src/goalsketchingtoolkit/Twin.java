@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -10,7 +14,7 @@ package goalsketchingtoolkit;
  * have responsibility assignments or refinements as these are defined in the
  * original goal.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class Twin extends GSnode {
 
@@ -18,10 +22,12 @@ public class Twin extends GSnode {
      * A reference to the original goal.
      */
     private final Goal original;
+    
     /**
      * The graphical properties of this twin goal.
      */
     private GSnodeGraphics graphicalProperties;
+    
     /**
      * A new instance of the GOP from the original goal.
      */

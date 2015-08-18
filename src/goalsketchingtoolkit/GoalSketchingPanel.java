@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -12,14 +16,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 /**
+ * The panel which goal sketching graphics objects are drawn on.
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
 public class GoalSketchingPanel extends JPanel {
 
-    private int width;
-    private int height;
-    private ArrayList<Drawable> drawables;
+    private final int width;
+    private final int height;
+    private final ArrayList<Drawable> drawables;
 
     /**
      * Constructs a goal sketching panel with a given width and height.
@@ -43,7 +48,7 @@ public class GoalSketchingPanel extends JPanel {
     public void addDrawable(Drawable drawable) {
         this.drawables.add(drawable);
     }
-    
+
     /**
      * Removes a a drawable object from the list of drawable objects.
      *

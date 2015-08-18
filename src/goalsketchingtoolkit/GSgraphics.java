@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -12,7 +16,7 @@ import java.awt.Color;
  * This class contains information about the graphical location of a goal
  * sketching node.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class GSgraphics {
 
@@ -85,9 +89,7 @@ public class GSgraphics {
      * @param x the value of the x coordinate.
      */
     public void setX(int x) {
-
         this.x = x;
-
     }
 
     /**
@@ -106,9 +108,7 @@ public class GSgraphics {
      * @param y the value of the y coordinate.
      */
     public void setY(int y) {
-
         this.y = y;
-
     }
 
     /**
@@ -197,8 +197,8 @@ public class GSgraphics {
      * Sets the location of the goal sketching node this goal sketching graphics
      * points to.
      *
-     * @param x
-     * @param y
+     * @param x the x location of this goal sketching node.
+     * @param y the y location of this goal sketching node.
      */
     public void setLocation(int x, int y) {
 

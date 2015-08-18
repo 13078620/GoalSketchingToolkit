@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -12,8 +16,9 @@ import javax.swing.JComboBox;
 import javax.xml.transform.TransformerException;
 
 /**
+ * Describes any class that implements a strategy for the goal sketching view.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public interface GoalSketchingControllerInterface {
 
@@ -39,19 +44,14 @@ public interface GoalSketchingControllerInterface {
     void loadGraph(String file);
 
     /**
-     * Recursively adds all goal sketching nodes from a root goal to the list in
-     * the model.
-     *
-     * @param goal the root goal and then its subsequent children.
-     */
-    void drawGraphFromRoot(Goal goal);
-
-    /**
      * Saves a goal graph.
      *
      * @param root the root goal.
      * @param fileName the file path.
-     * @throws javax.xml.parsers.ParserConfigurationException
+     * @throws javax.xml.parsers.ParserConfigurationException in the event of a
+     * serious configuration error.
+     * @throws javax.xml.transform.TransformerException if an exceptional
+     * condition occurred during the transformation process.
      */
     void saveGraph(Goal root, String fileName) throws ParserConfigurationException, TransformerException;
 
@@ -308,6 +308,7 @@ public interface GoalSketchingControllerInterface {
      * Handles events for editing a twin goal of an entailment.
      */
     void editTwinGoal();
+
     /**
      * Returns a combo box with the IDs of the current goals if they have one.
      *
@@ -321,7 +322,7 @@ public interface GoalSketchingControllerInterface {
      * @param goalID the ID of the goal to twin.
      */
     void addTwin(String goalID);
-    
+
     /**
      * Removes a twin goal.
      */

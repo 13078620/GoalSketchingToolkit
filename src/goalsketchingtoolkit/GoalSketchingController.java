@@ -1,23 +1,22 @@
- /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseAdapter;
 import java.io.File;
 import java.util.ArrayList;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -26,7 +25,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import javax.swing.JComboBox;
@@ -34,36 +32,107 @@ import javax.swing.JDialog;
 import org.xml.sax.SAXException;
 
 /**
+ * Describes the strategy for the goal sketching view.
  *
  * @author Chris Berryman - Oxford Brookes University - 2015
  */
 public class GoalSketchingController implements GoalSketchingControllerInterface {
 
-    private GoalGraphModelInterface model;
-    private GoalSketchingView view;
-    private GoalSketchingView.GSmouseListener mouseListener;
+    /**
+     * A reference to the model passed to the constructor of this goal sketching
+     * controller.
+     */
+    private final GoalGraphModelInterface model;
 
-    private GraphParser parser;
-    private GSnodeFactory factory;
+    /**
+     * A reference to the view of this goal sketching controller.
+     */
+    private final GoalSketchingView view;
+
+    /**
+     * A reference to the mouse listener nested class from the view of this goal
+     * sketching controller.
+     */
+    private final GoalSketchingView.GSmouseListener mouseListener;
+
+    /**
+     * The graph parser for this goal sketching controller.
+     */
+    private final GraphParser parser;
+
+    /**
+     * The goal sketching node factory used for the instantiation of goal
+     * sketching nodes.
+     */
+    private final GSnodeFactory factory;
+
+    /**
+     * The currently selected goal sketching node.
+     */
     private GSnode currentSelection;
 
+    /**
+     * Denotes if the goal sketching panel is empty or not.
+     */
     private boolean rootNode;
+
+    /**
+     * The start x position of the root node.
+     */
     private int rootStartX;
+
+    /**
+     * The start y position of the root node.*
+     */
     private int rootStartY;
 
+    /**
+     * The integer value for the start y of an OR entailment graphics object.
+     */
     public static final int OR_ENTAILMENT_START_Y = 125;
+
+    /**
+     * The integer value for the start y of an AND entailment graphics object.
+     */
     public static final int AND_ENTAILMENT_START_Y = 80;
+
+    /**
+     * The integer value for the start length of an entailment graphics object.
+     */
     public static final int ENTAILMENT_START_LENGTH = 80;
+
+    /**
+     * The integer value for the start width of a goal.
+     */
     public static final int GOAL_START_WIDTH = 100;
+
+    /**
+     * The integer value for the start height of a goal.
+     */
     public static final int GOAL_START_HEIGHT = 60;
+
+    /**
+     * The integer value for the start width of operationalizing products
+     * graphics objects.
+     */
     public static final int PRODUCTS_START_WIDTH = 80;
+
+    /**
+     * The integer value for the start height of operationalizing products
+     * graphics objects.
+     */
     public static final int PRODUCTS_START_HEIGHT = 40;
 
+    /**
+     * Constructs a goal sketching controller and initialises the view, graph
+     * parser, mouse listener and goal sketching node factory.
+     *
+     * @param model the goal graph model interface implementation.
+     */
     public GoalSketchingController(GoalGraphModelInterface model) {
 
         this.model = model;
         view = new GoalSketchingView(model, this);
-
         view.createGUI();
         view.createContextualMenuControls();
         view.createFileControls();
@@ -106,9 +175,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 //d.setSelected(true);
                 model.notifyView();
                 break;
-            } //else {
-            // d.setSelected(false);
-            // }
+            }
         }
     }
 
@@ -130,7 +197,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) nodes.item(i);
 
-                    Goal root = parser.getNode(element);
+                    Goal root = parser.getGoal(element);
                     model.addRootGoal(root);
 
                 }
@@ -142,65 +209,27 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Recursively adds all goal sketching nodes from a root goal to the list in
-     * the model.
-     *
-     * @param goal the root goal and then its subsequent children.
-     */
-    public void drawGraphFromRoot(Goal goal) {
-
-        /*if (graphNode.isParent()) {
-
-         ArrayList<GraphNode> childGraphNodes = graphNode.getChildNodes();
-         addToGoalSketchingNodes(graphNode);
-
-         for (int i = 0; i < childGraphNodes.size(); i++) {
-
-         addToGoalSketchingNodes(childGraphNodes.get(i));
-         drawGraphFromRoot(childGraphNodes.get(i));
-
-         }
-         }
-
-         if (graphNode.isOperationalized()) {
-
-         OperationalizerNode on = graphNode.getOperationalizerNode();
-         addOpToGoalSketchingNodes(on);
-
-         }
-
-         if (graphNode.isTerminated()) {
-
-         AssumptionTerminationNode an = graphNode.getAssumptionTerminationNode();
-         addTerminationGoalSketchingNodes(an);
-
-         } */
-    }
-
-    /**
      * Saves a goal graph.
      *
      * @param root the root goal.
      * @param fileName the file path.
-     * @throws javax.xml.transform.TransformerException
+     * @throws javax.xml.transform.TransformerException if an exceptional
+     * condition occured during the transformation process.
      */
     @Override
     public void saveGraph(Goal root, String fileName) throws ParserConfigurationException, TransformerException {
+
         GraphBuilder gb = new GraphBuilder(root);
         Document doc = gb.build();
 
-        //try {
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File(fileName));
-            TransformerFactory tFactory = TransformerFactory.newInstance();
-            Transformer transformer = tFactory.newTransformer();
-            transformer.setOutputProperty("encoding", "UTF-8");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(4));
-            transformer.transform(source, result);
-       // } catch (IllegalArgumentException | TransformerException e) {
-            //view.displayErrorMessage(e.getMessage());
-       // }
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File(fileName));
+        TransformerFactory tFactory = TransformerFactory.newInstance();
+        Transformer transformer = tFactory.newTransformer();
+        transformer.setOutputProperty("encoding", "UTF-8");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(4));
+        transformer.transform(source, result);
 
     }
 
@@ -232,7 +261,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Adds an AND entailment to a goal.
+     * Adds an AND entailment to the currently selected goal.
      */
     @Override
     public void addAndEntailment() {
@@ -251,7 +280,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Adds an OR entailment to a goal.
+     * Adds an OR entailment to the currently selected goal.
      */
     @Override
     public void addOREntailment() {
@@ -272,7 +301,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Adds a leaf goal to a given parent.
+     * Adds a leaf goal to the currently selected entailment.
      */
     @Override
     public void addLeafGoal() {
@@ -327,7 +356,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Adds an Operationalizing Products to a given leaf goal.
+     * Adds an Operationalizing Products to the currently selected leaf goal.
      */
     @Override
     public void addOperationalizingProducts() {
@@ -348,7 +377,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Adds an Product to a given Operationalizing Products.
+     * Adds an Product to the currently selected Operationalizing Products.
      *
      * @param product the product to add.
      */
@@ -360,7 +389,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Adds an assumption termination to a given leaf goal.
+     * Adds an assumption termination to the currently selected leaf goal.
      */
     @Override
     public void addAssumptionTermination() {
@@ -381,7 +410,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Removes a goal.
+     * Removes the currently selected goal from the entailment.
      */
     @Override
     public void deleteGoal() {
@@ -401,7 +430,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Removes a goal.
+     * Recursively removes the given goal and it's children.
      *
      * @param goal the goal to remove.
      */
@@ -410,6 +439,14 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
         if (goal.hasGop()) {
             GoalOrientedProposition gop = goal.getProposition();
+            if (gop.isParent()) {
+                for (GSnode n : gop.getChildren()) {
+                    Annotation a = (Annotation) n;
+                    view.removeDrawable(a.getGraphicalProperties());
+                    model.removeFromGSnodes(a);
+                }
+                gop.deleteAnnotations();
+            }
             goal.removeChild(gop);
             model.removeFromGSnodes(gop);
         }
@@ -489,7 +526,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Deletes a given goal's ID.
+     * Deletes the currently selected goal's ID.
      *
      * @param goal the goal to deleter the ID from.
      */
@@ -499,7 +536,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Adds a GOP to a given goal.
+     * Adds a GOP to the currently selected goal.
      *
      * @param prefix the goal type of the GOP.
      * @param statement the statement of the GOP.
@@ -519,7 +556,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Deletes a GOP from a given goal.
+     * Deletes a GOP from the currently selected goal.
      */
     @Override
     public void deleteGoalOrientedProposition() {
@@ -542,7 +579,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Deletes operationalizing products from a given goal.
+     * Deletes operationalizing products from the currently selected goal.
      */
     @Override
     public void deleteOperationalizingProducts() {
@@ -557,7 +594,8 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Deletes an assumption termination products from a given goal.
+     * Deletes an assumption termination products from the currently selected
+     * goal.
      */
     @Override
     public void deleteAssumptionTermination() {
@@ -572,7 +610,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     }
 
     /**
-     * Adds annotation to the GOP of a goal.
+     * Adds annotation to the GOP of the currently selected goal.
      */
     @Override
     public void addAnnotation() {
@@ -664,46 +702,60 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 Goal g = (Goal) currentSelection;
 
                 if (!g.hasGop()) {
+
                     view.enableAddGOPMenuItem();
                     view.disableDeleteGOPMenuItem();
                     view.disableAddAnnotationMenuItem();
+
                 } else {
-                    //GoalOrientedProposition gop = g.getProposition();
+
                     view.disableAddGOPMenuItem();
                     view.enableDeleteGOPMenuItem();
                     view.enableAddAnnotationMenuItem();
+
                 }
 
                 if (g.isRootGoal() && !g.isEntailed()) {
+
                     view.enableAddANDEntailmentMenuItem();
                     view.enableAddOREntailmentMenuItem();
                     view.disableAddProductsMenuItem();
                     view.disableAddAssumpTerminationMenuItem();
                     view.enableDeleteGoalMenuItem();
+
                 } else if (g.isRootGoal() && g.isEntailed()) {
+
                     view.disableAddANDEntailmentMenuItem();
                     view.disableAddOREntailmentMenuItem();
                     view.disableAddProductsMenuItem();
                     view.disableAddAssumpTerminationMenuItem();
                     view.enableDeleteGoalMenuItem();
+
                 } else if (!g.isEntailed() && !g.isOperationalized() && !g.isTerminated()) {
+
                     view.enableAddANDEntailmentMenuItem();
                     view.enableAddOREntailmentMenuItem();
                     view.enableAddProductsMenuItem();
                     view.enableAddAssumpTerminationMenuItem();
                     view.enableDeleteGoalMenuItem();
+
                 } else if (g.isEntailed()) {
+
                     view.disableAddProductsMenuItem();
                     view.disableAddANDEntailmentMenuItem();
                     view.disableAddOREntailmentMenuItem();
                     view.disableAddAssumpTerminationMenuItem();
                     view.enableDeleteGoalMenuItem();
+
                 } else if (g.isOperationalized()) {
+
                     view.disableAddProductsMenuItem();
                     view.disableAddANDEntailmentMenuItem();
                     view.disableAddOREntailmentMenuItem();
                     view.enableDeleteGoalMenuItem();
+
                 } else if (g.isTerminated()) {
+
                     view.disableAddAssumpTerminationMenuItem();
                     view.disableAddProductsMenuItem();
                     view.disableAddANDEntailmentMenuItem();
@@ -714,7 +766,6 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 view.showGoalPopUpMenu(e, x, y);
 
             } else if (currentSelectionType.contains("ANDentailment")) {
-                //ANDentailment ae = (ANDentailment) currentSelection;
 
                 view.enableAddGoalMenuItem();
                 view.enableAddTwinMenuItem();
@@ -722,6 +773,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 view.showEntailmentPopUpMenu(e, x, y);
 
             } else if (currentSelectionType.contains("ORentailment")) {
+
                 ORentailment oe = (ORentailment) currentSelection;
 
                 if (oe.getChildren().size() >= 2) {
@@ -735,6 +787,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 view.showEntailmentPopUpMenu(e, x, y);
 
             } else if (currentSelectionType.contains("OperationalizingProducts")) {
+
                 OperationalizingProducts ops = (OperationalizingProducts) currentSelection;
 
                 view.enableDeleteProductsMenuItem();
@@ -747,20 +800,33 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 view.showProductsPopUpMenu(e, x, y);
 
             } else if (currentSelectionType.contains("AssumptionTermination")) {
-                AssumptionTermination at = (AssumptionTermination) currentSelection;
 
                 view.enableDeleteAnnotationMenuItem();
                 view.showAssumpTerminationPopUpMenu(e, x, y);
 
             } else if (currentSelectionType.contains("Annotation")) {
+
                 Annotation a = (Annotation) currentSelection;
+                Goal g = (Goal) a.getParent().getParent();
+
+                if (g.isEntailed()) {
+                    view.disableAddAssumptionJudgementMenuItem();
+                    view.disableAddLeafJudgementMenuItem();
+                    view.enableAddGoalJudgementMenuItem();
+                } else {
+                    view.enableAddAssumptionJudgementMenuItem();
+                    view.enableAddLeafJudgementMenuItem();
+                    view.disableAddGoalJudgementMenuItem();
+                }
 
                 view.enableDeleteAnnotationMenuItem();
                 view.showAnnotationPopUpMenu(e, x, y);
 
             } else if (currentSelectionType.contains("Twin")) {
+
                 view.enableDeleteTwinMenuItem();
                 view.showTwinPopUpMenu(e, x, y);
+
             }
         }
 
@@ -861,7 +927,8 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 GSnode gsn = currentSelection;
                 String currentSelectionType = gsn.getClass().toString();
                 if (currentSelectionType.contains("Goal")
-                        || currentSelectionType.contains("OperationalizingProducts") || currentSelectionType.contains("Twin")) {
+                        || currentSelectionType.contains("OperationalizingProducts")
+                        || currentSelectionType.contains("Twin")) {
                     GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
 
                     GoalSketchingPanel panel = view.getPanel();
@@ -930,20 +997,19 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
             if (currentSelection != null) {
 
-                GSgraphics g = currentSelection.getGraphicalProperties();
-                g.setLocation(eventX, eventY);
-                model.notifyView();
-
                 if (currentSelection.getClass().toString().contains("ANDentailment")) {
                     GSentailmentGraphics g2 = (GSentailmentGraphics) currentSelection.getGraphicalProperties();
                     g2.setCircleLocation(eventX, eventY);
                     model.notifyView();
-                }
-
-                if (currentSelection.getClass().toString().contains("ORentailment")) {
+                } else if (currentSelection.getClass().toString().contains("ORentailment")) {
                     GSorEntailmentGraphics g2 = (GSorEntailmentGraphics) currentSelection.getGraphicalProperties();
 
                     g2.setCircleLocation(eventX, eventY);
+                    model.notifyView();
+                } else {
+
+                    GSgraphics g = currentSelection.getGraphicalProperties();
+                    g.setLocation(eventX, eventY);
                     model.notifyView();
                 }
             }
@@ -969,79 +1035,79 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 return;
             }
             // Locate cursor relative to center of rect.
-            if (getOutcode(p) != 0) {
-                int outcode = getOutcode(p);
-                GSnode gsn = currentSelection;
-                String currentSelectionType = gsn.getClass().toString();
-                if (currentSelectionType.contains("Goal")
-                        || currentSelectionType.contains("OperationalizingProducts")
-                        || currentSelectionType.contains("Twin")) {
-                    GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
+            //if (getOutcode(p) != 0) {
+            int outcode = getOutcode(p);
+            GSnode gsn = currentSelection;
+            String currentSelectionType = gsn.getClass().toString();
+            if (currentSelectionType.contains("Goal")
+                    || currentSelectionType.contains("OperationalizingProducts")
+                    || currentSelectionType.contains("Twin")) {
+                GSnodeGraphics g = (GSnodeGraphics) gsn.getGraphicalProperties();
 
-                    double y = g.getY();
-                    double x = g.getX();
-                    int height = g.getHeight();
-                    int width = g.getWidth();
+                double y = g.getY();
+                double x = g.getX();
+                int height = g.getHeight();
+                int width = g.getWidth();
 
-                    switch (outcode) {
-                        case Rectangle.OUT_TOP:
-                            if (Math.abs(p.y - y) < mouseListener.PROX_DIST) {
-                                panel.setCursor(Cursor.getPredefinedCursor(
-                                        Cursor.N_RESIZE_CURSOR));
-                            }
-                            break;
-                        case Rectangle.OUT_TOP + Rectangle.OUT_LEFT:
-                            if (Math.abs(p.y - y) < mouseListener.PROX_DIST
-                                    && Math.abs(p.x - x) < mouseListener.PROX_DIST) {
-                                panel.setCursor(Cursor.getPredefinedCursor(
-                                        Cursor.NW_RESIZE_CURSOR));
-                            }
-                            break;
-                        case Rectangle.OUT_LEFT:
-                            if (Math.abs(p.x - x) < mouseListener.PROX_DIST) {
-                                panel.setCursor(Cursor.getPredefinedCursor(
-                                        Cursor.W_RESIZE_CURSOR));
-                            }
-                            break;
-                        case Rectangle.OUT_LEFT + Rectangle.OUT_BOTTOM:
-                            if (Math.abs(p.x - x) < mouseListener.PROX_DIST
-                                    && Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
-                                panel.setCursor(Cursor.getPredefinedCursor(
-                                        Cursor.SW_RESIZE_CURSOR));
-                            }
-                            break;
-                        case Rectangle.OUT_BOTTOM:
-                            if (Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
-                                panel.setCursor(Cursor.getPredefinedCursor(
-                                        Cursor.S_RESIZE_CURSOR));
-                            }
-                            break;
-                        case Rectangle.OUT_BOTTOM + Rectangle.OUT_RIGHT:
-                            if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST
-                                    && Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
-                                panel.setCursor(Cursor.getPredefinedCursor(
-                                        Cursor.SE_RESIZE_CURSOR));
-                            }
-                            break;
-                        case Rectangle.OUT_RIGHT:
-                            if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST) {
-                                panel.setCursor(Cursor.getPredefinedCursor(
-                                        Cursor.E_RESIZE_CURSOR));
-                            }
-                            break;
-                        case Rectangle.OUT_RIGHT + Rectangle.OUT_TOP:
-                            if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST
-                                    && Math.abs(p.y - y) < mouseListener.PROX_DIST) {
-                                panel.setCursor(Cursor.getPredefinedCursor(
-                                        Cursor.NE_RESIZE_CURSOR));
-                            }
-                            break;
-                        default:    // centre
-                            panel.setCursor(Cursor.getDefaultCursor());
-                    }
-
+                switch (outcode) {
+                    case Rectangle.OUT_TOP:
+                        if (Math.abs(p.y - y) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.N_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_TOP + Rectangle.OUT_LEFT:
+                        if (Math.abs(p.y - y) < mouseListener.PROX_DIST
+                                && Math.abs(p.x - x) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.NW_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_LEFT:
+                        if (Math.abs(p.x - x) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.W_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_LEFT + Rectangle.OUT_BOTTOM:
+                        if (Math.abs(p.x - x) < mouseListener.PROX_DIST
+                                && Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.SW_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_BOTTOM:
+                        if (Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.S_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_BOTTOM + Rectangle.OUT_RIGHT:
+                        if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST
+                                && Math.abs(p.y - (y + height)) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.SE_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_RIGHT:
+                        if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.E_RESIZE_CURSOR));
+                        }
+                        break;
+                    case Rectangle.OUT_RIGHT + Rectangle.OUT_TOP:
+                        if (Math.abs(p.x - (x + width)) < mouseListener.PROX_DIST
+                                && Math.abs(p.y - y) < mouseListener.PROX_DIST) {
+                            panel.setCursor(Cursor.getPredefinedCursor(
+                                    Cursor.NE_RESIZE_CURSOR));
+                        }
+                        break;
+                    default:    // centre
+                        panel.setCursor(Cursor.getDefaultCursor());
                 }
+
             }
+            // }
         }
     }
 
@@ -1054,7 +1120,8 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         String currentSelectionType = currentSelection.getClass().toString();
         Rectangle r = new Rectangle();
         if (currentSelectionType.contains("Goal")
-                || currentSelectionType.contains("OperationalizingProducts") || currentSelectionType.contains("Twin")) {
+                || currentSelectionType.contains("OperationalizingProducts")
+                || currentSelectionType.contains("Twin")) {
 
             GSnodeGraphics g = (GSnodeGraphics) currentSelection.getGraphicalProperties();
             r = new Rectangle((int) g.getX(), (int) g.getY(), g.getWidth(), g.getHeight());

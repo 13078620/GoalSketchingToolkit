@@ -1,5 +1,11 @@
-/*
- * Oxford Brookes University, 2015.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -12,7 +18,7 @@ import java.util.ArrayList;
  * add child operation and a leaf should inherit the default operation defined
  * in this abstract class.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public abstract class GSnode {
 
@@ -20,10 +26,12 @@ public abstract class GSnode {
      * A reference to this Goal Sketching Node's parent Goal Sketching Node.
      */
     protected GSnode parent;
+    
     /**
      * Flags whether a goal sketching node has children or not.
      */
     protected boolean hasChildren;
+    
     /**
      * Flags whether a goal sketching node has a parent or not.
      */

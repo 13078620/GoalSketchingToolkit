@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -11,9 +15,9 @@ import java.util.ArrayList;
  * This class consists of operations associated with a goal oriented
  * proposition. A goal oriented proposition can have zero or more annotations as
  * it's children and contains relevant information about the type of goal it is
- * associated with, it's statement and context.
+ * associated with, it's prescriptive statement and context.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class GoalOrientedProposition extends GSnode {
 
@@ -21,23 +25,28 @@ public class GoalOrientedProposition extends GSnode {
      * The statement of this goal oriented proposition.
      */
     private String statement;
+    
     /**
      * The goal type of this goal oriented proposition.
      */
     private GoalType goaltype;
+    
     /**
      * The context for this goal oriented proposition.
      */
     private String context;
+    
     /**
      * Denotes whether a goal oriented proposition has a prefix or not.
      */
     private boolean hasPrefix;
+    
     /**
      * The children of this goal oriented proposition which will only contain
      * annotations.
      */
     private ArrayList<GSnode> annotations;
+    
     /**
      * The logic for this GOP.
      */
@@ -101,8 +110,6 @@ public class GoalOrientedProposition extends GSnode {
     /**
      * Adds an annotation to this goal oriented proposition.
      *
-     * @throws UnsupportedOperationException() if the node to add is a type
-     * other than an annotation.
      * @param node the annotation to add.
      */
     @Override
@@ -129,27 +136,7 @@ public class GoalOrientedProposition extends GSnode {
             hasChildren = false;
         }
     }
-
-    /**
-     * Returns this goal oriented proposition's parent node.
-     *
-     * @return the parent node of this goal oriented proposition.
-     */
-    /*@Override
-     public GSnode getParent() {
-     return parent;
-     }*/
-    /**
-     * Sets this goal oriented proposition's parent.
-     *
-     * @param node the parent Goal Sketching Node of this goal oriented
-     * proposition.
-     */
-    /*@Override
-     public void setParent(GSnode node) {
-     parent = node;
-     hasParent = true;
-     }*/
+    
     /**
      * Returns this goal oriented proposition's children.
      *
@@ -163,8 +150,6 @@ public class GoalOrientedProposition extends GSnode {
     /**
      * Sets this goal oriented proposition's children.
      *
-     * @throws UnsupportedOperationException() if any node in the list is not
-     * the annotation type.
      * @param children the children of this oriented proposition.
      */
     @Override
@@ -199,8 +184,6 @@ public class GoalOrientedProposition extends GSnode {
     /**
      * Sets the prefix (goal type) for this goal oriented proposition.
      *
-     * @throws UnsupportedOperationException() if the parent goal of this
-     * proposition is operationalised and the goal type is an assumption.
      * @param goaltype the prefix .
      */
     public void setPrefix(GoalType goaltype) {
@@ -304,6 +287,16 @@ public class GoalOrientedProposition extends GSnode {
      */
     public void setContext(String context) {
         this.context = context;
+    }
+    
+    /**
+     * Clears the annotations form a GOP.
+     */
+    public void deleteAnnotations() {
+        for (int i = annotations.size() - 1; i >= 0; i--) {
+            annotations.remove(i);
+        }
+        hasChildren = false;
     }
 
 }

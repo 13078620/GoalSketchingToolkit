@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -29,7 +33,6 @@ public abstract class AbstractGSnodeFactory {
      *
      * @param prefix the goal type.
      * @param statement the statement.
-     * @param context the context.
      * @return a new GOP initialised with the given arguments.
      */
     public abstract GoalOrientedProposition createGOP(GoalType prefix, String statement);
@@ -39,9 +42,9 @@ public abstract class AbstractGSnodeFactory {
      *
      * @param x the x position of the goal sketching node.
      * @param y the y position of the goal sketching node.
-     * @param toX
-     * @param toY
-     * @param length
+     * @param toX the to x position of the goal sketching node.
+     * @param toY the to y position of the goal sketching node.
+     * @param length the length of the goal sketching node.
      * @return a new initialised with the given arguments.
      */
     public abstract ANDentailment createANDentailment(int x, int y, int toX, int toY, int length);

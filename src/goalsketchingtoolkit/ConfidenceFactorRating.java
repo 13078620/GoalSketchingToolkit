@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -9,7 +13,7 @@ package goalsketchingtoolkit;
  * This class is a key value pair which contains a confidence factor as the key
  * and a rating from the ordinal scale as the value.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class ConfidenceFactorRating {
 
@@ -17,6 +21,7 @@ public class ConfidenceFactorRating {
      * The confidence factor used in this rating.
      */
     private final ConfidenceFactor key;
+    
     /**
      * The rating from the ordinal scale used in this rating.
      */

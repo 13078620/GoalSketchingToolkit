@@ -1,7 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright (C) Christopher Berryman, Oxford Brookes University 
+ * - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly 
+ * prohibited
+ * Proprietary and confidential
+ *  Written by Christopher Berryman <c.p.berryman@btinternet.com>, 
+ * September 2015
  */
 package goalsketchingtoolkit;
 
@@ -14,7 +18,7 @@ import java.awt.Color;
  * This class contains information about the graphical location and proportions
  * of a goal sketching entailment.
  *
- * @author Chris Berryman.
+ * @author Chris Berryman - Oxford Brookes University - 2015.
  */
 public class GSentailmentGraphics extends GSgraphics implements Drawable {
 
@@ -141,7 +145,7 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
      * @param x the x position of the circular section.
      */
     public void setCircle(int x) {
-        this.circle = new Ellipse2D.Double(x - CIRCLE_WIDTH / 2, toY, CIRCLE_WIDTH, CIRCLE_HEIGHT);
+        this.circle = new Ellipse2D.Double(x - CIRCLE_WIDTH / 2, toY - CIRCLE_HEIGHT / 2, CIRCLE_WIDTH, CIRCLE_HEIGHT);
     }
 
     /**
@@ -152,7 +156,9 @@ public class GSentailmentGraphics extends GSgraphics implements Drawable {
      */
     public void setCircleLocation(int x, int y) {
         this.circle.x = x;
+        this.toX = x + CIRCLE_WIDTH / 2;
         this.circle.y = y;
+        this.toY = y + CIRCLE_HEIGHT / 2;
     }
 
     /**
