@@ -37,7 +37,6 @@ public class GraphBuilder {
      * The root goal.
      */
     private final Goal root;
-    
 
     /**
      * Constructs a graph builder.
@@ -74,8 +73,10 @@ public class GraphBuilder {
     /**
      * Builds a DOM element for a graph node.
      *
-     * @param node the graph node.
+     * @param goal the graph node.
      * @return a DOM element describing the graph node.
+     * @throws javax.xml.parsers.ParserConfigurationException in the event of a
+     * serious configuration error.
      */
     private Element createNode(Goal goal) throws ParserConfigurationException {
 
@@ -104,7 +105,7 @@ public class GraphBuilder {
             e.appendChild(createPropositionElement(gop));
         }
 
-        if (goal.hasTwin()) {
+        /*if (goal.hasTwin()) {
 
             Element tse = doc.createElement("Twins");
             ArrayList<GSnode> twins = goal.getTwins();
@@ -116,7 +117,7 @@ public class GraphBuilder {
                 }
             }
             e.appendChild(tse);
-        }
+        }*/
 
         if (goal.getFit() != null) {
             e.appendChild(createTextElement("Fit", goal.getFit()));
@@ -136,12 +137,10 @@ public class GraphBuilder {
 
                 if (aent.hasGraphics()) {
                     GSentailmentGraphics graphics = aent.getGraphicalProperties();
-                    //ee.appendChild(createTextElement("length", "" + graphics.getLength()));
                     ee.appendChild(createTextElement("toY", "" + graphics.getToY()));
                     ee.appendChild(createTextElement("toX", "" + graphics.getToX()));
                     ee.appendChild(createTextElement("y", "" + graphics.getY()));
                     ee.appendChild(createTextElement("x", "" + graphics.getX()));
-                    System.out.println("circle x from builder: " + graphics.getCircle().getX());
                 }
 
                 if (aent.isParent()) {
@@ -168,10 +167,8 @@ public class GraphBuilder {
 
                 if (oent.hasGraphics()) {
                     GSorEntailmentGraphics graphics = oent.getGraphicalProperties();
-                    //ee.appendChild(createTextElement("length2", "" + graphics.getLength2()));
                     ee.appendChild(createTextElement("toY2", "" + graphics.getToY2()));
                     ee.appendChild(createTextElement("toX2", "" + graphics.getToX2()));
-                    //ee.appendChild(createTextElement("length", "" + graphics.getLength()));
                     ee.appendChild(createTextElement("toY", "" + graphics.getToY()));
                     ee.appendChild(createTextElement("toX", "" + graphics.getToX()));
                     ee.appendChild(createTextElement("y", "" + graphics.getY()));
@@ -269,10 +266,10 @@ public class GraphBuilder {
 
         if (tg.hasGraphics()) {
             GSnodeGraphics g = (GSnodeGraphics) tg.getGraphicalProperties();
-            twinGoalElement.appendChild(createTextElement("x", "" + g.getX()));
-            twinGoalElement.appendChild(createTextElement("y", "" + g.getY()));
-            twinGoalElement.appendChild(createTextElement("width", "" + g.getWidth()));
             twinGoalElement.appendChild(createTextElement("height", "" + g.getHeight()));
+            twinGoalElement.appendChild(createTextElement("width", "" + g.getWidth()));
+            twinGoalElement.appendChild(createTextElement("y", "" + g.getY()));
+            twinGoalElement.appendChild(createTextElement("x", "" + g.getX()));               
         }
         twinGoalElement.appendChild(createTextElement("ID", tg.getID()));
         twinGoalElement.appendChild(createPropositionElement(tg.getProposition()));

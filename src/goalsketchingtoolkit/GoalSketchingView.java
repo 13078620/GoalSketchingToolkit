@@ -502,7 +502,7 @@ public class GoalSketchingView implements Observer {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            int scale = 0;
+            int scale = 1;
 
             if (!scaleText.getText().isEmpty()) {
                 scale = Integer.parseInt(scaleText.getText());
