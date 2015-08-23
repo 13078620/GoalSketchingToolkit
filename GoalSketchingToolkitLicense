@@ -1,0 +1,10 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}Copyright (C) Christopher Berryman, Oxford Brookes University - All Rights Reserved
+${licensePrefix}Unauthorized copying of this file, via any medium is strictly prohibited
+${licensePrefix}Proprietary and confidential
+${licensePrefix} Written by Christopher Berryman <c.p.berryman@btinternet.com>, September 2015
+<#if licenseLast??>
+${licenseLast}
+</#if>
