@@ -123,6 +123,13 @@ public interface GoalSketchingControllerInterface {
      * @param statement the statement of the GOP.
      */
     void addGOP(GoalType prefix, String statement);
+    
+    /**
+     * Adds a GOP to a given goal.
+     *
+     * @param statement the statement of the description node.
+     */
+    void addDescriptionNode(String statement);
 
     /**
      * Deletes a GOP from a given goal.

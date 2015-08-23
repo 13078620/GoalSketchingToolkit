@@ -91,9 +91,10 @@ public class GoalGraphModel extends Observable implements GoalGraphModelInterfac
     @Override
     public void reset() {
 
-        for (int i = goalSketchingNodes.size() - 1; i >= 0; i--) {
-            goalSketchingNodes.remove(i);
-        }
+        //for (int i = goalSketchingNodes.size() - 1; i >= 0; i--) {
+           // goalSketchingNodes.remove(i);
+       // }
+        goalSketchingNodes = new ArrayList<>();
     }
 
     /**

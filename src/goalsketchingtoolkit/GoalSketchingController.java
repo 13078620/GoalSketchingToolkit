@@ -235,6 +235,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
      */
     @Override
     public void reset() {
+        this.currentSelection = null;
         view.reset();
         model.reset();
         parser.reset();
@@ -551,6 +552,24 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         }
 
     }
+    
+    /**
+     * Adds a GOP to a given goal.
+     *
+     * @param statement the statement of the description node.
+     */
+    @Override
+    public void addDescriptionNode(String statement) {
+        
+        Goal goal = (Goal) currentSelection;
+        GoalOrientedProposition gop = factory.createDescriptionNode(statement);
+        try {
+            goal.addChild(gop);
+            model.addToGSnodes(gop);
+        } catch (UnsupportedOperationException e) {
+            view.displayErrorMessage(e.getMessage());
+        }
+    }
 
     /**
      * Deletes a GOP from the currently selected goal.
@@ -571,6 +590,16 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 oe.setEntailsAssumption(false);
             }
         }
+        
+        if(gop.hasChildren) {            
+            for(GSnode n : gop.getChildren()) {
+                Annotation a = (Annotation) n;
+                view.removeDrawable(a.getGraphicalProperties());
+                model.removeFromGSnodes(a);
+            }
+            gop.deleteAnnotations();
+        }
+        
         model.removeFromGSnodes(gop);
 
     }
@@ -1236,7 +1265,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
     @Override
     public void setGOP(String prefix, String statement) {
 
-        GoalType gt = GoalType.MOTIVATION;
+        GoalType gt = GoalType.GENERAL;
 
         if (prefix.equalsIgnoreCase("motivation")) {
             gt = GoalType.MOTIVATION;
@@ -1248,6 +1277,10 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
             gt = GoalType.ASSUMPTION;
         } else if (prefix.equalsIgnoreCase("obstacle")) {
             gt = GoalType.OBSTACLE;
+        }
+        
+        if(prefix.isEmpty()) {
+            addDescriptionNode(statement);
         }
 
         addGOP(gt, statement);

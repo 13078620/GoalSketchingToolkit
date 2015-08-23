@@ -458,7 +458,7 @@ public class GoalSketchingView implements Observer {
                         break;
                     default:
                         prefix = "";
-                        prefix = "\\ \\";
+                        prefix += GoalType.GENERAL;
                 }
 
             }
@@ -519,7 +519,7 @@ public class GoalSketchingView implements Observer {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            int scale = 0;
+            int scale = 1;
 
             if (!scaleText.getText().isEmpty()) {
                 scale = Integer.parseInt(scaleText.getText());

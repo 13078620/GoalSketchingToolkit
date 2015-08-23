@@ -21,7 +21,7 @@ public class GoalSketchingPanel extends JPanel {
 
     private final int width;
     private final int height;
-    private final ArrayList<Drawable> drawables;
+    private ArrayList<Drawable> drawables;
 
     /**
      * Constructs a goal sketching panel with a given width and height.
@@ -88,9 +88,10 @@ public class GoalSketchingPanel extends JPanel {
      */
     public void reset() {
 
-        for (int i = drawables.size() - 1; i >= 0; i--) {
-            drawables.remove(i);
-        }
+        //for (int i = drawables.size() - 1; i >= 0; i--) {
+            //drawables.remove(i);
+        //}
+        this.drawables = new ArrayList<>();
         repaint();
     }
 

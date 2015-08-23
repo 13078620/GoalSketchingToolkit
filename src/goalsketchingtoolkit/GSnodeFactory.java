@@ -78,6 +78,21 @@ public class GSnodeFactory {
         return gop;
 
     }
+    
+    /**
+     * Returns a new description node.
+     *
+     * @param prefix the goal type.
+     * @param statement the statement.
+     * @return a new GOP initialised with the given arguments.
+     */
+    //@Override
+    public GoalOrientedProposition createDescriptionNode(String statement) {
+
+        GoalOrientedProposition gop = new GoalOrientedProposition(statement);
+        return gop;
+
+    }
 
     /**
      * Returns a new AND entailment.

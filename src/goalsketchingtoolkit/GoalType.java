@@ -32,7 +32,11 @@ public enum GoalType {
     /**
      * Obstacle goal.
      */
-    OBSTACLE("/o/");
+    OBSTACLE("/o/"),
+    /**
+     * General goal.
+     */
+    GENERAL("/ /");    
 
     /**
      * The prefix used in the goal oriented proposition.

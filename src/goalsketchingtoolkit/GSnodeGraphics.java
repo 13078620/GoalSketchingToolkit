@@ -659,7 +659,9 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
                 GoalOrientedProposition gop = goal.getProposition();
 
-                text += gop.getStatement() + "    " + gop.getPrefix();
+                if(gop.hasPrefix()) {
+                    text += gop.getStatement() + "    " + gop.getPrefix();
+                }               
 
                 if (goal.getId() != null) {
                     text += "   (" + goal.getId() + ")";
