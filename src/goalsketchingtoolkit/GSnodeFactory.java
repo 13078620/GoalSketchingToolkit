@@ -82,7 +82,6 @@ public class GSnodeFactory {
     /**
      * Returns a new description node.
      *
-     * @param prefix the goal type.
      * @param statement the statement.
      * @return a new GOP initialised with the given arguments.
      */
