@@ -454,10 +454,10 @@ public class GSnodeGraphics extends GSgraphics implements Drawable {
 
                     GoalJudgement j = (GoalJudgement) a.getJudgement();
                     ConfidenceFactorRating cfr1 = j.getRefineConfidenceFactorRating();
-                    ConfidenceFactorRating cfr2 = j.getRefineConfidenceFactorRating();
+                    ConfidenceFactorRating cfr2 = j.getEngageConfidenceFactorRating();
                     SignificanceFactorRating sfr = j.getSignificanceFactorRating();
                     String text1 = cfr1.getKey() + ": " + cfr1.getValue();
-                    String text2 = cfr2.getKey() + ": " + cfr1.getValue();
+                    String text2 = cfr2.getKey() + ": " + cfr2.getValue();
                     String text3 = sfr.getKey() + ": " + sfr.getValue();
                     g2.drawString(" " + text1, x, y + 15);
                     g2.drawString(" " + text2, x, y + 30);

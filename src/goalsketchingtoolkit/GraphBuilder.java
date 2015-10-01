@@ -107,18 +107,17 @@ public class GraphBuilder {
 
         /*if (goal.hasTwin()) {
 
-            Element tse = doc.createElement("Twins");
-            ArrayList<GSnode> twins = goal.getTwins();
+         Element tse = doc.createElement("Twins");
+         ArrayList<GSnode> twins = goal.getTwins();
 
-            if (!twins.isEmpty()) {
-                for (GSnode n : twins) {
-                    Twin tg = (Twin) n;
-                    tse.appendChild(createTwinGoalElement(tg));
-                }
-            }
-            e.appendChild(tse);
-        }*/
-
+         if (!twins.isEmpty()) {
+         for (GSnode n : twins) {
+         Twin tg = (Twin) n;
+         tse.appendChild(createTwinGoalElement(tg));
+         }
+         }
+         e.appendChild(tse);
+         }*/
         if (goal.getFit() != null) {
             e.appendChild(createTextElement("Fit", goal.getFit()));
         }
@@ -269,10 +268,13 @@ public class GraphBuilder {
             twinGoalElement.appendChild(createTextElement("height", "" + g.getHeight()));
             twinGoalElement.appendChild(createTextElement("width", "" + g.getWidth()));
             twinGoalElement.appendChild(createTextElement("y", "" + g.getY()));
-            twinGoalElement.appendChild(createTextElement("x", "" + g.getX()));               
+            twinGoalElement.appendChild(createTextElement("x", "" + g.getX()));
         }
         twinGoalElement.appendChild(createTextElement("ID", tg.getID()));
-        twinGoalElement.appendChild(createPropositionElement(tg.getProposition()));
+
+        if (tg.getProposition() != null) {
+            twinGoalElement.appendChild(createPropositionElement(tg.getProposition()));
+        }
 
         return twinGoalElement;
     }

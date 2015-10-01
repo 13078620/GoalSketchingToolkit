@@ -18,17 +18,29 @@ public class Twin extends GSnode {
     /**
      * A reference to the original goal.
      */
-    private final Goal original;
-    
+    private Goal original;
+
     /**
      * The graphical properties of this twin goal.
      */
     private GSnodeGraphics graphicalProperties;
-    
+
     /**
      * A new instance of the GOP from the original goal.
      */
     private GoalOrientedProposition gop;
+
+    /**
+     * A new instance of the GOP from the original goal.
+     */
+    private String temporaryId;
+
+    /**
+     * Constructs a twin with no original goal.
+     */
+    public Twin() {
+
+    }
 
     /**
      * Constructs a twin goal with a reference to the original goal.
@@ -41,8 +53,21 @@ public class Twin extends GSnode {
             GoalType gt = original.getProposition().getGoalType();
             String statement = original.getProposition().getStatement();
             gop = new GoalOrientedProposition(gt, statement);
-        } else {
-            gop = new GoalOrientedProposition();
+        //} else {
+            //    gop = new GoalOrientedProposition();
+        }
+    }
+
+    /**
+     *
+     * @param g
+     */
+    public void setOriginalGoal(Goal g) {
+        this.original = g;
+        if (original.hasGop()) {
+            GoalType gt = original.getProposition().getGoalType();
+            String statement = original.getProposition().getStatement();
+            gop = new GoalOrientedProposition(gt, statement);
         }
     }
 
@@ -61,8 +86,25 @@ public class Twin extends GSnode {
      * @return the ID of the original goal of this twin.
      */
     public String getID() {
-        //return "Twin " + original.getId();
         return original.getId();
+    }
+
+    /**
+     * sets a temporary ID for parsing purposes.
+     *
+     * @param id the temporary ID.
+     */
+    public void setTemporaryID(String id) {
+        this.temporaryId = id;
+    }
+
+    /**
+     * Returns the temporary ID for parsing purposes.
+     *
+     * @return the temporary ID.
+     */
+    public String getTemporaryID() {
+        return temporaryId;
     }
 
     /**

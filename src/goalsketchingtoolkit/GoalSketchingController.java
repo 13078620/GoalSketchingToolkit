@@ -26,6 +26,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import org.xml.sax.SAXException;
 
 /**
@@ -424,7 +425,32 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 oe.removeChild(goal);
             }
         }
-        deleteGoal(goal);
+        
+        if (goal.hasTwin()) {
+            String message = "Goal: " + goal.getId() + "has twins, are you sure you want to delete it?";
+            int option = view.displayTwinWarning(message);
+            if (option == JOptionPane.OK_OPTION) {
+                ArrayList<GSnode> twins = goal.getTwins();
+                for (GSnode n : twins) {
+                    Twin t = (Twin) n;
+                    goal.removeChild(t);
+                    GSnode entailment = t.getParent();
+                    entailment.removeChild(t);
+                    view.removeDrawable(t.getGraphicalProperties());
+                    model.removeFromGSnodes(t);                    
+                }
+                deleteGoal(goal);
+            } else {
+                return;
+            }
+            if (option == JOptionPane.NO_OPTION) {
+             
+            }
+            if (option == JOptionPane.CLOSED_OPTION) {
+                
+            }        
+        }
+        deleteGoal(goal);        
     }
 
     /**
@@ -434,92 +460,78 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
      */
     @Override
     public void deleteGoal(Goal goal) {
+             
 
-        if (goal.hasGop()) {
-            GoalOrientedProposition gop = goal.getProposition();
-            if (gop.isParent()) {
-                for (GSnode n : gop.getChildren()) {
-                    Annotation a = (Annotation) n;
-                    view.removeDrawable(a.getGraphicalProperties());
-                    model.removeFromGSnodes(a);
+            if (goal.hasGop()) {
+                GoalOrientedProposition gop = goal.getProposition();
+                if (gop.isParent()) {
+                    for (GSnode n : gop.getChildren()) {
+                        Annotation a = (Annotation) n;
+                        view.removeDrawable(a.getGraphicalProperties());
+                        model.removeFromGSnodes(a);
+                    }
+                    gop.deleteAnnotations();
                 }
-                gop.deleteAnnotations();
+                goal.removeChild(gop);
+                model.removeFromGSnodes(gop);
             }
-            goal.removeChild(gop);
-            model.removeFromGSnodes(gop);
-        }
 
-        if (goal.isOperationalized()) {
-            OperationalizingProducts ops = goal.getOperationalizingProducts();
-            goal.removeChild(ops);
-            view.removeDrawable(ops.getGraphicalProperties());
-            model.removeFromGSnodes(ops);
-        }
+            if (goal.isOperationalized()) {
+                OperationalizingProducts ops = goal.getOperationalizingProducts();
+                goal.removeChild(ops);
+                view.removeDrawable(ops.getGraphicalProperties());
+                model.removeFromGSnodes(ops);
+            }
 
-        if (goal.isTerminated()) {
-            AssumptionTermination ats = goal.getAssumptionTermination();
-            goal.removeChild(ats);
-            view.removeDrawable(ats.getGraphicalProperties());
-            model.removeFromGSnodes(ats);
-        }
+            if (goal.isTerminated()) {
+                AssumptionTermination ats = goal.getAssumptionTermination();
+                goal.removeChild(ats);
+                view.removeDrawable(ats.getGraphicalProperties());
+                model.removeFromGSnodes(ats);
+            }
 
-        if (goal.isEntailed()) {
-            GSnode entailment = goal.getEntailment();
-            String entailmnetType = entailment.getClass().toString();
-            if (entailmnetType.contains("ANDentailment")) {
-                ANDentailment ae = (ANDentailment) entailment;
-                if (ae.hasChildren) {
-                    ArrayList<GSnode> children = ae.getChildren();
-                    for (GSnode n : children) {
-                        String nodeType = n.getClass().toString();
-                        if (nodeType.contains("Goal")) {
-                            Goal g = (Goal) n;
-                            deleteGoal(g);
+            if (goal.isEntailed()) {
+                GSnode entailment = goal.getEntailment();
+                String entailmnetType = entailment.getClass().toString();
+                if (entailmnetType.contains("ANDentailment")) {
+                    ANDentailment ae = (ANDentailment) entailment;
+                    if (ae.hasChildren) {
+                        ArrayList<GSnode> children = ae.getChildren();
+                        for (GSnode n : children) {
+                            String nodeType = n.getClass().toString();
+                            if (nodeType.contains("Goal")) {
+                                Goal g = (Goal) n;
+                                deleteGoal(g);
+                            }
+                        }
+
+                    }
+
+                    goal.removeChild(ae);
+                    view.removeDrawable(ae.getGraphicalProperties());
+                    model.removeFromGSnodes(ae);
+
+                } else if (entailmnetType.contains("ORentailment")) {
+                    ORentailment oe = (ORentailment) entailment;
+                    if (oe.hasChildren) {
+                        ArrayList<GSnode> children = oe.getChildren();
+                        for (GSnode n : children) {
+                            String nodeType = n.getClass().toString();
+                            if (nodeType.contains("Goal")) {
+                                Goal g = (Goal) n;
+                                deleteGoal(g);
+                            }
                         }
                     }
 
+                    goal.removeChild(oe);
+                    view.removeDrawable(oe.getGraphicalProperties());
+                    model.removeFromGSnodes(oe);
                 }
-
-                goal.removeChild(ae);
-                view.removeDrawable(ae.getGraphicalProperties());
-                model.removeFromGSnodes(ae);
-
-            } else if (entailmnetType.contains("ORentailment")) {
-                ORentailment oe = (ORentailment) entailment;
-                if (oe.hasChildren) {
-                    ArrayList<GSnode> children = oe.getChildren();
-                    for (GSnode n : children) {
-                        String nodeType = n.getClass().toString();
-                        if (nodeType.contains("Goal")) {
-                            Goal g = (Goal) n;
-                            deleteGoal(g);
-                        }
-                    }
-                }
-
-                goal.removeChild(oe);
-                view.removeDrawable(oe.getGraphicalProperties());
-                model.removeFromGSnodes(oe);
-
             }
-        }
-
-        if (goal.hasTwin()) {
-            ArrayList<GSnode> twins = goal.getTwins();
-            for (GSnode n : twins) {
-                Twin t = (Twin) n;
-                goal.removeChild(t);
-                GSnode entailment = t.getParent();
-                entailment.removeChild(t);
-                view.removeDrawable(t.getGraphicalProperties());
-                model.removeFromGSnodes(t);
-            }
-
-        }
-
-        view.removeDrawable(goal.getGraphicalProperties());
-        model.removeFromGSnodes(goal);
-        currentSelection = null;
+            view.removeDrawable(goal.getGraphicalProperties());
+            model.removeFromGSnodes(goal);
+            currentSelection = null;        
 
     }
 
@@ -552,7 +564,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         }
 
     }
-    
+
     /**
      * Adds a GOP to a given goal.
      *
@@ -560,7 +572,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
      */
     @Override
     public void addDescriptionNode(String statement) {
-        
+
         Goal goal = (Goal) currentSelection;
         GoalOrientedProposition gop = factory.createDescriptionNode(statement);
         try {
@@ -590,16 +602,16 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 oe.setEntailsAssumption(false);
             }
         }
-        
-        if(gop.hasChildren) {            
-            for(GSnode n : gop.getChildren()) {
+
+        if (gop.hasChildren) {
+            for (GSnode n : gop.getChildren()) {
                 Annotation a = (Annotation) n;
                 view.removeDrawable(a.getGraphicalProperties());
                 model.removeFromGSnodes(a);
             }
             gop.deleteAnnotations();
         }
-        
+
         model.removeFromGSnodes(gop);
 
     }
@@ -707,6 +719,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
 
         int x = e.getX();
         int y = e.getY();
+        this.mouseListener.setMousePressed(false);
 
         if (modelIsEmpty()) {
             setIsRootNode(true);
@@ -789,14 +802,21 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                     view.enableDeleteGoalMenuItem();
                 }
 
+                //if (g.getGraphicalProperties().contains(x, y)) {
                 view.showGoalPopUpMenu(e, x, y);
+                // }
 
             } else if (currentSelectionType.contains("ANDentailment")) {
+
+                ANDentailment ae = (ANDentailment) currentSelection;
 
                 view.enableAddGoalMenuItem();
                 view.enableAddTwinMenuItem();
                 view.enableDeleteEntailmentMenuItem();
-                view.showEntailmentPopUpMenu(e, x, y);
+
+                if (ae.getGraphicalProperties().contains(x, y)) {
+                    view.showEntailmentPopUpMenu(e, x, y);
+                }
 
             } else if (currentSelectionType.contains("ORentailment")) {
 
@@ -810,7 +830,9 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                     view.enableAddTwinMenuItem();
                 }
                 view.enableDeleteEntailmentMenuItem();
-                view.showEntailmentPopUpMenu(e, x, y);
+                if (oe.getGraphicalProperties().contains(x, y)) {
+                    view.showEntailmentPopUpMenu(e, x, y);
+                }
 
             } else if (currentSelectionType.contains("OperationalizingProducts")) {
 
@@ -823,12 +845,18 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 } else {
                     view.disableRemoveProductMenuItem();
                 }
-                view.showProductsPopUpMenu(e, x, y);
+                if (ops.getGraphicalProperties().contains(x, y)) {
+                    view.showProductsPopUpMenu(e, x, y);
+                }
 
             } else if (currentSelectionType.contains("AssumptionTermination")) {
 
+                AssumptionTermination at = (AssumptionTermination) currentSelection;
                 view.enableDeleteAnnotationMenuItem();
-                view.showAssumpTerminationPopUpMenu(e, x, y);
+
+                if (at.getGraphicalProperties().contains(x, y)) {
+                    view.showAssumpTerminationPopUpMenu(e, x, y);
+                }
 
             } else if (currentSelectionType.contains("Annotation")) {
 
@@ -846,12 +874,18 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
                 }
 
                 view.enableDeleteAnnotationMenuItem();
-                view.showAnnotationPopUpMenu(e, x, y);
 
+                if (a.getGraphicalProperties().contains(x, y)) {
+                    view.showAnnotationPopUpMenu(e, x, y);
+                }
             } else if (currentSelectionType.contains("Twin")) {
 
+                Twin t = (Twin) currentSelection;
                 view.enableDeleteTwinMenuItem();
-                view.showTwinPopUpMenu(e, x, y);
+
+                if (t.getGraphicalProperties().contains(x, y)) {
+                    view.showTwinPopUpMenu(e, x, y);
+                }
 
             }
         }
@@ -1278,8 +1312,8 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         } else if (prefix.equalsIgnoreCase("obstacle")) {
             gt = GoalType.OBSTACLE;
         }
-        
-        if(prefix.isEmpty()) {
+
+        if (prefix.isEmpty()) {
             addDescriptionNode(statement);
         }
 
@@ -1344,6 +1378,7 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
         gop.removeChild(a);
         view.removeDrawable(a.getGraphicalProperties());
         model.removeFromGSnodes(a);
+        currentSelection = null;
     }
 
     /**
@@ -1411,13 +1446,10 @@ public class GoalSketchingController implements GoalSketchingControllerInterface
      */
     @Override
     public void editTwinGoal() {
-        //String currentSelectionType = currentSelection.getClass().toString();
-        //if (currentSelectionType.contains("T")) {
-
+        
         JDialog dialog = view.getAddTwinGoalDialog();
         dialog.setVisible(true);
-
-        // }
+        
     }
 
     /**

@@ -343,7 +343,6 @@ public class GoalSketchingView implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-
             controller.reset();
         }
     }
@@ -841,6 +840,13 @@ public class GoalSketchingView implements Observer {
     public void displayErrorMessage(String msg) {
         JOptionPane.showMessageDialog(null, msg);
     }
+    
+     public int displayTwinWarning(String msg) {        
+        Object[] options = { "Yes", "No" };
+        int option = JOptionPane.showOptionDialog(frame, msg, "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+        return option;
+    }  
+    
 
     public ArrayList<Drawable> getDrawables() {
         return panel.getDrawables();

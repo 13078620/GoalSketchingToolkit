@@ -90,11 +90,8 @@ public class GoalGraphModel extends Observable implements GoalGraphModelInterfac
      */
     @Override
     public void reset() {
-
-        //for (int i = goalSketchingNodes.size() - 1; i >= 0; i--) {
-           // goalSketchingNodes.remove(i);
-       // }
         goalSketchingNodes = new ArrayList<>();
+        System.out.println(goalSketchingNodes.size());
     }
 
     /**
@@ -113,9 +110,7 @@ public class GoalGraphModel extends Observable implements GoalGraphModelInterfac
             if (nodeType.contains("Goal") && !nodeType.contains("OrientedProposition")) {
                 Goal goal = (Goal) n;
                 if (goal.getId() != null) {
-
                     if (goal.getId().equalsIgnoreCase(ID)) {
-
                         g = goal;
                     }
                 }
