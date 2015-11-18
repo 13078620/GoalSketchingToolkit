@@ -2,21 +2,20 @@
 <Graph>
     <Goal>
         <root>true</root>
-        <height>0</height>
-        <width>0</width>
-        <y>0</y>
-        <x>0</x>
+        <height>60</height>
+        <width>100</width>
+        <y>58</y>
+        <x>459</x>
         <ID>GA</ID>
         <Proposition>
             <Prefix>/m/</Prefix>
-            <Statement>Reputation concerns are satisfied</Statement>
-            <Context>Scales and User</Context>
+            <Statement>Motivation test 1</Statement>
             <Annotations>
                 <Annotation>
-                    <height>0</height>
-                    <width>0</width>
-                    <y>0</y>
-                    <x>0</x>
+                    <height>50</height>
+                    <width>100</width>
+                    <y>30</y>
+                    <x>229</x>
                     <GoalJudgement>
                         <Refine>HIGH</Refine>
                         <Engage>HIGH</Engage>
@@ -25,68 +24,147 @@
                 </Annotation>
             </Annotations>
         </Proposition>
-        <Fit>Fit</Fit>
         <ANDentailment>
-            <toY>20</toY>
-            <toX>80</toX>
-            <y>25</y>
-            <x>40</x>
+            <toY>193</toY>
+            <toX>512</toX>
+            <y>147</y>
+            <x>493</x>
             <Goal>
-                <height>0</height>
-                <width>0</width>
-                <y>0</y>
-                <x>0</x>
-                <ID>GA1</ID>
-                <Proposition>
-                    <Prefix>/a/</Prefix>
-                    <Statement>The standard WeighCom quality standard QS1 defines a satisfactory resolution of the reputation concerns.</Statement>
-                    <Annotations>
-                        <Annotation>
-                            <height>0</height>
-                            <width>0</width>
-                            <y>0</y>
-                            <x>0</x>
-                            <AssumptionJudgement>
-                                <Assume>HIGH</Assume>
-                            </AssumptionJudgement>
-                        </Annotation>
-                    </Annotations>
-                </Proposition>
-            </Goal>
-            <Goal>
-                <height>0</height>
-                <width>0</width>
-                <y>0</y>
-                <x>0</x>
+                <height>60</height>
+                <width>100</width>
+                <y>293</y>
+                <x>543</x>
                 <ID>GA2</ID>
                 <Proposition>
                     <Prefix>/b/</Prefix>
-                    <Statement>The working status of the Scales is monitored during normal operation.</Statement>
+                    <Statement>test behaviour 1</Statement>
                     <Annotations>
                         <Annotation>
-                            <height>0</height>
-                            <width>0</width>
-                            <y>0</y>
-                            <x>0</x>
-                            <LeafJudgement>
-                                <Achieve>HIGH</Achieve>
-                                <Cost>100</Cost>
-                            </LeafJudgement>
+                            <height>50</height>
+                            <width>100</width>
+                            <y>99</y>
+                            <x>729</x>
+                            <GoalJudgement>
+                                <Refine>MEDIUM</Refine>
+                                <Engage>MEDIUM</Engage>
+                                <Value>50</Value>
+                            </GoalJudgement>
                         </Annotation>
                     </Annotations>
                 </Proposition>
-                <ANDentailment>
-                    <toY>0</toY>
-                    <toX>0</toX>
-                    <y>0</y>
-                    <x>0</x>
+                <ORentailment>
+                    <toY2>389</toY2>
+                    <toX2>655</toX2>
+                    <toY>393</toY>
+                    <toX>551</toX>
+                    <y>421</y>
+                    <x>480</x>
                     <Goal>
-                        <height>0</height>
-                        <width>0</width>
-                        <y>0</y>
-                        <x>0</x>
-                        <ID>TEST</ID>
+                        <height>60</height>
+                        <width>100</width>
+                        <y>498</y>
+                        <x>453</x>
+                        <ID>GA3</ID>
+                        <Proposition>
+                            <Prefix>/b/</Prefix>
+                            <Statement>test behaviour 2</Statement>
+                            <Annotations>
+                                <Annotation>
+                                    <height>50</height>
+                                    <width>100</width>
+                                    <y>318</y>
+                                    <x>122</x>
+                                    <LeafJudgement>
+                                        <Achieve>HIGH</Achieve>
+                                        <Cost>50</Cost>
+                                    </LeafJudgement>
+                                </Annotation>
+                            </Annotations>
+                        </Proposition>
+                        <OperationalizingProducts>
+                            <height>40</height>
+                            <width>153</width>
+                            <y>618</y>
+                            <x>390</x>
+                            <Operationalizer>test agent 1</Operationalizer>
+                            <Operationalizer>test agent 2</Operationalizer>
+                        </OperationalizingProducts>
                     </Goal>
+                    <Goal>
+                        <height>60</height>
+                        <width>100</width>
+                        <y>490</y>
+                        <x>622</x>
+                        <ID>GA4</ID>
+                        <Proposition>
+                            <Prefix>/c/</Prefix>
+                            <Statement>test constraint 1</Statement>
+                            <Annotations>
+                                <Annotation>
+                                    <height>50</height>
+                                    <width>100</width>
+                                    <y>556</y>
+                                    <x>823</x>
+                                    <LeafJudgement>
+                                        <Achieve>HIGH</Achieve>
+                                        <Cost>50</Cost>
+                                    </LeafJudgement>
+                                </Annotation>
+                            </Annotations>
+                        </Proposition>
+                        <OperationalizingProducts>
+                            <height>40</height>
+                            <width>80</width>
+                            <y>633</y>
+                            <x>640</x>
+                            <Operationalizer>test agent 1</Operationalizer>
+                        </OperationalizingProducts>
+                    </Goal>
+                </ORentailment>
+            </Goal>
+            <Goal>
+                <height>60</height>
+                <width>81</width>
+                <y>178</y>
+                <x>738</x>
+                <Proposition>
+                    <Prefix>/b/</Prefix>
+                    <Statement>test behaviour again</Statement>
+                </Proposition>
+                <ANDentailment>
+                    <toY>282</toY>
+                    <toX>779</toX>
+                    <y>317</y>
+                    <x>775</x>
+                    <Goal>
+                        <height>57</height>
+                        <width>100</width>
+                        <y>352</y>
+                        <x>708</x>
+                        <ID>GA5</ID>
+                        <Proposition>
+                            <Prefix>/b/</Prefix>
+                            <Statement>Test behaviour</Statement>
+                        </Proposition>
+                        <OperationalizingProducts>
+                            <height>40</height>
+                            <width>80</width>
+                            <y>466</y>
+                            <x>744</x>
+                            <Operationalizer>test agent 2</Operationalizer>
+                        </OperationalizingProducts>
+                    </Goal>
+                    <Twin>
+                        <height>60</height>
+                        <width>100</width>
+                        <y>322</y>
+                        <x>830</x>
+                        <ID>GA2</ID>
+                        <Proposition>
+                            <Prefix>/b/</Prefix>
+                            <Statement>test behaviour 1</Statement>
+                        </Proposition>
+                    </Twin>
                 </ANDentailment>
             </Goal>
         </ANDentailment>

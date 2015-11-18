@@ -14,12 +14,12 @@
                 <Annotation>
                     <height>50</height>
                     <width>100</width>
-                    <y>39</y>
-                    <x>159</x>
+                    <y>30</y>
+                    <x>229</x>
                     <GoalJudgement>
-                        <Refine>NONE</Refine>
-                        <Engage>NONE</Engage>
-                        <Value>1</Value>
+                        <Refine>HIGH</Refine>
+                        <Engage>HIGH</Engage>
+                        <Value>100</Value>
                     </GoalJudgement>
                 </Annotation>
             </Annotations>
@@ -29,34 +29,6 @@
             <toX>514</toX>
             <y>147</y>
             <x>493</x>
-            <Goal>
-                <height>61</height>
-                <width>100</width>
-                <y>281</y>
-                <x>384</x>
-                <ID>GA1</ID>
-                <Proposition>
-                    <Prefix>/a/</Prefix>
-                    <Statement>test assumption 1</Statement>
-                    <Annotations>
-                        <Annotation>
-                            <height>50</height>
-                            <width>100</width>
-                            <y>235</y>
-                            <x>125</x>
-                            <AssumptionJudgement>
-                                <Assume>HIGH</Assume>
-                            </AssumptionJudgement>
-                        </Annotation>
-                    </Annotations>
-                </Proposition>
-                <AssumptionTermination>
-                    <height>30</height>
-                    <width>30</width>
-                    <y>370</y>
-                    <x>417</x>
-                </AssumptionTermination>
-            </Goal>
             <Goal>
                 <height>60</height>
                 <width>100</width>
@@ -81,10 +53,10 @@
                     </Annotations>
                 </Proposition>
                 <ORentailment>
-                    <toY2>405</toY2>
-                    <toX2>632</toX2>
-                    <toY>397</toY>
-                    <toX>562</toX>
+                    <toY2>394</toY2>
+                    <toX2>619</toX2>
+                    <toY>392</toY>
+                    <toX>564</toX>
                     <y>421</y>
                     <x>480</x>
                     <Goal>
@@ -164,17 +136,6 @@
                     <toX>779</toX>
                     <y>317</y>
                     <x>775</x>
-                    <Twin>
-                        <height>60</height>
-                        <width>100</width>
-                        <y>353</y>
-                        <x>832</x>
-                        <ID>GA1</ID>
-                        <Proposition>
-                            <Prefix>/a/</Prefix>
-                            <Statement>test assumption 1</Statement>
-                        </Proposition>
-                    </Twin>
                     <Goal>
                         <height>57</height>
                         <width>100</width>
@@ -193,7 +154,35 @@
                             <Operationalizer>test agent 2</Operationalizer>
                         </OperationalizingProducts>
                     </Goal>
+                    <Twin>
+                        <height>60</height>
+                        <width>100</width>
+                        <y>324</y>
+                        <x>839</x>
+                        <ID>GA1</ID>
+                        <Proposition>
+                            <Prefix>/a/</Prefix>
+                            <Statement>test assumption 1</Statement>
+                        </Proposition>
+                    </Twin>
                 </ANDentailment>
+            </Goal>
+            <Goal>
+                <height>60</height>
+                <width>100</width>
+                <y>261</y>
+                <x>334</x>
+                <ID>GA1</ID>
+                <Proposition>
+                    <Prefix>/a/</Prefix>
+                    <Statement>test assumption 1</Statement>
+                </Proposition>
+                <AssumptionTermination>
+                    <height>30</height>
+                    <width>30</width>
+                    <y>356</y>
+                    <x>369</x>
+                </AssumptionTermination>
             </Goal>
         </ANDentailment>
     </Goal>
